@@ -289,17 +289,15 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
             }
         }
 
-        // rotate tetromino clockwise
-        if (keyCode == KeyEvent.VK_D && gameStart && !gameOver) {
-            currentTetromino.rotateCW();
-        }
-        // rotate tetromino counter clockwise
-        if (keyCode == KeyEvent.VK_A && gameStart && !gameOver) {
-            currentTetromino.rotateCCw();
-        }
+        // rotate tetromino CW or CCW
+        if (!gameOver) {
 
-        if (keyCode == KeyEvent.VK_P) {
-            board.printBoard();
+            if (keyCode == KeyEvent.VK_D && gameStart && board.canRotateCW(currentTetromino)) {
+                currentTetromino.rotateCW();
+            }
+            if (keyCode == KeyEvent.VK_A && gameStart && board.canRotateCCw(currentTetromino)) {
+                currentTetromino.rotateCCw();
+            }
         }
     }
 

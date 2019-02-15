@@ -57,11 +57,11 @@ public class BoardTests {
     @Test
     public void testIsSTetrominoAboveBlock() {
         board.setBoardGrid(3, 5, 'o');
-        assertFalse(board.isTetrominoAboveBlock(straightTetromino));
-        straightTetromino.fall();
-        assertFalse(board.isTetrominoAboveBlock(straightTetromino));
-        straightTetromino.fall();
-        assertTrue(board.isTetrominoAboveBlock(straightTetromino));
+        assertFalse(board.isTetrominoAboveBlock(sTetromino));
+        sTetromino.fall();
+        assertFalse(board.isTetrominoAboveBlock(sTetromino));
+        sTetromino.fall();
+        assertTrue(board.isTetrominoAboveBlock(sTetromino));
     }
 
     @Test
@@ -312,19 +312,16 @@ public class BoardTests {
 
     @Test
     public void testIsTetrominoNotRestrictedLeft() {
-        sTetromino.initializeTetromino();
         assertFalse(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
     }
 
     @Test
     public void testIsTetrominoNotRestrictedRight() {
-        sTetromino.initializeTetromino();
         assertFalse(board.isTetrominoMovementRestrictedOnRight(sTetromino));
     }
 
     @Test
     public void testIsTetrominoRestrictedWallLeft() {
-        sTetromino.initializeTetromino();
         assertFalse(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
         sTetromino.setTetrominoX(0);
         assertTrue(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
@@ -332,7 +329,6 @@ public class BoardTests {
 
     @Test
     public void testIsTetrominoRestrictedWallRight() {
-        sTetromino.initializeTetromino();
         assertFalse(board.isTetrominoMovementRestrictedOnRight(sTetromino));
         sTetromino.setTetrominoX(BOARD_WIDTH - sTetromino.getShape()[0].length * BLOCK_SIZE);
         assertTrue(board.isTetrominoMovementRestrictedOnRight(sTetromino));
@@ -340,7 +336,6 @@ public class BoardTests {
 
     @Test
     public void testIsTetrominoRestrictedBlockLeft() {
-        sTetromino.initializeTetromino();
         assertFalse(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
         board.setBoardGrid(0, 2, 'i');
         assertFalse(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
@@ -350,7 +345,6 @@ public class BoardTests {
 
     @Test
     public void testIsTetrominoRestrictedBlockRight() {
-        sTetromino.initializeTetromino();
         assertFalse(board.isTetrominoMovementRestrictedOnRight(sTetromino));
         board.setBoardGrid(1, 6, 'i');
         assertFalse(board.isTetrominoMovementRestrictedOnRight(sTetromino));
@@ -358,7 +352,87 @@ public class BoardTests {
         assertTrue(board.isTetrominoMovementRestrictedOnRight(sTetromino));
     }
 
+    @Test
+    public void testTetrominoNotOverlappingBoard() {
+        board.setBoardGrid(0, 2, 'o');
+        board.setBoardGrid(0, 3, 'o');
+        board.setBoardGrid(1, 2, 'o');
+        board.setBoardGrid(0, 6, 'o');
+        board.setBoardGrid(1, 5, 'o');
+        board.setBoardGrid(1, 6, 'o');
+        for (int i = 2; i < 7; i++) {
+            board.setBoardGrid(2, i, 'o');
+        }
 
+        assertFalse(board.isTetrominoOverlappingBoard(sTetromino));
+    }
+
+    @Test
+    public void testTetrominoOverlappingBoard(){
+        board.setBoardGrid(0, 2, 'o');
+        board.setBoardGrid(0, 3, 'o');
+        board.setBoardGrid(1, 2, 'o');
+        board.setBoardGrid(0, 6, 'o');
+        board.setBoardGrid(1, 5, 'o');
+        board.setBoardGrid(1, 6, 'o');
+        for (int i = 2; i < 7; i++) {
+            board.setBoardGrid(2, i, 'o');
+        }
+
+        assertFalse(board.isTetrominoOverlappingBoard(sTetromino));
+        sTetromino.fall();
+        assertTrue(board.isTetrominoOverlappingBoard(sTetromino));
+    }
+
+    @Test
+    public void testTetrominoCanRotateCW() {
+        assertTrue(board.canRotateCW(sTetromino));
+    }
+
+    @Test
+    public void testTetrominoCanRotateCCw() {
+        assertTrue(board.canRotateCCw(sTetromino));
+    }
+
+    @Test
+    public void testTetrominoCannotRotateCW() {
+        straightTetromino.fall();
+        straightTetromino.fall();
+        assertTrue(board.canRotateCW(straightTetromino));
+        board.setBoardGrid(3, 5, 'o');
+        assertFalse(board.canRotateCW(straightTetromino));
+    }
+
+    @Test
+    public void testTetrominoCannotRotateCCw() {
+        straightTetromino.fall();
+        straightTetromino.fall();
+        assertTrue(board.canRotateCCw(straightTetromino));
+        board.setBoardGrid(3, 5, 'o');
+        assertFalse(board.canRotateCCw(straightTetromino));
+    }
+
+    @Test
+    public void testTetrominoSurroundedCanRotate() {
+        straightTetromino.fall();
+        straightTetromino.fall();
+        assertTrue(board.canRotateCW(straightTetromino));
+        assertTrue(board.canRotateCCw(straightTetromino));
+        board.setBoardGrid(0, 4, 'o');
+        board.setBoardGrid(0, 6, 'o');
+        board.setBoardGrid(1, 4, 'o');
+        board.setBoardGrid(1, 6, 'o');
+        board.setBoardGrid(1, 3, 'o');
+        board.setBoardGrid(3, 3, 'o');
+        board.setBoardGrid(3, 4, 'o');
+        board.setBoardGrid(3, 6, 'o');
+        board.setBoardGrid(4, 5, 'o');
+        assertTrue(board.canRotateCW(straightTetromino));
+        assertTrue(board.canRotateCCw(straightTetromino));
+    }
+
+
+    // helper function for checking if matrices are equivalent
     public boolean isBoardMatching(char[][] b) {
         for (int i = 0; i < BLOCKS_HIGH; i++) {
             for (int j = 0; j < BLOCKS_WIDE; j++) {

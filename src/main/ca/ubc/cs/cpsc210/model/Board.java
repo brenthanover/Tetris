@@ -190,8 +190,8 @@ public class Board {
     public int countFullRows() {
         int rowsToClear = 0;
 
-        for (int n = 0; n < boardGrid.length; n++) {
-            if (isRowFull(boardGrid[n])) {
+        for (char[] row : boardGrid) {
+            if (isRowFull(row)) {
                 rowsToClear++;
             }
         }
@@ -221,6 +221,7 @@ public class Board {
         }
     }
 
+    // prevents I block from appearing at top of game board
     public boolean isObstructingIBlock() {
         for (int j = 3; j < 7; j++) {
             if (boardGrid[0][j] != 'e') {
@@ -231,6 +232,7 @@ public class Board {
         return false;
     }
 
+    // prevents O block from appearing at top of game board
     public boolean isObstructingOBlock() {
         for (int i = 0; i < 2; i++) {
             for (int j = 4; j < 6; j++) {
@@ -243,6 +245,7 @@ public class Board {
         return false;
     }
 
+    // prevents other blocks from appearing at top of game board
     public boolean isObstructingOtherBlocks(Tetromino t) {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
@@ -292,18 +295,45 @@ public class Board {
         return false;
     }
 
-    public void dontOverlapBlocksWhenRotating(Tetromino t) {
-        //TODO: make it so the blocks don't overlap when rotating pieces
+    // return true if the tetromino can rotate CW without overlapping board
+    public boolean canRotateCW(Tetromino t) {
+        t.rotateCW();
+
+        if (isTetrominoOverlappingBoard(t)) {
+            t.rotateCCw();
+            return false;
+        }
+
+        t.rotateCCw();
+        return true;
     }
 
+    // return true if the tetromino can rotate CCW without overlapping board
+    public boolean canRotateCCw(Tetromino t) {
+        t.rotateCCw();
 
-    public void printBoard() {
-        for (int i = 0; i < BLOCKS_HIGH; i++) {
-            for (int j = 0; j < BLOCKS_WIDE; j++) {
-                System.out.print(boardGrid[i][j]);
-            }
-            System.out.println();
+        if (isTetrominoOverlappingBoard(t)) {
+            t.rotateCW();
+            return false;
         }
-        System.out.println();
+
+        t.rotateCW();
+        return true;
+    }
+
+    public boolean isTetrominoOverlappingBoard(Tetromino t) {
+        int tetrominoPosX = t.getTetrominoX() / BLOCK_SIZE;
+        int tetrominoPosY = t.getTetrominoY() / BLOCK_SIZE;
+
+        for (int i = 0; i < t.getShape().length; i++) {
+            for (int j = 0; j < t.getShape()[0].length; j++) {
+                if (boardGrid[tetrominoPosY + i][tetrominoPosX + j] != 'e'
+                        && t.getShape()[i][j] == 1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

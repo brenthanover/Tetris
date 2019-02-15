@@ -12,12 +12,7 @@ public class TetrominoTests {
 
     private Tetromino iTetromino;
     private Tetromino jTetromino;
-    private Tetromino lTetromino;
     private Tetromino oTetromino;
-    private Tetromino sTetromino;
-    private Tetromino tTetromino;
-    private Tetromino zTetromino;
-    private int[][] jMatrix = jTetrominoMatrix;
     private int[][] jMatrixTransposed = {{1, 0}, {1, 0}, {1, 1}};
     private int[][] jMatrixHorizontalFlipped = {{1, 1, 1}, {1, 0, 0}};
     private int[][] jMatrixVerticalFlipped = {{0, 0, 1}, {1, 1, 1}};
@@ -31,11 +26,7 @@ public class TetrominoTests {
     public void setup() {
         iTetromino = new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
         jTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
-        lTetromino = new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
         oTetromino = new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
-        sTetromino = new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
-        tTetromino = new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
-        zTetromino = new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
 
     }
 
