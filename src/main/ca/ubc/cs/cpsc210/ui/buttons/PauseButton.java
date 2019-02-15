@@ -1,4 +1,4 @@
-package ca.ubc.cs.cpsc210.buttons;
+package ca.ubc.cs.cpsc210.ui.buttons;
 
 import ca.ubc.cs.cpsc210.ui.Tetris;
 

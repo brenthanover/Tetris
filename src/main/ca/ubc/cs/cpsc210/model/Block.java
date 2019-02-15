@@ -1,40 +1,49 @@
 package ca.ubc.cs.cpsc210.model;
 
-import ca.ubc.cs.cpsc210.ui.Tetris;
-
 import java.awt.*;
+
+import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCK_SIZE;
 
 public class Block {
 
     /**
-     *  Constants
+     * Variables
      */
-    private final int BLOCK_SIZE = Tetris.BLOCK_SIZE;
+    private int blockXPos;
+    private int blockYPos;
+    private Color blockColour;
 
     /**
-     *  Variables
+     * Getters
      */
-    private int x;
-    private int y;
-    private Color c;
-
-    /**
-     *  Getters
-     */
-
-
-    public Block(int x, int y, Color c) {
-        this.x = x;
-        this.y = y;
-        this.c = c;
+    public int getBlockXPos() {
+        return blockXPos;
     }
 
+    public int getBlockYPos() {
+        return blockYPos;
+    }
+
+    public Color getBlockColour() {
+        return blockColour;
+    }
+
+    /**
+     * Constructor
+     */
+    public Block(int x, int y, Color c) {
+        this.blockXPos = x;
+        this.blockYPos = y;
+        this.blockColour = c;
+    }
+
+    // draw block
     public void draw(Graphics g) {
-        g.setColor(c);
-        g.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+        g.setColor(blockColour);
+        g.fillRect(blockXPos, blockYPos, BLOCK_SIZE, BLOCK_SIZE);
         // draw border around
         g.setColor(Color.gray);
-        g.drawRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+        g.drawRect(blockXPos, blockYPos, BLOCK_SIZE, BLOCK_SIZE);
     }
 
 

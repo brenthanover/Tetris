@@ -23,7 +23,8 @@ public class SoundEffects {
     /**
      * Constructor
      */
-    public SoundEffects() { }
+    public SoundEffects() {
+    }
 
     /**
      * Methods
@@ -39,11 +40,11 @@ public class SoundEffects {
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
             clip.start();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play sound effect");
         }
     }
+
     public void playTwoCleared() {
 
         try {
@@ -53,11 +54,11 @@ public class SoundEffects {
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
             clip.start();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play sound effect");
         }
     }
+
     public void playThreeCleared() {
 
         try {
@@ -67,11 +68,11 @@ public class SoundEffects {
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
             clip.start();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play sound effect");
         }
     }
+
     public void playFourCleared() {
 
         try {
@@ -81,11 +82,11 @@ public class SoundEffects {
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
             clip.start();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play sound effect");
         }
     }
+
     public void playGameStart() {
 
         try {
@@ -95,11 +96,11 @@ public class SoundEffects {
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
             clip.start();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play sound effect");
         }
     }
+
     public void playGameOver() {
 
         try {
@@ -109,11 +110,11 @@ public class SoundEffects {
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
             clip.start();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play sound effect");
         }
     }
+
     public void playButtonClick() {
 
         try {
@@ -123,8 +124,7 @@ public class SoundEffects {
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
             clip.start();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play sound effect");
         }
     }

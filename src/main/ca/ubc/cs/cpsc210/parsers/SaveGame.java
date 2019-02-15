@@ -11,7 +11,7 @@ public class SaveGame {
 
     public static void saveGame(String fileName, Tetris tetris) {
 
-        // save useful savegame data into a string
+        // save useful saveGame data into a string
         String saveData = "";
         int highScorePlaceholder = 10;
 

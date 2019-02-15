@@ -1,4 +1,4 @@
-package ca.ubc.cs.cpsc210.model;
+package ca.ubc.cs.cpsc210.ui;
 
 import ca.ubc.cs.cpsc210.ui.Tetris;
 
@@ -12,7 +12,7 @@ public class Render extends JPanel {
      */
     public Render() { }
 
-    // EFFECTS: renders the draw file for FlappyBird
+    // EFFECTS: renders the draw file for Tetris
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

@@ -11,7 +11,7 @@ public class LoadGame {
 
     // EFFECTS: converts text file in the style 'int.' (repeated) to
     //          integer array list of integers separated by '.' in text file
-    public static ArrayList<Integer> decodeSavedTextToArray(String saveData) {
+    private static ArrayList<Integer> decodeSavedTextToArray(String saveData) {
         ArrayList<Integer> decoded = new ArrayList<>();
         String dataString = "";
 
@@ -28,7 +28,7 @@ public class LoadGame {
     }
 
     // EFFECTS: decodes array of integers into Tetris saved game state
-    public static Tetris decodeArrayToGameState(ArrayList<Integer> decodedData) {
+    private static Tetris decodeArrayToGameState(ArrayList<Integer> decodedData) {
         Tetris loadedTetris = new Tetris(0);
 
         // save each decoded value to loadedTetris

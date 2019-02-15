@@ -1,4 +1,4 @@
-package ca.ubc.cs.cpsc210.model;
+package ca.ubc.cs.cpsc210.ui;
 
 
 import ca.ubc.cs.cpsc210.ui.Tetris;
@@ -37,17 +37,11 @@ public class GameBackground {
      */
     public void draw(Graphics g) {
         // fill background black
-        g.setColor(BACKGROUND_COLOUR);
-        g.fillRect(0, 0, Tetris.WINDOW_WIDTH, Tetris.WINDOW_HEIGHT);
+        drawBackground(g);
 
         // draw blank board with grey squares
         g.translate(BOARD_X_POS, BOARD_Y_POS);
-        g.setColor(OUTLINE_COLOUR);
-        for (int i = 0; i < BOARD_WIDTH; i += BLOCK_SIZE) {
-            for (int j = 0; j < BOARD_HEIGHT; j += BLOCK_SIZE) {
-                g.drawRect(i, j, BLOCK_SIZE, BLOCK_SIZE);
-            }
-        }
+        drawBlankBoard(g);
 
         g.translate(-BOARD_X_POS, -BOARD_Y_POS);
 
@@ -58,16 +52,30 @@ public class GameBackground {
         g.drawRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 
         // score
-        g.setColor(TEXT_COLOUR);
-        g.setFont(new Font(FONT_TYPE, FONT_STYLE, FONT_SIZE));
-        g.drawString("LINES", BLOCK_SIZE, BLOCK_SIZE * 2);
-        g.drawString(getLinesClearedString(), SCORE_X, SCORE_Y);
-        g.drawString("TOP", BLOCK_SIZE, BLOCK_SIZE * 6);
-        g.drawString(getHighScoreString(), HSCORE_X, HSCORE_Y);
-        g.drawString("SCORE", BLOCK_SIZE, BLOCK_SIZE * 10);
-        g.drawString(getScoreString(), LINES_X, LINES_Y);
+        drawScore(g);
 
         // box around next block
+        drawNextBox(g);
+
+        // translate back to original coordinates
+        g.translate(-BOARD_X_POS * 2 - BOARD_WIDTH, -BOARD_Y_POS);
+    }
+
+    private void drawBackground(Graphics g) {
+        g.setColor(BACKGROUND_COLOUR);
+        g.fillRect(0, 0, Tetris.WINDOW_WIDTH, Tetris.WINDOW_HEIGHT);
+    }
+
+    private void drawBlankBoard(Graphics g) {
+        g.setColor(OUTLINE_COLOUR);
+        for (int i = 0; i < BOARD_WIDTH; i += BLOCK_SIZE) {
+            for (int j = 0; j < BOARD_HEIGHT; j += BLOCK_SIZE) {
+                g.drawRect(i, j, BLOCK_SIZE, BLOCK_SIZE);
+            }
+        }
+    }
+
+    private void drawNextBox(Graphics g) {
         g.setColor(OUTLINE_COLOUR);
         int halfBlock = BLOCK_SIZE / 2;
         int quarterBlock = BLOCK_SIZE / 4;
@@ -81,11 +89,20 @@ public class GameBackground {
         Graphics2D g2d = (Graphics2D) g;
         FontMetrics fm = g2d.getFontMetrics();
         Rectangle2D r = fm.getStringBounds("NEXT", g2d);
-        int xOffset = (nextWidth - (int) r.getWidth()) / 2;
-        int yOffset = (nextHeight - (int) r.getHeight()) / 2 + fm.getAscent();
+        int offsetX = (nextWidth - (int) r.getWidth()) / 2;
+        int offsetY = (nextHeight - (int) r.getHeight()) / 2 + fm.getAscent();
 
-        g.drawString("NEXT", nextX + xOffset, nextY + yOffset - BLOCK_SIZE * 2);
+        g.drawString("NEXT", nextX + offsetX, nextY + offsetY - BLOCK_SIZE * 2);
+    }
 
-        g.translate(-BOARD_X_POS * 2 - BOARD_WIDTH, -BOARD_Y_POS);
+    private void drawScore(Graphics g) {
+        g.setColor(TEXT_COLOUR);
+        g.setFont(new Font(FONT_TYPE, FONT_STYLE, FONT_SIZE));
+        g.drawString("LINES", BLOCK_SIZE, BLOCK_SIZE * 2);
+        g.drawString(getLinesClearedString(), SCORE_X, SCORE_Y);
+        g.drawString("TOP", BLOCK_SIZE, BLOCK_SIZE * 6);
+        g.drawString(getHighScoreString(), HSCORE_X, HSCORE_Y);
+        g.drawString("SCORE", BLOCK_SIZE, BLOCK_SIZE * 10);
+        g.drawString(getScoreString(), LINES_X, LINES_Y);
     }
 }

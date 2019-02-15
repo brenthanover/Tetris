@@ -1,4 +1,4 @@
-package ca.ubc.cs.cpsc210.buttons;
+package ca.ubc.cs.cpsc210.ui.buttons;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -40,22 +40,22 @@ public abstract class TetrisButton {
      */
     private int mouseX;
     private int mouseY;
-    private int bX;
-    private int bY;
-    private int bWidth;
-    private int bHeight;
-    private String bName;
+    private int buttonX;
+    private int buttonY;
+    private int buttonWidth;
+    private int buttonHeight;
+    private String buttonName;
     private Color buttonColour = Color.white;
 
     /**
      *  Constructor
      */
-    public TetrisButton(int bX, int bY, int bWidth, int bHeight, String bName) {
-        this.bX = bX;
-        this.bY = bY;
-        this.bWidth = bWidth;
-        this.bHeight = bHeight;
-        this.bName = bName;
+    public TetrisButton(int buttonX, int buttonY, int buttonWidth, int buttonHeight, String buttonName) {
+        this.buttonX = buttonX;
+        this.buttonY = buttonY;
+        this.buttonWidth = buttonWidth;
+        this.buttonHeight = buttonHeight;
+        this.buttonName = buttonName;
     }
 
     /**
@@ -64,8 +64,8 @@ public abstract class TetrisButton {
     public boolean isMouseTouching(int mouseX, int mouseY) {
         initializeMouseCoords(mouseX, mouseY);
 
-        boolean onX = this.mouseX >= bX && this.mouseX <= bX + bWidth;
-        boolean onY = this.mouseY >= bY && this.mouseY <= bY + bHeight;
+        boolean onX = this.mouseX >= buttonX && this.mouseX <= buttonX + buttonWidth;
+        boolean onY = this.mouseY >= buttonY && this.mouseY <= buttonY + buttonHeight;
         return onX && onY;
     }
 
@@ -84,7 +84,7 @@ public abstract class TetrisButton {
     public void draw(Graphics g) {
         // set up button on screen
         g.setColor(buttonColour);
-        g.fillRoundRect(bX, bY, bWidth, bHeight, buttonArcWidth, buttonArcHeight);
+        g.fillRoundRect(buttonX, buttonY, buttonWidth, buttonHeight, buttonArcWidth, buttonArcHeight);
 
         // text on button
         g.setColor(Color.black);
@@ -92,11 +92,11 @@ public abstract class TetrisButton {
 
         Graphics2D g2d = (Graphics2D) g;
         FontMetrics fm = g2d.getFontMetrics();
-        Rectangle2D r = fm.getStringBounds(bName, g2d);
-        int xOffset = (bWidth - (int) r.getWidth()) / 2;
-        int yOffset = (bHeight - (int) r.getHeight()) / 2 + fm.getAscent();
+        Rectangle2D r = fm.getStringBounds(buttonName, g2d);
+        int offsetX = (buttonWidth - (int) r.getWidth()) / 2;
+        int offsetY = (buttonHeight - (int) r.getHeight()) / 2 + fm.getAscent();
 
-        g.drawString(bName, bX + xOffset, bY + yOffset);
+        g.drawString(buttonName, buttonX + offsetX, buttonY + offsetY);
     }
 
     // for whatever reason, clicking on 0,0 in the window yields 3, 25

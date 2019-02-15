@@ -64,10 +64,10 @@ public class Tetromino {
     /**
      * Variables
      */
-    private Color c;
-    private int[][] shape = {{}};
-    private int x;
-    private int y;
+    private Color tetrominoColour;
+    private int[][] shape;
+    private int tetrominoX;
+    private int tetrominoY;
     private char label;
     private int rotationPosition = 1000;
 
@@ -78,16 +78,39 @@ public class Tetromino {
         return label;
     }
 
-    public int getX() {
-        return x;
+    public int getTetrominoX() {
+        return tetrominoX;
     }
 
-    public int getY() {
-        return y;
+    public int getTetrominoY() {
+        return tetrominoY;
     }
 
     public int[][] getShape() {
         return shape;
+    }
+
+    public Color getTetrominoColour() {
+        return tetrominoColour;
+    }
+
+    /**
+     * Setters
+     */
+    public void setTetrominoX(int x) {
+        tetrominoX = x;
+    }
+
+    public void setTetrominoY(int y) {
+        tetrominoY = y;
+    }
+
+    public void incrementRotationPosition() {
+        rotationPosition++;
+    }
+
+    public void decrementRotationPosition() {
+        rotationPosition--;
     }
 
     /**
@@ -95,50 +118,50 @@ public class Tetromino {
      */
     public Tetromino(int[][] shape, Color c, char label) {
         this.shape = shape;
-        this.c = c;
+        this.tetrominoColour = c;
         this.label = label;
 
         previewTetromino();
     }
 
     public void initializeTetromino() {
-        x = (BLOCKS_WIDE - shape[0].length) / 2 * BLOCK_SIZE;
-        y = 0;
+        tetrominoX = (BLOCKS_WIDE - shape[0].length) / 2 * BLOCK_SIZE;
+        tetrominoY = 0;
     }
 
     public void previewTetromino() {
-        x = BOARD_WIDTH / 2 - shape[0].length * BLOCK_SIZE / 2;
-        y = 14 * BLOCK_SIZE;
+        tetrominoX = BOARD_WIDTH / 2 - shape[0].length * BLOCK_SIZE / 2;
+        tetrominoY = 14 * BLOCK_SIZE;
     }
 
     // render tetromino on screen
     public void draw(Graphics g) {
-        int xPos = x;
-        int yPos = y;
+        int toDrawX = tetrominoX;
+        int toDrawY = tetrominoY;
 
         for (int i = 0; i < shape.length; i++) {
             for (int j = 0; j < shape[0].length; j++) {
                 if (shape[i][j] == 1) {
-                    block = new Block(xPos, yPos, c);
+                    block = new Block(toDrawX, toDrawY, tetrominoColour);
                     block.draw(g);
                 }
-                xPos += BLOCK_SIZE;
+                toDrawX += BLOCK_SIZE;
             }
-            xPos = x;
-            yPos += BLOCK_SIZE;
+            toDrawX = tetrominoX;
+            toDrawY += BLOCK_SIZE;
         }
     }
 
     public void fall() {
-        y += BLOCK_SIZE;
+        tetrominoY += BLOCK_SIZE;
     }
 
     public void moveLeft() {
-        x -= BLOCK_SIZE;
+        tetrominoX -= BLOCK_SIZE;
     }
 
     public void moveRight() {
-        x += BLOCK_SIZE;
+        tetrominoX += BLOCK_SIZE;
     }
 
     // transposes matrix
@@ -188,30 +211,10 @@ public class Tetromino {
     public void rotateCW() {
         // reposition I tetromino
         if (shape.length == 4 || shape[0].length == 4) {
-            if (rotationPosition % 2 == 0) {
-                x += 2 * BLOCK_SIZE;
-                y -= 2 * BLOCK_SIZE;
-            } else {
-                x -= 2 * BLOCK_SIZE;
-                y += 2 * BLOCK_SIZE;
-            }
-            //reposition other tetrominos
+            repositionITetromino();
+            //reposition other tetrominos except square
         } else if (shape.length != shape[0].length) {
-            int n = rotationPosition % 4;
-            switch (n) {
-                case 0:
-                    y -= BLOCK_SIZE;
-                    break;
-                case 2:
-                    x += BLOCK_SIZE;
-                    break;
-                case 3:
-                    x -= BLOCK_SIZE;
-                    y += BLOCK_SIZE;
-                    break;
-                default:
-                    break;
-            }
+            repositionOtherTetrominosCW();
         }
 
         transpose();
@@ -221,34 +224,42 @@ public class Tetromino {
         keepTetrominoInBounds();
     }
 
+    public void repositionITetromino() {
+        if (rotationPosition % 2 == 0) {
+            tetrominoX += 2 * BLOCK_SIZE;
+            tetrominoY -= 2 * BLOCK_SIZE;
+        } else {
+            tetrominoX -= 2 * BLOCK_SIZE;
+            tetrominoY += 2 * BLOCK_SIZE;
+        }
+    }
+
+    public void repositionOtherTetrominosCW() {
+        int n = rotationPosition % 4;
+        switch (n) {
+            case 0:
+                tetrominoY -= BLOCK_SIZE;
+                break;
+            case 2:
+                tetrominoX += BLOCK_SIZE;
+                break;
+            case 3:
+                tetrominoX -= BLOCK_SIZE;
+                tetrominoY += BLOCK_SIZE;
+                break;
+            default:
+                break;
+        }
+    }
+
     // rotates matrix counter clockwise
-    public void rotateCCW() {
+    public void rotateCCw() {
         // reposition I tetromino
         if (shape.length == 4 || shape[0].length == 4) {
-            if (rotationPosition % 2 == 0) {
-                x += 2 * BLOCK_SIZE;
-                y -= 2 * BLOCK_SIZE;
-            } else {
-                x -= 2 * BLOCK_SIZE;
-                y += 2 * BLOCK_SIZE;
-            }
-            //reposition other tetrominos
+            repositionITetromino();
+            //reposition other tetrominos except square
         } else if (shape.length != shape[0].length) {
-            int n = rotationPosition % 4;
-            switch (n) {
-                case 1:
-                    y += BLOCK_SIZE;
-                    break;
-                case 3:
-                    x -= BLOCK_SIZE;
-                    break;
-                case 0:
-                    x += BLOCK_SIZE;
-                    y -= BLOCK_SIZE;
-                    break;
-                default:
-                    break;
-            }
+            repositionOtherTetrominosCCw();
         }
 
 
@@ -259,26 +270,45 @@ public class Tetromino {
         keepTetrominoInBounds();
     }
 
-    private void keepTetrominoInBounds() {
+    public void repositionOtherTetrominosCCw() {
+        int n = rotationPosition % 4;
+        switch (n) {
+            case 1:
+                tetrominoY += BLOCK_SIZE;
+                break;
+            case 3:
+                tetrominoX -= BLOCK_SIZE;
+                break;
+            case 0:
+                tetrominoX += BLOCK_SIZE;
+                tetrominoY -= BLOCK_SIZE;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void keepTetrominoInBounds() {
         // ensure block doesn't go off left side of board
-        while (x < 0) {
-            x += BLOCK_SIZE;
+        while (tetrominoX < 0) {
+            tetrominoX += BLOCK_SIZE;
         }
 
         // ensure block doesn't go off right side of board
-        while (x + (shape[0].length * BLOCK_SIZE) > BOARD_WIDTH) {
-            x -= BLOCK_SIZE;
+        while (tetrominoX + (shape[0].length * BLOCK_SIZE) > BOARD_WIDTH) {
+            tetrominoX -= BLOCK_SIZE;
         }
 
         // ensure block doesn't go off top side of board
-        while (y < 0) {
-            y += BLOCK_SIZE;
+        while (tetrominoY < 0) {
+            tetrominoY += BLOCK_SIZE;
         }
 
         // ensure block doesn't go off bottom side of board
-        while (y + (shape.length * BLOCK_SIZE) > BOARD_HEIGHT) {
-            y -= BLOCK_SIZE;
+        while (tetrominoY + (shape.length * BLOCK_SIZE) > BOARD_HEIGHT) {
+            tetrominoY -= BLOCK_SIZE;
         }
-
     }
+
+
 }

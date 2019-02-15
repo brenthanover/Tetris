@@ -8,9 +8,9 @@ public class ThemeMusic {
     /**
      * Constants
      */
-    private String THEME_SONG = "src/main/ca/ubc/cs/cpsc210/resources/audio/tetrisTheme.wav";
+    private String themeSong = "src/main/ca/ubc/cs/cpsc210/resources/audio/tetrisTheme.wav";
 
-    private File fileName = new File(THEME_SONG);
+    private File fileName = new File(themeSong);
     private AudioInputStream stream;
     private AudioFormat format;
     private DataLine.Info info;
@@ -36,8 +36,7 @@ public class ThemeMusic {
             clip.open(stream);
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println("Could not play theme music");
         }
     }
