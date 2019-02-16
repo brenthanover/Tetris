@@ -3,6 +3,8 @@ package ca.ubc.cs.cpsc210.audio;
 import javax.sound.sampled.*;
 import java.io.File;
 
+import static ca.ubc.cs.cpsc210.ui.Tetris.tetris;
+
 public class SoundEffects {
 
     /**
@@ -39,9 +41,11 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            clip.start();
+            if (tetris.isPlaySfx()) {
+                clip.start();
+            }
         } catch (Exception e) {
-            System.out.println("Could not play sound effect");
+            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 
@@ -53,9 +57,11 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            clip.start();
+            if (tetris.isPlaySfx()) {
+                clip.start();
+            }
         } catch (Exception e) {
-            System.out.println("Could not play sound effect");
+            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 
@@ -67,9 +73,11 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            clip.start();
+            if (tetris.isPlaySfx()) {
+                clip.start();
+            }
         } catch (Exception e) {
-            System.out.println("Could not play sound effect");
+            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 
@@ -81,9 +89,11 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            clip.start();
+            if (tetris.isPlaySfx()) {
+                clip.start();
+            }
         } catch (Exception e) {
-            System.out.println("Could not play sound effect");
+            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 
@@ -95,9 +105,11 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            clip.start();
+            if (tetris.isPlaySfx()) {
+                clip.start();
+            }
         } catch (Exception e) {
-            System.out.println("Could not play sound effect");
+            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 
@@ -109,9 +121,11 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            clip.start();
+            if (tetris.isPlaySfx()) {
+                clip.start();
+            }
         } catch (Exception e) {
-            System.out.println("Could not play sound effect");
+            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 
@@ -123,9 +137,11 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            clip.start();
+            if (tetris.isPlaySfx()) {
+                clip.start();
+            }
         } catch (Exception e) {
-            System.out.println("Could not play sound effect");
+            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 }

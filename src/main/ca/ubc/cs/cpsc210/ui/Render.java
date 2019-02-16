@@ -1,7 +1,5 @@
 package ca.ubc.cs.cpsc210.ui;
 
-import ca.ubc.cs.cpsc210.ui.Tetris;
-
 import javax.swing.*;
 import java.awt.*;
 

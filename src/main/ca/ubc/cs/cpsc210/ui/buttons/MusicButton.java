@@ -13,11 +13,13 @@ public class MusicButton extends TetrisButton {
 
     public void buttonAction() {
         if (isPlayMusic()) {
-            themeMusic.stop();
+            tetrisMusic.stop();
             setPlayMusic(false);
+            buttonName = "MUSIC OFF";
         } else {
-            themeMusic.play();
+            tetrisMusic.playTetrisTheme();
             setPlayMusic(true);
+            buttonName = "MUSIC ON";
         }
     }
 }

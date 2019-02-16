@@ -65,6 +65,19 @@ public class BoardTests {
     }
 
     @Test
+    public void testIsStraightTetrominoAboveBlockOutOfBounds() {
+        straightTetromino.rotateCW();
+        board.setBoardGrid(19, 5, 'i');
+        assertFalse(board.isTetrominoAboveBlock(straightTetromino));
+        straightTetromino.setTetrominoY(14 * BLOCK_SIZE);
+        assertFalse(board.isTetrominoAboveBlock(straightTetromino));
+        straightTetromino.fall();
+        assertTrue(board.isTetrominoAboveBlock(straightTetromino));
+        straightTetromino.setTetrominoY(18 * BLOCK_SIZE);
+        assertFalse(board.isTetrominoAboveBlock(straightTetromino));
+    }
+
+    @Test
     public void testIsDirectlyTouchingBottom() {
         assertFalse(board.isTetrominoTouchingBottom(straightTetromino));
         for (int i = 0; i < 19; i++) {
@@ -132,42 +145,42 @@ public class BoardTests {
 
     @Test
     public void testFreezeStraightTetrominoToBoard() {
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         board.freezeTetrominoToBoard(straightTetromino);
         for (int i = 3; i < 7; i++) {
             testBoardGrid[0][i] = 'i';
         }
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
     }
 
     @Test
     public void testFreezeSTetrominoToBoard() {
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         board.freezeTetrominoToBoard(sTetromino);
         testBoardGrid[0][4] = 's';
         testBoardGrid[0][5] = 's';
         testBoardGrid[1][3] = 's';
         testBoardGrid[1][4] = 's';
 
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
     }
 
     @Test
     public void testDropToGround() {
         assertEquals(0, straightTetromino.getTetrominoY());
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         for (int i = 3; i < 7; i++) {
             testBoardGrid[19][i] = 'i';
         }
         board.dropTetrominoToBottom(straightTetromino);
         board.freezeTetrominoToBoard(straightTetromino);
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
     }
 
     @Test
     public void testDropToBlock() {
         assertEquals(0, straightTetromino.getTetrominoY());
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         board.setBoardGrid(19, 5, 'o');
         testBoardGrid[19][5] = 'o';
         for (int i = 3; i < 7; i++) {
@@ -175,7 +188,7 @@ public class BoardTests {
         }
         board.dropTetrominoToBottom(straightTetromino);
         board.freezeTetrominoToBoard(straightTetromino);
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
     }
 
     @Test
@@ -231,11 +244,11 @@ public class BoardTests {
 
     @Test
     public void testClearZeroFullRows() {
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         assertEquals(0, board.countFullRows());
 
         board.clearRow();
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         assertEquals(0, board.countFullRows());
 
     }
@@ -247,7 +260,7 @@ public class BoardTests {
         }
         assertEquals(1, board.countFullRows());
         board.clearRow();
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         assertEquals(0, board.countFullRows());
     }
 
@@ -261,7 +274,7 @@ public class BoardTests {
         assertEquals(2, board.countFullRows());
         board.clearRow();
         board.clearRow();
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         assertEquals(0, board.countFullRows());
     }
 
@@ -276,7 +289,7 @@ public class BoardTests {
         board.clearRow();
         board.clearRow();
         board.clearRow();
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         assertEquals(0, board.countFullRows());
     }
 
@@ -292,13 +305,13 @@ public class BoardTests {
         board.clearRow();
         board.clearRow();
         board.clearRow();
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         assertEquals(0, board.countFullRows());
     }
 
     @Test
     public void testClearRowWithOtherBlocks() {
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
         for (int j = 0; j < 10; j++) {
             board.setBoardGrid(18, j, 'i');
         }
@@ -307,7 +320,7 @@ public class BoardTests {
         board.clearRow();
         testBoardGrid[19][0] = 'i';
         testBoardGrid[18][1] = 'i';
-        assertTrue(isBoardMatching(testBoardGrid));
+        assertTrue(isTestBoardMatching(testBoardGrid));
     }
 
     @Test
@@ -433,7 +446,7 @@ public class BoardTests {
 
 
     // helper function for checking if matrices are equivalent
-    public boolean isBoardMatching(char[][] b) {
+    public boolean isTestBoardMatching(char[][] b) {
         for (int i = 0; i < BLOCKS_HIGH; i++) {
             for (int j = 0; j < BLOCKS_WIDE; j++) {
                 if (b[i][j] != board.getBoardGrid()[i][j]) {

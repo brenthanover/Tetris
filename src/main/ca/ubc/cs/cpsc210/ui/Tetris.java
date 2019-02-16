@@ -2,9 +2,8 @@ package ca.ubc.cs.cpsc210.ui;
 
 
 import ca.ubc.cs.cpsc210.audio.SoundEffects;
-import ca.ubc.cs.cpsc210.audio.ThemeMusic;
-import ca.ubc.cs.cpsc210.ui.buttons.MusicButton;
-import ca.ubc.cs.cpsc210.ui.buttons.PauseButton;
+import ca.ubc.cs.cpsc210.audio.Music;
+import ca.ubc.cs.cpsc210.ui.buttons.*;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
 
@@ -14,6 +13,8 @@ import java.awt.event.*;
 import java.util.Random;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
+import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
+import static ca.ubc.cs.cpsc210.parsers.SaveHighScore.saveHighScore;
 
 
 public class Tetris implements ActionListener, KeyListener, MouseListener {
@@ -34,22 +35,27 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     private static final int TETROMINO_SCORE = 10;
     private static final int SCORE_ZEROES = 6;
     private static final int LINE_ZEROES = 3;
+    private static final String highScoreFileName = "highscore";
 
     /**
      * Declarations
      */
     // Game classes
+    private Board board;
     public static Tetris tetris;
-    private Render render;
+    private static Render render;
     private static GameBackground gameBackground;
-    public static ThemeMusic themeMusic;
+    public static Music tetrisMusic;
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
     private SoundEffects soundEffects;
     // Buttons
-    private Board board;
     private MusicButton musicButton;
+    private SoundEffectsButton sfxButton;
     private PauseButton pauseButton;
+    private SaveButton saveButton;
+    private LoadButton loadButton;
+    private MysteryButton mysteryButton;
 
     /**
      * Variables
@@ -59,7 +65,9 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     private static boolean gameStart = false;
     private static boolean paused = false;
     private static boolean playMusic = true;
+    private static boolean playSfx = true;
     private static boolean gameOver = false;
+    private static boolean highScoreSaved = false;
     private static int score = 0;
     private static int linesCleared = 0;
     private static int highScore = 0;
@@ -75,6 +83,10 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         return playMusic;
     }
 
+    public static boolean isPlaySfx() {
+        return playSfx;
+    }
+
     public static String getScoreString() {
         return fillZeroes(SCORE_ZEROES, score);
     }
@@ -85,6 +97,10 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
     public static String getLinesClearedString() {
         return fillZeroes(LINE_ZEROES, linesCleared);
+    }
+
+    public int getHighScore() {
+        return highScore;
     }
 
     /**
@@ -98,13 +114,17 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         playMusic = p;
     }
 
+    public static void setPlaySfx(boolean p) {
+        playSfx = p;
+    }
+
     /**
      * Constructor
      */
     public Tetris(int highScore) {
         JFrame tetrisJFrame = new JFrame();
         Timer timer = new Timer(20, this);
-        themeMusic = new ThemeMusic();
+        tetrisMusic = new Music();
         soundEffects = new SoundEffects();
         render = new Render();
         board = new Board();
@@ -120,7 +140,11 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
         gameBackground = new GameBackground();
         musicButton = new MusicButton();
+        sfxButton = new SoundEffectsButton();
         pauseButton = new PauseButton();
+        saveButton = new SaveButton();
+        loadButton = new LoadButton();
+        mysteryButton = new MysteryButton();
 
         this.highScore = highScore;
 
@@ -149,9 +173,73 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
             }
         }
 
+        gameOverScoreRecord();
+
+
         render.repaint();
         ticks++;
     }
+
+    private void gameOverScoreRecord() {
+        if (gameOver && !highScoreSaved) {
+            highScoreSaved = true;
+            if (score > loadHighScore(highScoreFileName)) {
+                saveHighScore(highScoreFileName, score);
+            }
+        }
+    }
+
+    public void draw(Graphics g) {
+        // draw background
+        gameBackground.draw(g);
+        g.translate(BOARD_X_POS, BOARD_Y_POS);
+        board.draw(g);
+
+        // draw tetrominos
+        if (gameStart) {
+            currentTetromino.draw(g);
+        }
+        g.translate(BOARD_X_POS + BOARD_WIDTH, 0);
+        if (gameStart) {
+            nextTetromino.draw(g);
+        }
+
+        // draw buttons
+        drawButtons(g);
+        g.translate(-BOARD_X_POS - BOARD_WIDTH, 0);
+
+        // game state messages
+        drawGameStart(g);
+        drawGameOver(g);
+    }
+
+    private void drawButtons(Graphics g) {
+        musicButton.draw(g);
+        sfxButton.draw(g);
+        pauseButton.draw(g);
+        saveButton.draw(g);
+        loadButton.draw(g);
+        mysteryButton.draw(g);
+    }
+
+    private void drawGameStart(Graphics g) {
+        if (!gameStart) {
+            g.setFont(new Font("Arial", 1, BLOCK_SIZE));
+            g.setColor(Color.white);
+            g.drawString("PRESS SPACE", 45, BLOCK_SIZE * 10 - 3);
+            g.drawString("TO START", 75, BLOCK_SIZE * 11 - 3);
+        }
+    }
+
+    private void drawGameOver(Graphics g) {
+        if (gameOver) {
+            g.setColor(Color.white);
+            g.setFont(new Font("Arial", 1, 80));
+            g.drawString("GAME", BLOCK_SIZE, BLOCK_SIZE * 9);
+            g.drawString("OVER", BLOCK_SIZE, BLOCK_SIZE * 9 + BLOCK_SIZE * 3);
+        }
+    }
+
 
     // saves current tetromino to board, summons next one to top, gets random new one
     // adds score, checks to see if game is over
@@ -200,48 +288,54 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
-
-    public void draw(Graphics g) {
-        // draw background
-        gameBackground.draw(g);
-        g.translate(BOARD_X_POS, BOARD_Y_POS);
-        board.draw(g);
-
-        // draw tetrominos
-        if (gameStart) {
-            currentTetromino.draw(g);
-        }
-        g.translate(BOARD_X_POS + BOARD_WIDTH, 0);
-        if (gameStart) {
-            nextTetromino.draw(g);
-        }
-
-        // draw buttons
-        musicButton.draw(g);
-        pauseButton.draw(g);
-        g.translate(-BOARD_X_POS - BOARD_WIDTH, 0);
-
-        // game state messages
-        drawGameStart(g);
-        drawGameOver(g);
+    private void startGame() {
+        gameStart = true;
+        currentTetromino = getRandomTetromino();
+        currentTetromino.initializeTetromino();
+        nextTetromino = getRandomTetromino();
+        soundEffects.playGameStart();
     }
 
-    private void drawGameStart(Graphics g) {
-        if (!gameStart) {
-            g.setFont(new Font("Arial", 1, BLOCK_SIZE));
-            g.setColor(Color.white);
-            g.drawString("PRESS SPACE", 45, BLOCK_SIZE * 10 - 3);
-            g.drawString("TO START", 75, BLOCK_SIZE * 11 - 3);
+    // return random tetromino
+    private Tetromino getRandomTetromino() {
+        Random rand = new Random();
+        int n = rand.nextInt(7);
+        switch (n) {
+            case 1:
+                return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
+            case 2:
+                return new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
+            case 3:
+                return new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
+            case 4:
+                return new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
+            case 5:
+                return new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
+            case 6:
+                return new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
+            default:
+                return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
         }
     }
 
-    private void drawGameOver(Graphics g) {
-        if (gameOver) {
-            g.setColor(Color.white);
-            g.setFont(new Font("Arial", 1, 80));
-            g.drawString("GAME", BLOCK_SIZE, BLOCK_SIZE * 9);
-            g.drawString("OVER", BLOCK_SIZE, BLOCK_SIZE * 9 + BLOCK_SIZE * 3);
+    // fill score with zeroes on left
+    private static String fillZeroes(int numZeroes, int num) {
+        StringBuilder outputString = new StringBuilder();
+
+        if (num == 0) {
+            for (int i = 0; i < numZeroes; i++) {
+                outputString.append(0);
+            }
+        } else {
+            outputString.append(num);
+            int n = outputString.length();
+
+            for (int i = 0; i < numZeroes - n; i++) {
+                outputString.insert(0, 0);
+            }
         }
+
+        return outputString.toString();
     }
 
     // keystroke event methods
@@ -301,14 +395,6 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
-    private void startGame() {
-        gameStart = true;
-        currentTetromino = getRandomTetromino();
-        currentTetromino.initializeTetromino();
-        nextTetromino = getRandomTetromino();
-        soundEffects.playGameStart();
-    }
-
     // mouse event methods
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -325,8 +411,20 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
             if (musicButton.isMouseTouching(mouseX, mouseY)) {
                 musicButton.showButtonPressed();
             }
+            if (sfxButton.isMouseTouching(mouseX, mouseY)) {
+                sfxButton.showButtonPressed();
+            }
             if (pauseButton.isMouseTouching(mouseX, mouseY) && gameStart) {
                 pauseButton.showButtonPressed();
+            }
+            if (saveButton.isMouseTouching(mouseX, mouseY) && gameStart) {
+                saveButton.showButtonPressed();
+            }
+            if (loadButton.isMouseTouching(mouseX, mouseY) && gameStart) {
+                loadButton.showButtonPressed();
+            }
+            if (mysteryButton.isMouseTouching(mouseX, mouseY)) {
+                mysteryButton.showButtonPressed();
             }
         }
     }
@@ -338,10 +436,16 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         int mouseY = e.getY();
 
         if (mouseCode == MouseEvent.BUTTON1) {
-            // toggle music
+            // toggle tetrisMusic
             if (musicButton.isMouseTouching(mouseX, mouseY)) {
                 musicButton.showButtonReleased();
                 musicButton.buttonAction();
+                soundEffects.playButtonClick();
+            }
+            // toggle sound effects
+            if (sfxButton.isMouseTouching(mouseX, mouseY)) {
+                sfxButton.showButtonReleased();
+                sfxButton.buttonAction();
                 soundEffects.playButtonClick();
             }
             // pause/unpause
@@ -349,6 +453,25 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
                 pauseButton.showButtonReleased();
                 pauseButton.buttonAction();
                 soundEffects.playButtonClick();
+            }
+            // save game state
+            if (saveButton.isMouseTouching(mouseX, mouseY) && gameStart) {
+                saveButton.showButtonReleased();
+                saveButton.buttonAction();
+                soundEffects.playButtonClick();
+            }
+            // save game state
+            if (loadButton.isMouseTouching(mouseX, mouseY) && gameStart) {
+                loadButton.showButtonReleased();
+                loadButton.buttonAction();
+                soundEffects.playButtonClick();
+            }
+            // mystery button
+            if (mysteryButton.isMouseTouching(mouseX, mouseY)) {
+                mysteryButton.showButtonReleased();
+                mysteryButton.buttonAction();
+                soundEffects.playButtonClick();
+
             }
         }
 
@@ -362,51 +485,9 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
-    // return random tetromino
-    private Tetromino getRandomTetromino() {
-        Random rand = new Random();
-        int n = rand.nextInt(7);
-        switch (n) {
-            case 1:
-                return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
-            case 2:
-                return new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
-            case 3:
-                return new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
-            case 4:
-                return new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
-            case 5:
-                return new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
-            case 6:
-                return new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
-            default:
-                return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
-        }
-    }
-
-    // fill score with zeroes on left
-    private static String fillZeroes(int numZeroes, int num) {
-        StringBuilder outputString = new StringBuilder();
-
-        if (num == 0) {
-            for (int i = 0; i < numZeroes; i++) {
-                outputString.append(0);
-            }
-        } else {
-            outputString.append(num);
-            int n = outputString.length();
-
-            for (int i = 0; i < numZeroes - n; i++) {
-                outputString.insert(0, 0);
-            }
-        }
-
-        return outputString.toString();
-    }
 
     public static void main(String[] args) {
-        tetris = new Tetris(highScore);
-        themeMusic.play();
-
+        tetris = new Tetris(loadHighScore(highScoreFileName));
+        tetrisMusic.playTetrisTheme();
     }
 }

@@ -14,26 +14,61 @@ public abstract class TetrisButton {
     private int buttonArcHeight = 10;
     private String fontType = "Arial";
     private int fontStyle = 1;
-    private int fontSize = 20;
+    private int fontSize = 16;
 
     /**
      *  MusicButton constants
      */
     protected static final int mBX = BLOCK_SIZE;
-    protected static final int mBY = BLOCK_SIZE * 17;
+    protected static final int mBY = BLOCK_SIZE * 7;
     protected static final int mBW = BLOCK_SIZE * 3;
     protected static final int mBH = BLOCK_SIZE * 2;
-    protected static final String mBN = "MUSIC";
+    protected static final String mBN = "MUSIC ON";
+
+    /**
+     *  SoundEffectsButton constants
+     */
+    protected static final int sfxBX = BLOCK_SIZE * 6;
+    protected static final int sfxBY = BLOCK_SIZE * 7;
+    protected static final int sfxBW = BLOCK_SIZE * 3;
+    protected static final int sfxBH = BLOCK_SIZE * 2;
+    protected static final String sfxBN = "SFX ON";
+
+    /**
+     *  SaveButton constants
+     */
+    protected static final int sBX = BLOCK_SIZE;
+    protected static final int sBY = BLOCK_SIZE * 10;
+    protected static final int sBW = BLOCK_SIZE * 3;
+    protected static final int sBH = BLOCK_SIZE * 2;
+    protected static final String sBN = "SAVE";
+
+    /**
+     *  LoadButton constants
+     */
+    protected static final int lBX = BLOCK_SIZE * 6;
+    protected static final int lBY = BLOCK_SIZE * 10;
+    protected static final int lBW = BLOCK_SIZE * 3;
+    protected static final int lBH = BLOCK_SIZE * 2;
+    protected static final String lBN = "LOAD";
+
+    /**
+     *  MysteryButton constants
+     */
+    protected static final int qBX = BLOCK_SIZE * 6;
+    protected static final int qBY = BLOCK_SIZE * 17;
+    protected static final int qBW = BLOCK_SIZE * 3;
+    protected static final int qBH = BLOCK_SIZE * 2;
+    protected static final String qBN = "SHREK";
 
     /**
      *  PauseButton constants
      */
-    protected static final int pBX = BLOCK_SIZE * 6;
+    protected static final int pBX = BLOCK_SIZE;
     protected static final int pBY = BLOCK_SIZE * 17;
     protected static final int pBW = BLOCK_SIZE * 3;
     protected static final int pBH = BLOCK_SIZE * 2;
     protected static final String pBN = "PAUSE";
-
 
     /**
      *  Variables
@@ -44,7 +79,7 @@ public abstract class TetrisButton {
     private int buttonY;
     private int buttonWidth;
     private int buttonHeight;
-    private String buttonName;
+    public String buttonName;
     private Color buttonColour = Color.white;
 
     /**

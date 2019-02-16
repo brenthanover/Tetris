@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
+import static ca.ubc.cs.cpsc210.ui.Tetris.tetris;
+
 public class LoadGame {
 
 
@@ -37,8 +39,8 @@ public class LoadGame {
     }
 
     // EFFECTS: loads saved game data from text file and produce Tetris game state
-    public static Tetris loadGame(String fileName) {
-        Tetris loadedTetris = new Tetris(0);
+    public static void loadGame(String fileName) {
+        Tetris loadedTetris = new Tetris(tetris.getHighScore());
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
@@ -51,6 +53,6 @@ public class LoadGame {
             e.printStackTrace();
         }
 
-        return loadedTetris;
+        tetris = loadedTetris;
     }
 }

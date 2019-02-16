@@ -1,7 +1,7 @@
 package ca.ubc.cs.cpsc210.ui;
 
 
-import ca.ubc.cs.cpsc210.ui.Tetris;
+import ca.ubc.cs.cpsc210.model.Block;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -13,18 +13,18 @@ public class GameBackground {
     /**
      * Constants
      */
-    private static final  Color OUTLINE_COLOUR = Color.gray;
+    private static final Color OUTLINE_COLOUR = Color.gray;
     private static final Color BACKGROUND_COLOUR = Color.black;
     private static final Color TEXT_COLOUR = Color.white;
     private static final int FONT_STYLE = 1;
-    private static final int FONT_SIZE = 60;
+    private static final int FONT_SIZE = 30;
     private static final String FONT_TYPE = "Arial";
-    private static final int SCORE_X = BLOCK_SIZE;
-    private static final int SCORE_Y = BLOCK_SIZE * 4;
-    private static final int HSCORE_X = BLOCK_SIZE;
-    private static final int HSCORE_Y = BLOCK_SIZE * 8;
-    private static final int LINES_X = BLOCK_SIZE;
-    private static final int LINES_Y = BLOCK_SIZE * 12;
+    private static final int SCORE_X = BLOCK_SIZE * 5 + 19;
+    private static final int SCORE_Y = BLOCK_SIZE * 6;
+    private static final int HIGH_SCORE_X = BLOCK_SIZE * 5 + 19;
+    private static final int HIGH_SCORE_Y = BLOCK_SIZE * 4;
+    private static final int LINES_X = BLOCK_SIZE * 7 + 9;
+    private static final int LINES_Y = BLOCK_SIZE * 2;
 
     /**
      * Constructor
@@ -58,7 +58,7 @@ public class GameBackground {
         drawNextBox(g);
 
         // translate back to original coordinates
-        g.translate(-BOARD_X_POS * 2 - BOARD_WIDTH, -BOARD_Y_POS);
+        g.translate(-BOARD_X_POS * 2 - BOARD_WIDTH, - BOARD_Y_POS);
     }
 
     private void drawBackground(Graphics g) {
@@ -98,11 +98,11 @@ public class GameBackground {
     private void drawScore(Graphics g) {
         g.setColor(TEXT_COLOUR);
         g.setFont(new Font(FONT_TYPE, FONT_STYLE, FONT_SIZE));
-        g.drawString("LINES", BLOCK_SIZE, BLOCK_SIZE * 2);
-        g.drawString(getLinesClearedString(), SCORE_X, SCORE_Y);
-        g.drawString("TOP", BLOCK_SIZE, BLOCK_SIZE * 6);
-        g.drawString(getHighScoreString(), HSCORE_X, HSCORE_Y);
-        g.drawString("SCORE", BLOCK_SIZE, BLOCK_SIZE * 10);
-        g.drawString(getScoreString(), LINES_X, LINES_Y);
+        g.drawString("LINES", BLOCK_SIZE, LINES_Y);
+        g.drawString(getLinesClearedString(), LINES_X, LINES_Y);
+        g.drawString("TOP", BLOCK_SIZE, HIGH_SCORE_Y);
+        g.drawString(getHighScoreString(), HIGH_SCORE_X, HIGH_SCORE_Y);
+        g.drawString("SCORE", BLOCK_SIZE, SCORE_Y);
+        g.drawString(getScoreString(), SCORE_X, SCORE_Y);
     }
 }

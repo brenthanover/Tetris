@@ -87,7 +87,7 @@ public class Board {
             for (int i = tetrominoShape.length - 1; i >= 0; i--) {
 
                 // separate if statement to prevent out of array exception
-                if (tetrominoYCoord + i + 1 < BLOCKS_HIGH) {
+                if (tetrominoYCoord + tetrominoShape.length < BLOCKS_HIGH) {
                     // true if tetromino has full block with a board block directly below
                     if (tetrominoShape[i][j] == 1
                             && boardGrid[tetrominoYCoord + i + 1][tetrominoXCoord + j] != 'e') {

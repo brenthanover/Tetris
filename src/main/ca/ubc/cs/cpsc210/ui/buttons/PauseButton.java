@@ -7,7 +7,6 @@ import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 import static ca.ubc.cs.cpsc210.ui.Tetris.isPlayMusic;
 import static ca.ubc.cs.cpsc210.ui.Tetris.setPaused;
 
-
 public class PauseButton extends TetrisButton {
 
     public PauseButton() {
@@ -19,13 +18,14 @@ public class PauseButton extends TetrisButton {
 
         if (!paused) {
             setPaused(true);
-            themeMusic.stop();
-
+            tetrisMusic.stop();
+            buttonName = "UNPAUSE";
         } else {
             setPaused(false);
             if (isPlayMusic()) {
-                themeMusic.unpause();
+                tetrisMusic.unpause();
             }
+            buttonName = "PAUSE";
         }
     }
 }
