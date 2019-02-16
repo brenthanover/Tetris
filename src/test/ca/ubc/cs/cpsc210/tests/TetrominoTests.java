@@ -21,7 +21,6 @@ public class TetrominoTests {
     private int[][] jMatrixRotatedCCW = {{1, 1}, {1, 0}, {1, 0}};
     private int[][] iMatrixRotated = {{1}, {1}, {1}, {1}};
 
-
     @BeforeEach
     public void setup() {
         iTetromino = new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
@@ -563,4 +562,6 @@ public class TetrominoTests {
         jTetromino.keepTetrominoInBounds();
         assertEquals(18 * BLOCK_SIZE, jTetromino.getTetrominoY());
     }
+
+    // no tests for draw() function
 }

@@ -60,31 +60,9 @@ public class Board {
     }
 
     /**
-     * Methods
+     *  Methods
      */
-    public void draw(Graphics g) {
-        int blockXPos = 0;
-        int blockYPos = 0;
-        Block block;
-        Color blockColour;
-
-        // skip if 'e', ie grid should be empty at that location
-        // else draw block corresponding to colour
-        for (int i = 0; i < BLOCKS_HIGH; i++) {
-            for (int j = 0; j < BLOCKS_WIDE; j++) {
-                if (boardGrid[i][j] != 'e') {
-                    blockColour = colourHashMap.get(boardGrid[i][j]);
-                    block = new Block(blockXPos, blockYPos, blockColour);
-                    block.draw(g);
-                }
-
-                blockXPos += BLOCK_SIZE;
-            }
-            blockYPos += BLOCK_SIZE;
-            blockXPos = 0;
-        }
-    }
-
+    //return true if tetromino is at bottom of window
     public boolean isTetrominoTouchingBottom(Tetromino t) {
         boolean answer = false;
         int[][] tetrominoShape = t.getShape();
@@ -97,6 +75,7 @@ public class Board {
         return answer;
     }
 
+    //return true if tetromino is directly above a non-empty block in the grid
     public boolean isTetrominoAboveBlock(Tetromino t) {
         boolean answer = false;
         int[][] tetrominoShape = t.getShape();
@@ -122,7 +101,7 @@ public class Board {
         return answer;
     }
 
-
+    // takes a tetromino and freezes it in place to the board
     public void freezeTetrominoToBoard(Tetromino t) {
         char tetrominoColour = t.getLabel();
         int[][] tetrominoShape = t.getShape();
@@ -141,12 +120,14 @@ public class Board {
         }
     }
 
+    // immediately drops the tetromino to the bottom of the board
     public void dropTetrominoToBottom(Tetromino t) {
         while (!isTetrominoTouchingBottom(t) && !isTetrominoAboveBlock(t)) {
             t.fall();
         }
     }
 
+    // removes the first full row, starting from the top
     public void clearRow() {
         char[][] output = new char[BLOCKS_HIGH][BLOCKS_WIDE];
 
@@ -169,24 +150,7 @@ public class Board {
         }
     }
 
-        /*
-        for (int n = 0; n < boardGrid.length; n++) {
-            if (isRowFull(boardGrid[n])) {
-                for (int a = n; a > 0; a--) {
-                    boardGrid[a] = boardGrid[a - 1];
-                }
-                for (int b = 0; b < boardGrid[0].length; b++) {
-                    boardGrid[0][b] = 'e';
-                }
-
-                break;
-            }
-        }
-
-
-*/
-
-
+    // returns the number of full rows in the board
     public int countFullRows() {
         int rowsToClear = 0;
 
@@ -199,6 +163,7 @@ public class Board {
         return rowsToClear;
     }
 
+    // produces true if the given char[] does not contain 'e'
     public boolean isRowFull(char[] row) {
         for (char c : row) {
             if (c == 'e') {
@@ -208,7 +173,7 @@ public class Board {
         return true;
     }
 
-    // produce true if tetromino clashes with grid
+    // produce true if new tetromino overlaps grid
     public boolean isGameOver(Tetromino t) {
         int numCols = t.getShape()[0].length;
 
@@ -321,6 +286,7 @@ public class Board {
         return true;
     }
 
+    // produces true if tetromino is overlapping non-empty block in grid
     public boolean isTetrominoOverlappingBoard(Tetromino t) {
         int tetrominoPosX = t.getTetrominoX() / BLOCK_SIZE;
         int tetrominoPosY = t.getTetrominoY() / BLOCK_SIZE;
@@ -335,5 +301,29 @@ public class Board {
         }
 
         return false;
+    }
+
+    // draw method not included in tests
+    public void draw(Graphics g) {
+        int blockXPos = 0;
+        int blockYPos = 0;
+        Block block;
+        Color blockColour;
+
+        // skip if 'e', ie grid should be empty at that location
+        // else draw block corresponding to colour
+        for (int i = 0; i < BLOCKS_HIGH; i++) {
+            for (int j = 0; j < BLOCKS_WIDE; j++) {
+                if (boardGrid[i][j] != 'e') {
+                    blockColour = colourHashMap.get(boardGrid[i][j]);
+                    block = new Block(blockXPos, blockYPos, blockColour);
+                    block.draw(g);
+                }
+
+                blockXPos += BLOCK_SIZE;
+            }
+            blockYPos += BLOCK_SIZE;
+            blockXPos = 0;
+        }
     }
 }

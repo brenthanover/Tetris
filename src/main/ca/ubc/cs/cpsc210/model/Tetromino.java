@@ -124,6 +124,9 @@ public class Tetromino {
         previewTetromino();
     }
 
+    /**
+     * Methods
+     */
     public void initializeTetromino() {
         tetrominoX = (BLOCKS_WIDE - shape[0].length) / 2 * BLOCK_SIZE;
         tetrominoY = 0;
@@ -134,32 +137,17 @@ public class Tetromino {
         tetrominoY = 14 * BLOCK_SIZE;
     }
 
-    // render tetromino on screen
-    public void draw(Graphics g) {
-        int toDrawX = tetrominoX;
-        int toDrawY = tetrominoY;
-
-        for (int i = 0; i < shape.length; i++) {
-            for (int j = 0; j < shape[0].length; j++) {
-                if (shape[i][j] == 1) {
-                    block = new Block(toDrawX, toDrawY, tetrominoColour);
-                    block.draw(g);
-                }
-                toDrawX += BLOCK_SIZE;
-            }
-            toDrawX = tetrominoX;
-            toDrawY += BLOCK_SIZE;
-        }
-    }
-
+    // moves tetromino down by one block
     public void fall() {
         tetrominoY += BLOCK_SIZE;
     }
 
+    // moves tetromino left by one block
     public void moveLeft() {
         tetrominoX -= BLOCK_SIZE;
     }
 
+    // moves tetromino right by one block
     public void moveRight() {
         tetrominoX += BLOCK_SIZE;
     }
@@ -224,6 +212,7 @@ public class Tetromino {
         keepTetrominoInBounds();
     }
 
+    // repositions I tetromino to match classic tetris rotation pattern
     public void repositionITetromino() {
         if (rotationPosition % 2 == 0) {
             tetrominoX += 2 * BLOCK_SIZE;
@@ -234,6 +223,7 @@ public class Tetromino {
         }
     }
 
+    // repositions 2x3 tetromino to match classic tetris CW rotation pattern
     public void repositionOtherTetrominosCW() {
         int n = rotationPosition % 4;
         switch (n) {
@@ -270,6 +260,7 @@ public class Tetromino {
         keepTetrominoInBounds();
     }
 
+    // repositions 2x3 tetromino to match classic tetris CCW rotation pattern
     public void repositionOtherTetrominosCCw() {
         int n = rotationPosition % 4;
         switch (n) {
@@ -288,6 +279,7 @@ public class Tetromino {
         }
     }
 
+    // moves tetromino to back within the game board
     public void keepTetrominoInBounds() {
         // ensure block doesn't go off left side of board
         while (tetrominoX < 0) {
@@ -310,5 +302,21 @@ public class Tetromino {
         }
     }
 
+    // draw method not included in tests
+    public void draw(Graphics g) {
+        int toDrawX = tetrominoX;
+        int toDrawY = tetrominoY;
 
+        for (int[] row : shape) {
+            for (int col : row) {
+                if (col == 1) {
+                    block = new Block(toDrawX, toDrawY, tetrominoColour);
+                    block.draw(g);
+                }
+                toDrawX += BLOCK_SIZE;
+            }
+            toDrawX = tetrominoX;
+            toDrawY += BLOCK_SIZE;
+        }
+    }
 }

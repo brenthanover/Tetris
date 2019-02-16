@@ -22,9 +22,5 @@ public class BlockTests {
         assertEquals(Color.white, block.getBlockColour());
     }
 
-    @Test
-    public void testDraw() {
-        // how do you test to see if things are drawn the same?
-    }
-
+    // no tests for draw() function
 }

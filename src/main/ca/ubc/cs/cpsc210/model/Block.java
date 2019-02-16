@@ -37,7 +37,10 @@ public class Block {
         this.blockColour = c;
     }
 
-    // draw block
+    /**
+     *  Methods
+     */
+    // draw function not included in tests
     public void draw(Graphics g) {
         g.setColor(blockColour);
         g.fillRect(blockXPos, blockYPos, BLOCK_SIZE, BLOCK_SIZE);
@@ -45,6 +48,4 @@ public class Block {
         g.setColor(Color.gray);
         g.drawRect(blockXPos, blockYPos, BLOCK_SIZE, BLOCK_SIZE);
     }
-
-
 }

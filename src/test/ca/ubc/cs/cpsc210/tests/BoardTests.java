@@ -368,7 +368,7 @@ public class BoardTests {
     }
 
     @Test
-    public void testTetrominoOverlappingBoard(){
+    public void testTetrominoOverlappingBoard() {
         board.setBoardGrid(0, 2, 'o');
         board.setBoardGrid(0, 3, 'o');
         board.setBoardGrid(1, 2, 'o');
@@ -444,4 +444,6 @@ public class BoardTests {
 
         return true;
     }
+
+    // no tests for draw() function
 }
