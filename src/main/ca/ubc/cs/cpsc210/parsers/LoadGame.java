@@ -15,7 +15,7 @@ public class LoadGame {
         fileName = directory + fileName;
         String data = "";
 
-        try {
+        try { 
             BufferedReader br = new BufferedReader(new FileReader(fileName));
             data = br.readLine();
 
