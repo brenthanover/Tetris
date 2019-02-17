@@ -4,55 +4,67 @@ import ca.ubc.cs.cpsc210.ui.Tetris;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
 
-import static ca.ubc.cs.cpsc210.ui.Tetris.tetris;
+import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 
 public class LoadGame {
 
-
-    // EFFECTS: converts text file in the style 'int.' (repeated) to
-    //          integer array list of integers separated by '.' in text file
-    private static ArrayList<Integer> decodeSavedTextToArray(String saveData) {
-        ArrayList<Integer> decoded = new ArrayList<>();
-        String dataString = "";
-
-        for (char c : saveData.toCharArray()) {
-            if (c == '.') {
-                decoded.add(Integer.parseInt(dataString));
-                dataString = "";
-            } else {
-                dataString += c;
-            }
-        }
-
-        return decoded;
-    }
-
-    // EFFECTS: decodes array of integers into Tetris saved game state
-    private static Tetris decodeArrayToGameState(ArrayList<Integer> decodedData) {
-        Tetris loadedTetris = new Tetris(0);
-
-        // save each decoded value to loadedTetris
-
-        return loadedTetris;
-    }
-
     // EFFECTS: loads saved game data from text file and produce Tetris game state
     public static void loadGame(String fileName) {
-        Tetris loadedTetris = new Tetris(tetris.getHighScore());
+        String directory = "src/main/ca/ubc/cs/cpsc210/resources/savefiles/";
+        fileName = directory + fileName;
+        String data = "";
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
-            String data = br.readLine();
-            ArrayList<Integer> decodedData = decodeSavedTextToArray(data);
-            loadedTetris = decodeArrayToGameState(decodedData);
+            data = br.readLine();
 
             // decode the data here from string data
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        tetris = loadedTetris;
+        System.out.println(data);
+
+        String[] parsedData = data.split("@", 5);
+
+        for (String s : parsedData) {
+            System.out.println(s);
+        }
+
+        tetris = loadTetris(parsedData);
+    }
+
+    private static Tetris loadTetris(String[] parsedData) {
+        for (String s : parsedData) {
+            System.out.println(s);
+        }
+        String boardString = parsedData[0];
+        char currentColour = parsedData[1].charAt(0);
+        char nextColour = parsedData[2].charAt(0);
+        int score = Integer.parseInt(parsedData[3]);
+
+        Tetris loadedTetris = new Tetris(tetris.getHighScore());
+
+        loadedTetris.setScore(score);
+        loadedTetris.setGameBoard(loadedBoard(boardString));
+        loadedTetris.setCurrentTetromino(currentColour);
+        loadedTetris.setNextTetromino(nextColour);
+
+        return loadedTetris;
+    }
+
+    public static char[][] loadedBoard(String data) {
+        int count = 0;
+        char[][] output = new char[BLOCKS_HIGH][BLOCKS_WIDE];
+
+        for (int i = 0; i < BLOCKS_HIGH; i++) {
+            for (int j = 0; j < BLOCKS_WIDE; j++) {
+                output[i][j] = data.charAt(count);
+                count++;
+            }
+        }
+
+        return output;
     }
 }

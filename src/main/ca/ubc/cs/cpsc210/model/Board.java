@@ -37,8 +37,12 @@ public class Board {
     /**
      * Setters
      */
-    public void setBoardGrid(int row, int col, char val) {
+    public void setBoardGridBlock(int row, int col, char val) {
         boardGrid[row][col] = val;
+    }
+
+    public void setBoardGrid(char[][] newBoard) {
+        boardGrid = newBoard;
     }
 
     /**
@@ -60,7 +64,7 @@ public class Board {
     }
 
     /**
-     *  Methods
+     * Methods
      */
     //return true if tetromino is at bottom of window
     public boolean isTetrominoTouchingBottom(Tetromino t) {

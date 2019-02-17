@@ -48,7 +48,7 @@ public class BoardTests {
 
     @Test
     public void testIsStraightTetrominoAboveBlock() {
-        board.setBoardGrid(2, 5, 'o');
+        board.setBoardGridBlock(2, 5, 'o');
         assertFalse(board.isTetrominoAboveBlock(straightTetromino));
         straightTetromino.fall();
         assertTrue(board.isTetrominoAboveBlock(straightTetromino));
@@ -56,7 +56,7 @@ public class BoardTests {
 
     @Test
     public void testIsSTetrominoAboveBlock() {
-        board.setBoardGrid(3, 5, 'o');
+        board.setBoardGridBlock(3, 5, 'o');
         assertFalse(board.isTetrominoAboveBlock(sTetromino));
         sTetromino.fall();
         assertFalse(board.isTetrominoAboveBlock(sTetromino));
@@ -67,7 +67,7 @@ public class BoardTests {
     @Test
     public void testIsStraightTetrominoAboveBlockOutOfBounds() {
         straightTetromino.rotateCW();
-        board.setBoardGrid(19, 5, 'i');
+        board.setBoardGridBlock(19, 5, 'i');
         assertFalse(board.isTetrominoAboveBlock(straightTetromino));
         straightTetromino.setTetrominoY(14 * BLOCK_SIZE);
         assertFalse(board.isTetrominoAboveBlock(straightTetromino));
@@ -88,10 +88,10 @@ public class BoardTests {
 
     @Test
     public void testIsGameOverBlocksSurroundingStraight() {
-        board.setBoardGrid(0, 2, 'o');
-        board.setBoardGrid(0, 7, 'o');
+        board.setBoardGridBlock(0, 2, 'o');
+        board.setBoardGridBlock(0, 7, 'o');
         for (int i = 2; i < 8; i++) {
-            board.setBoardGrid(1, i, 'o');
+            board.setBoardGridBlock(1, i, 'o');
         }
 
         assertFalse(board.isObstructingIBlock());
@@ -105,12 +105,12 @@ public class BoardTests {
 
     @Test
     public void testIsGameOverBlocksSurroundingSquare() {
-        board.setBoardGrid(0, 3, 'o');
-        board.setBoardGrid(1, 3, 'o');
-        board.setBoardGrid(0, 6, 'o');
-        board.setBoardGrid(1, 6, 'o');
+        board.setBoardGridBlock(0, 3, 'o');
+        board.setBoardGridBlock(1, 3, 'o');
+        board.setBoardGridBlock(0, 6, 'o');
+        board.setBoardGridBlock(1, 6, 'o');
         for (int i = 3; i < 7; i++) {
-            board.setBoardGrid(2, i, 'o');
+            board.setBoardGridBlock(2, i, 'o');
         }
 
         assertTrue(board.isObstructingIBlock());
@@ -124,14 +124,14 @@ public class BoardTests {
 
     @Test
     public void testIsGameOverBlocksSurroundingOther() {
-        board.setBoardGrid(0, 2, 'o');
-        board.setBoardGrid(0, 3, 'o');
-        board.setBoardGrid(1, 2, 'o');
-        board.setBoardGrid(0, 6, 'o');
-        board.setBoardGrid(1, 5, 'o');
-        board.setBoardGrid(1, 6, 'o');
+        board.setBoardGridBlock(0, 2, 'o');
+        board.setBoardGridBlock(0, 3, 'o');
+        board.setBoardGridBlock(1, 2, 'o');
+        board.setBoardGridBlock(0, 6, 'o');
+        board.setBoardGridBlock(1, 5, 'o');
+        board.setBoardGridBlock(1, 6, 'o');
         for (int i = 2; i < 7; i++) {
-            board.setBoardGrid(2, i, 'o');
+            board.setBoardGridBlock(2, i, 'o');
         }
 
         assertTrue(board.isObstructingIBlock());
@@ -181,7 +181,7 @@ public class BoardTests {
     public void testDropToBlock() {
         assertEquals(0, straightTetromino.getTetrominoY());
         assertTrue(isTestBoardMatching(testBoardGrid));
-        board.setBoardGrid(19, 5, 'o');
+        board.setBoardGridBlock(19, 5, 'o');
         testBoardGrid[19][5] = 'o';
         for (int i = 3; i < 7; i++) {
             testBoardGrid[18][i] = 'i';
@@ -194,7 +194,7 @@ public class BoardTests {
     @Test
     public void testIsRowFull() {
         for (int i = 0; i < 10; i++) {
-            board.setBoardGrid(19, i, 'i');
+            board.setBoardGridBlock(19, i, 'i');
         }
         assertTrue(board.isRowFull(board.getBoardGrid()[19]));
     }
@@ -207,7 +207,7 @@ public class BoardTests {
     @Test
     public void testCountOneFullRow() {
         for (int j = 0; j < 10; j++) {
-            board.setBoardGrid(0, j, 'i');
+            board.setBoardGridBlock(0, j, 'i');
         }
         assertEquals(1, board.countFullRows());
     }
@@ -216,7 +216,7 @@ public class BoardTests {
     public void testCountTwoFullRows() {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 10; j++) {
-                board.setBoardGrid(i, j, 'i');
+                board.setBoardGridBlock(i, j, 'i');
             }
         }
         assertEquals(2, board.countFullRows());
@@ -226,7 +226,7 @@ public class BoardTests {
     public void testCountThreeFullRows() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 10; j++) {
-                board.setBoardGrid(i, j, 'i');
+                board.setBoardGridBlock(i, j, 'i');
             }
         }
         assertEquals(3, board.countFullRows());
@@ -236,7 +236,7 @@ public class BoardTests {
     public void testCountFourFullRows() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 10; j++) {
-                board.setBoardGrid(i, j, 'i');
+                board.setBoardGridBlock(i, j, 'i');
             }
         }
         assertEquals(4, board.countFullRows());
@@ -256,7 +256,7 @@ public class BoardTests {
     @Test
     public void testClearOneFullRow() {
         for (int j = 0; j < 10; j++) {
-            board.setBoardGrid(0, j, 'i');
+            board.setBoardGridBlock(0, j, 'i');
         }
         assertEquals(1, board.countFullRows());
         board.clearRow();
@@ -268,7 +268,7 @@ public class BoardTests {
     public void testClearTwoFullRows() {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 10; j++) {
-                board.setBoardGrid(i, j, 'i');
+                board.setBoardGridBlock(i, j, 'i');
             }
         }
         assertEquals(2, board.countFullRows());
@@ -282,7 +282,7 @@ public class BoardTests {
     public void testClearThreeFullRows() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 10; j++) {
-                board.setBoardGrid(i, j, 'i');
+                board.setBoardGridBlock(i, j, 'i');
             }
         }
         assertEquals(3, board.countFullRows());
@@ -297,7 +297,7 @@ public class BoardTests {
     public void testClearFourFullRows() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 10; j++) {
-                board.setBoardGrid(i, j, 'i');
+                board.setBoardGridBlock(i, j, 'i');
             }
         }
         assertEquals(4, board.countFullRows());
@@ -313,10 +313,10 @@ public class BoardTests {
     public void testClearRowWithOtherBlocks() {
         assertTrue(isTestBoardMatching(testBoardGrid));
         for (int j = 0; j < 10; j++) {
-            board.setBoardGrid(18, j, 'i');
+            board.setBoardGridBlock(18, j, 'i');
         }
-        board.setBoardGrid(19, 0, 'i');
-        board.setBoardGrid(17, 1, 'i');
+        board.setBoardGridBlock(19, 0, 'i');
+        board.setBoardGridBlock(17, 1, 'i');
         board.clearRow();
         testBoardGrid[19][0] = 'i';
         testBoardGrid[18][1] = 'i';
@@ -350,31 +350,31 @@ public class BoardTests {
     @Test
     public void testIsTetrominoRestrictedBlockLeft() {
         assertFalse(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
-        board.setBoardGrid(0, 2, 'i');
+        board.setBoardGridBlock(0, 2, 'i');
         assertFalse(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
-        board.setBoardGrid(1, 2, 'i');
+        board.setBoardGridBlock(1, 2, 'i');
         assertTrue(board.isTetrominoMovementRestrictedOnLeft(sTetromino));
     }
 
     @Test
     public void testIsTetrominoRestrictedBlockRight() {
         assertFalse(board.isTetrominoMovementRestrictedOnRight(sTetromino));
-        board.setBoardGrid(1, 6, 'i');
+        board.setBoardGridBlock(1, 6, 'i');
         assertFalse(board.isTetrominoMovementRestrictedOnRight(sTetromino));
-        board.setBoardGrid(0, 6, 'i');
+        board.setBoardGridBlock(0, 6, 'i');
         assertTrue(board.isTetrominoMovementRestrictedOnRight(sTetromino));
     }
 
     @Test
     public void testTetrominoNotOverlappingBoard() {
-        board.setBoardGrid(0, 2, 'o');
-        board.setBoardGrid(0, 3, 'o');
-        board.setBoardGrid(1, 2, 'o');
-        board.setBoardGrid(0, 6, 'o');
-        board.setBoardGrid(1, 5, 'o');
-        board.setBoardGrid(1, 6, 'o');
+        board.setBoardGridBlock(0, 2, 'o');
+        board.setBoardGridBlock(0, 3, 'o');
+        board.setBoardGridBlock(1, 2, 'o');
+        board.setBoardGridBlock(0, 6, 'o');
+        board.setBoardGridBlock(1, 5, 'o');
+        board.setBoardGridBlock(1, 6, 'o');
         for (int i = 2; i < 7; i++) {
-            board.setBoardGrid(2, i, 'o');
+            board.setBoardGridBlock(2, i, 'o');
         }
 
         assertFalse(board.isTetrominoOverlappingBoard(sTetromino));
@@ -382,14 +382,14 @@ public class BoardTests {
 
     @Test
     public void testTetrominoOverlappingBoard() {
-        board.setBoardGrid(0, 2, 'o');
-        board.setBoardGrid(0, 3, 'o');
-        board.setBoardGrid(1, 2, 'o');
-        board.setBoardGrid(0, 6, 'o');
-        board.setBoardGrid(1, 5, 'o');
-        board.setBoardGrid(1, 6, 'o');
+        board.setBoardGridBlock(0, 2, 'o');
+        board.setBoardGridBlock(0, 3, 'o');
+        board.setBoardGridBlock(1, 2, 'o');
+        board.setBoardGridBlock(0, 6, 'o');
+        board.setBoardGridBlock(1, 5, 'o');
+        board.setBoardGridBlock(1, 6, 'o');
         for (int i = 2; i < 7; i++) {
-            board.setBoardGrid(2, i, 'o');
+            board.setBoardGridBlock(2, i, 'o');
         }
 
         assertFalse(board.isTetrominoOverlappingBoard(sTetromino));
@@ -412,7 +412,7 @@ public class BoardTests {
         straightTetromino.fall();
         straightTetromino.fall();
         assertTrue(board.canRotateCW(straightTetromino));
-        board.setBoardGrid(3, 5, 'o');
+        board.setBoardGridBlock(3, 5, 'o');
         assertFalse(board.canRotateCW(straightTetromino));
     }
 
@@ -421,7 +421,7 @@ public class BoardTests {
         straightTetromino.fall();
         straightTetromino.fall();
         assertTrue(board.canRotateCCw(straightTetromino));
-        board.setBoardGrid(3, 5, 'o');
+        board.setBoardGridBlock(3, 5, 'o');
         assertFalse(board.canRotateCCw(straightTetromino));
     }
 
@@ -431,15 +431,15 @@ public class BoardTests {
         straightTetromino.fall();
         assertTrue(board.canRotateCW(straightTetromino));
         assertTrue(board.canRotateCCw(straightTetromino));
-        board.setBoardGrid(0, 4, 'o');
-        board.setBoardGrid(0, 6, 'o');
-        board.setBoardGrid(1, 4, 'o');
-        board.setBoardGrid(1, 6, 'o');
-        board.setBoardGrid(1, 3, 'o');
-        board.setBoardGrid(3, 3, 'o');
-        board.setBoardGrid(3, 4, 'o');
-        board.setBoardGrid(3, 6, 'o');
-        board.setBoardGrid(4, 5, 'o');
+        board.setBoardGridBlock(0, 4, 'o');
+        board.setBoardGridBlock(0, 6, 'o');
+        board.setBoardGridBlock(1, 4, 'o');
+        board.setBoardGridBlock(1, 6, 'o');
+        board.setBoardGridBlock(1, 3, 'o');
+        board.setBoardGridBlock(3, 3, 'o');
+        board.setBoardGridBlock(3, 4, 'o');
+        board.setBoardGridBlock(3, 6, 'o');
+        board.setBoardGridBlock(4, 5, 'o');
         assertTrue(board.canRotateCW(straightTetromino));
         assertTrue(board.canRotateCCw(straightTetromino));
     }

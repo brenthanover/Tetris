@@ -1,8 +1,5 @@
 package ca.ubc.cs.cpsc210.ui;
 
-
-import ca.ubc.cs.cpsc210.model.Block;
-
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -14,7 +11,6 @@ public class GameBackground {
      * Constants
      */
     private static final Color OUTLINE_COLOUR = Color.gray;
-    private static final Color BACKGROUND_COLOUR = Color.black;
     private static final Color TEXT_COLOUR = Color.white;
     private static final int FONT_STYLE = 1;
     private static final int FONT_SIZE = 30;
@@ -25,6 +21,19 @@ public class GameBackground {
     private static final int HIGH_SCORE_Y = BLOCK_SIZE * 4;
     private static final int LINES_X = BLOCK_SIZE * 7 + 9;
     private static final int LINES_Y = BLOCK_SIZE * 2;
+
+    /**
+     * Variables
+     */
+    private Color backgroundColour = Color.black;
+
+
+    /**
+     * Setters
+     */
+    public void setBackgroundColour(Color c) {
+        backgroundColour = c;
+    }
 
     /**
      * Constructor
@@ -58,11 +67,11 @@ public class GameBackground {
         drawNextBox(g);
 
         // translate back to original coordinates
-        g.translate(-BOARD_X_POS * 2 - BOARD_WIDTH, - BOARD_Y_POS);
+        g.translate(-BOARD_X_POS * 2 - BOARD_WIDTH, -BOARD_Y_POS);
     }
 
     private void drawBackground(Graphics g) {
-        g.setColor(BACKGROUND_COLOUR);
+        g.setColor(backgroundColour);
         g.fillRect(0, 0, Tetris.WINDOW_WIDTH, Tetris.WINDOW_HEIGHT);
     }
 

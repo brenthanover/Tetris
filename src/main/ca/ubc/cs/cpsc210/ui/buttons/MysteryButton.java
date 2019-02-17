@@ -1,5 +1,7 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
+import java.awt.*;
+
 import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 
 
@@ -24,14 +26,17 @@ public class MysteryButton extends TetrisButton {
             case 0:
                 tetrisMusic.shrek();
                 buttonName = "SAX";
+                tetris.gameBackground.setBackgroundColour(Color.green.darker());
                 break;
             case 1:
                 tetrisMusic.sax();
                 buttonName = "TETRIS";
+                tetris.gameBackground.setBackgroundColour(Color.cyan.darker());
                 break;
             default:
                 tetrisMusic.playTetrisTheme();
                 buttonName = "SHREK";
+                tetris.gameBackground.setBackgroundColour(Color.black);
                 break;
 
         }

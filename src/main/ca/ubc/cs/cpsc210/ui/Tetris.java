@@ -41,10 +41,10 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
      * Declarations
      */
     // Game classes
-    private Board board;
+    private static Board board;
     public static Tetris tetris;
     private static Render render;
-    private static GameBackground gameBackground;
+    public static GameBackground gameBackground;
     public static Music tetrisMusic;
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
@@ -56,6 +56,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     private SaveButton saveButton;
     private LoadButton loadButton;
     private MysteryButton mysteryButton;
+    private TetrisButton[] buttonList;
 
     /**
      * Variables
@@ -103,6 +104,22 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         return highScore;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public Board getGameBoard() {
+        return board;
+    }
+
+    public char getCurrentTetrominoLabel() {
+        return currentTetromino.getLabel();
+    }
+
+    public char getNextTetrominoLabel() {
+        return nextTetromino.getLabel();
+    }
+
     /**
      * Setters
      */
@@ -116,6 +133,22 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
     public static void setPlaySfx(boolean p) {
         playSfx = p;
+    }
+
+    public void setGameBoard(char[][] newBoard) {
+        board.setBoardGrid(newBoard);
+    }
+
+    public void setScore(int newScore) {
+        score = newScore;
+    }
+
+    public void setCurrentTetromino(char c) {
+        currentTetromino = getTetromino(c);
+    }
+
+    public void setNextTetromino(char c) {
+        nextTetromino = getTetromino(c);
     }
 
     /**
@@ -139,12 +172,19 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         tetrisJFrame.setVisible(true);
 
         gameBackground = new GameBackground();
+        buttonList = new TetrisButton[6];
         musicButton = new MusicButton();
+        buttonList[0] = musicButton;
         sfxButton = new SoundEffectsButton();
-        pauseButton = new PauseButton();
-        saveButton = new SaveButton();
-        loadButton = new LoadButton();
+        buttonList[1] = sfxButton;
         mysteryButton = new MysteryButton();
+        buttonList[2] = mysteryButton;
+        pauseButton = new PauseButton();
+        buttonList[3] = pauseButton;
+        saveButton = new SaveButton();
+        buttonList[4] = saveButton;
+        loadButton = new LoadButton();
+        buttonList[5] = loadButton;
 
         this.highScore = highScore;
 
@@ -318,6 +358,26 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
+    // return random tetromino
+    private Tetromino getTetromino(char c) {
+        switch (c) {
+            case 'o':
+                return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
+            case 'z':
+                return new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
+            case 'i':
+                return new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
+            case 's':
+                return new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
+            case 't':
+                return new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
+            case 'l':
+                return new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
+            default:
+                return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        }
+    }
+
     // fill score with zeroes on left
     private static String fillZeroes(int numZeroes, int num) {
         StringBuilder outputString = new StringBuilder();
@@ -400,6 +460,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     public void mouseClicked(MouseEvent e) {
     }
 
+    // show visual of button pressed when button is clicked
     @Override
     public void mousePressed(MouseEvent e) {
         int mouseCode = e.getButton();
@@ -408,27 +469,18 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
         if (mouseCode == MouseEvent.BUTTON1) {
 
-            if (musicButton.isMouseTouching(mouseX, mouseY)) {
-                musicButton.showButtonPressed();
-            }
-            if (sfxButton.isMouseTouching(mouseX, mouseY)) {
-                sfxButton.showButtonPressed();
-            }
-            if (pauseButton.isMouseTouching(mouseX, mouseY) && gameStart) {
-                pauseButton.showButtonPressed();
-            }
-            if (saveButton.isMouseTouching(mouseX, mouseY) && gameStart) {
-                saveButton.showButtonPressed();
-            }
-            if (loadButton.isMouseTouching(mouseX, mouseY) && gameStart) {
-                loadButton.showButtonPressed();
-            }
-            if (mysteryButton.isMouseTouching(mouseX, mouseY)) {
-                mysteryButton.showButtonPressed();
+            for (int i = 0; i < buttonList.length; i++) {
+                if (buttonList[i].isMouseTouching(mouseX, mouseY)
+                        && (i < 3
+                        || gameStart)) {
+                    buttonList[i].showButtonPressed();
+                }
             }
         }
+
     }
 
+    // execute button action when button released, play sound effect, show visual
     @Override
     public void mouseReleased(MouseEvent e) {
         int mouseCode = e.getButton();
@@ -436,42 +488,15 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         int mouseY = e.getY();
 
         if (mouseCode == MouseEvent.BUTTON1) {
-            // toggle tetrisMusic
-            if (musicButton.isMouseTouching(mouseX, mouseY)) {
-                musicButton.showButtonReleased();
-                musicButton.buttonAction();
-                soundEffects.playButtonClick();
-            }
-            // toggle sound effects
-            if (sfxButton.isMouseTouching(mouseX, mouseY)) {
-                sfxButton.showButtonReleased();
-                sfxButton.buttonAction();
-                soundEffects.playButtonClick();
-            }
-            // pause/unpause
-            if (pauseButton.isMouseTouching(mouseX, mouseY) && gameStart) {
-                pauseButton.showButtonReleased();
-                pauseButton.buttonAction();
-                soundEffects.playButtonClick();
-            }
-            // save game state
-            if (saveButton.isMouseTouching(mouseX, mouseY) && gameStart) {
-                saveButton.showButtonReleased();
-                saveButton.buttonAction();
-                soundEffects.playButtonClick();
-            }
-            // save game state
-            if (loadButton.isMouseTouching(mouseX, mouseY) && gameStart) {
-                loadButton.showButtonReleased();
-                loadButton.buttonAction();
-                soundEffects.playButtonClick();
-            }
-            // mystery button
-            if (mysteryButton.isMouseTouching(mouseX, mouseY)) {
-                mysteryButton.showButtonReleased();
-                mysteryButton.buttonAction();
-                soundEffects.playButtonClick();
 
+            for (int i = 0; i < buttonList.length; i++) {
+                if (buttonList[i].isMouseTouching(mouseX, mouseY)
+                        && (i < 3
+                        || gameStart)) {
+                    buttonList[i].showButtonReleased();
+                    buttonList[i].buttonAction();
+                    soundEffects.playButtonClick();
+                }
             }
         }
 
