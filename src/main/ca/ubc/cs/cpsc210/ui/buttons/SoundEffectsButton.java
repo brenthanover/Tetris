@@ -1,6 +1,8 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
 
+import ca.ubc.cs.cpsc210.ui.Tetris;
+
 import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 
 public class SoundEffectsButton extends TetrisButton {
@@ -10,11 +12,11 @@ public class SoundEffectsButton extends TetrisButton {
     }
 
     public void buttonAction() {
-        if (isPlaySfx()) {
-            setPlaySfx(false);
+        if (Tetris.isPlaySfx()) {
+            Tetris.setPlaySfx(false);
             buttonName = "SFX OFF";
         } else {
-            setPlaySfx(true);
+            Tetris.setPlaySfx(true);
             buttonName = "SFX ON";
         }
     }

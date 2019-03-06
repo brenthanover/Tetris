@@ -3,6 +3,7 @@ package ca.ubc.cs.cpsc210.ui;
 
 import ca.ubc.cs.cpsc210.audio.SoundEffects;
 import ca.ubc.cs.cpsc210.audio.Music;
+import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.buttons.*;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
@@ -10,6 +11,7 @@ import ca.ubc.cs.cpsc210.model.Tetromino;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.Random;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
@@ -42,10 +44,10 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
      */
     // Game classes
     private static Board board;
-    public static Tetris tetris;
+    private static Tetris tetris;
     private static Render render;
-    public static GameBackground gameBackground;
-    public static Music tetrisMusic;
+    private static GameBackground gameBackground;
+    private static Music tetrisMusic;
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
     private SoundEffects soundEffects;
@@ -76,6 +78,18 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     /**
      * Getters
      */
+    public static Music getTetrisMusic() {
+        return tetrisMusic;
+    }
+
+    public static GameBackground getGameBackground() {
+        return gameBackground;
+    }
+
+    public static Tetris getTetris() {
+        return tetris;
+    }
+
     public static boolean isPaused() {
         return paused;
     }
@@ -159,7 +173,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         Timer timer = new Timer(20, this);
         tetrisMusic = new Music();
         soundEffects = new SoundEffects();
-        render = new Render();
+        render = new Render(this);
         board = new Board();
 
         tetrisJFrame.add(render);
@@ -220,15 +234,6 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         ticks++;
     }
 
-    private void gameOverScoreRecord() {
-        if (gameOver && !highScoreSaved) {
-            highScoreSaved = true;
-            if (score > loadHighScore(highScoreFileName)) {
-                saveHighScore(highScoreFileName, score);
-            }
-        }
-    }
-
     public void draw(Graphics g) {
         // draw background
         gameBackground.draw(g);
@@ -280,6 +285,23 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
+    // on game over, record score as new high score if score > old high score
+    private void gameOverScoreRecord() {
+        if (gameOver && !highScoreSaved) {
+            highScoreSaved = true;
+            try {
+                if (score > loadHighScore(highScoreFileName)) {
+                    try {
+                        saveHighScore(highScoreFileName, score);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (MissingFileException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     // saves current tetromino to board, summons next one to top, gets random new one
     // adds score, checks to see if game is over
@@ -510,9 +532,12 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
-
     public static void main(String[] args) {
-        tetris = new Tetris(loadHighScore(highScoreFileName));
+        try {
+            tetris = new Tetris(loadHighScore(highScoreFileName));
+        } catch (MissingFileException | IOException e) {
+            e.printStackTrace();
+        }
         tetrisMusic.playTetrisTheme();
     }
 }

@@ -1,5 +1,7 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
+import ca.ubc.cs.cpsc210.ui.Tetris;
+
 import java.awt.*;
 
 import static ca.ubc.cs.cpsc210.ui.Tetris.*;
@@ -7,7 +9,7 @@ import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 
 public class MysteryButton extends TetrisButton {
 
-    int count;
+    private int count;
 
     public MysteryButton() {
         super(qBX, qBY, qBW, qBH, qBN);
@@ -15,28 +17,28 @@ public class MysteryButton extends TetrisButton {
     }
 
     public void buttonAction() {
-        tetrisMusic.stop();
+        Tetris.getTetrisMusic().stop();
         playNextSong();
         count++;
         setPlayMusic(true);
     }
 
-    public void playNextSong() {
+    private void playNextSong() {
         switch (count % 3) {
             case 0:
-                tetrisMusic.shrek();
+                Tetris.getTetrisMusic().shrek();
                 buttonName = "SAX";
-                tetris.gameBackground.setBackgroundColour(Color.green.darker());
+                Tetris.getGameBackground().setBackgroundColour(Color.green.darker());
                 break;
             case 1:
-                tetrisMusic.sax();
+                Tetris.getTetrisMusic().sax();
                 buttonName = "TETRIS";
-                tetris.gameBackground.setBackgroundColour(Color.cyan.darker());
+                Tetris.getGameBackground().setBackgroundColour(Color.cyan.darker());
                 break;
             default:
-                tetrisMusic.playTetrisTheme();
+                Tetris.getTetrisMusic().playTetrisTheme();
                 buttonName = "SHREK";
-                tetris.gameBackground.setBackgroundColour(Color.black);
+                Tetris.getGameBackground().setBackgroundColour(Color.black);
                 break;
 
         }

@@ -1,50 +1,47 @@
 package ca.ubc.cs.cpsc210.parsers;
 
+import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.Tetris;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
+import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
 import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 
 public class LoadGame {
 
     // EFFECTS: loads saved game data from text file and produce Tetris game state
-    public static void loadGame(String fileName) {
+    public static Tetris loadGame(String fileName) throws MissingFileException, IOException {
         String directory = "src/main/ca/ubc/cs/cpsc210/resources/savefiles/";
         fileName = directory + fileName;
         String data = "";
+        File file = new File(fileName);
 
-        try { 
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            data = br.readLine();
-
-            // decode the data here from string data
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!file.exists()) {
+            throw new MissingFileException("file does not exist");
         }
 
-        System.out.println(data);
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        data = br.readLine();
 
+
+        // decode the data here from string data
         String[] parsedData = data.split("@", 5);
 
-        for (String s : parsedData) {
-            System.out.println(s);
-        }
-
-        tetris = loadTetris(parsedData);
+        return loadTetris(parsedData);
     }
 
-    private static Tetris loadTetris(String[] parsedData) {
-        for (String s : parsedData) {
-            System.out.println(s);
-        }
+    public static Tetris loadTetris(String[] parsedData) throws MissingFileException, IOException {
         String boardString = parsedData[0];
         char currentColour = parsedData[1].charAt(0);
         char nextColour = parsedData[2].charAt(0);
         int score = Integer.parseInt(parsedData[3]);
+        Tetris loadedTetris;
 
-        Tetris loadedTetris = new Tetris(tetris.getHighScore());
+        loadedTetris = new Tetris(loadHighScore("highscore"));
 
         loadedTetris.setScore(score);
         loadedTetris.setGameBoard(loadedBoard(boardString));

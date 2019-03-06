@@ -6,14 +6,21 @@ import java.awt.*;
 public class Render extends JPanel {
 
     /**
-     *  Constructor
+     * Declarations
      */
-    public Render() { }
+    private Tetris tetris;
+
+    /**
+     * Constructor
+     */
+    public Render(Tetris tetris) {
+        this.tetris = tetris;
+    }
 
     // EFFECTS: renders the draw file for Tetris
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Tetris.tetris.draw(g);
+        tetris.draw(g);
     }
 }

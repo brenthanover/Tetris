@@ -1,9 +1,10 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
-import ca.ubc.cs.cpsc210.ui.Tetris;
+import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
+
+import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.LoadGame.loadGame;
-import static ca.ubc.cs.cpsc210.ui.buttons.TetrisButton.*;
 
 public class LoadButton extends TetrisButton {
 
@@ -12,6 +13,10 @@ public class LoadButton extends TetrisButton {
     }
 
     public void buttonAction() {
-        loadGame("savegame");
+        try {
+            loadGame("savegame");
+        } catch (MissingFileException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }

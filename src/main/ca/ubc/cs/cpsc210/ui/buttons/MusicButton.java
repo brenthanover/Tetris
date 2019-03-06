@@ -1,9 +1,10 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
 
+import ca.ubc.cs.cpsc210.ui.Tetris;
+
 import static ca.ubc.cs.cpsc210.ui.Tetris.isPlayMusic;
 import static ca.ubc.cs.cpsc210.ui.Tetris.setPlayMusic;
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 
 public class MusicButton extends TetrisButton {
 
@@ -12,12 +13,12 @@ public class MusicButton extends TetrisButton {
     }
 
     public void buttonAction() {
-        if (isPlayMusic()) {
-            tetrisMusic.stop();
-            setPlayMusic(false);
+        if (Tetris.isPlayMusic()) {
+            Tetris.getTetrisMusic().stop();
+            Tetris.setPlayMusic(false);
             buttonName = "MUSIC OFF";
         } else {
-            tetrisMusic.playTetrisTheme();
+            Tetris.getTetrisMusic().playTetrisTheme();
             setPlayMusic(true);
             buttonName = "MUSIC ON";
         }

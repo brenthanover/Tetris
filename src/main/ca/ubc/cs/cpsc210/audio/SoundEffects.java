@@ -1,5 +1,7 @@
 package ca.ubc.cs.cpsc210.audio;
 
+import ca.ubc.cs.cpsc210.ui.Tetris;
+
 import javax.sound.sampled.*;
 import java.io.File;
 
@@ -41,7 +43,7 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            if (tetris.isPlaySfx()) {
+            if (Tetris.isPlaySfx()) {
                 clip.start();
             }
         } catch (Exception e) {
@@ -57,7 +59,7 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            if (tetris.isPlaySfx()) {
+            if (Tetris.isPlaySfx()) {
                 clip.start();
             }
         } catch (Exception e) {
@@ -73,7 +75,7 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            if (tetris.isPlaySfx()) {
+            if (Tetris.isPlaySfx()) {
                 clip.start();
             }
         } catch (Exception e) {
@@ -89,7 +91,7 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            if (tetris.isPlaySfx()) {
+            if (Tetris.isPlaySfx()) {
                 clip.start();
             }
         } catch (Exception e) {
@@ -105,7 +107,7 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            if (tetris.isPlaySfx()) {
+            if (Tetris.isPlaySfx()) {
                 clip.start();
             }
         } catch (Exception e) {
@@ -121,7 +123,7 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            if (tetris.isPlaySfx()) {
+            if (Tetris.isPlaySfx()) {
                 clip.start();
             }
         } catch (Exception e) {
@@ -137,7 +139,7 @@ public class SoundEffects {
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
-            if (tetris.isPlaySfx()) {
+            if (Tetris.isPlaySfx()) {
                 clip.start();
             }
         } catch (Exception e) {
