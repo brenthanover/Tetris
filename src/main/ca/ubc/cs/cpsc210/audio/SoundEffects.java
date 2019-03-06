@@ -5,8 +5,6 @@ import ca.ubc.cs.cpsc210.ui.Tetris;
 import javax.sound.sampled.*;
 import java.io.File;
 
-import static ca.ubc.cs.cpsc210.ui.Tetris.tetris;
-
 public class SoundEffects {
 
     /**

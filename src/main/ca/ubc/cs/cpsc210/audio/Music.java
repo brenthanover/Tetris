@@ -86,7 +86,7 @@ public class Music {
 
 
     // Tutorial citation:
-    // how to playTetrisTheme .wav files in java
+    // how to play .wav files in java
     // https://stackoverflow.com/questions/2416935/how-to-play-wav-files-with-java
 
 }
