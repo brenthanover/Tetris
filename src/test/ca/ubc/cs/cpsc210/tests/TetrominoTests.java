@@ -563,5 +563,48 @@ public class TetrominoTests {
         assertEquals(18 * BLOCK_SIZE, jTetromino.getTetrominoY());
     }
 
+    @Test
+    public void testEquals() {
+        Tetromino testTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        assertEquals(testTetromino, jTetromino);
+
+        testTetromino.fall();
+        jTetromino.fall();
+        assertEquals(testTetromino, jTetromino);
+        testTetromino.rotateCW();
+        jTetromino.rotateCW();
+        assertEquals(testTetromino, jTetromino);
+    }
+
+    @Test
+    public void testNotEquals() {
+        // check label
+        Tetromino testTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'i');
+        assertNotEquals(testTetromino, jTetromino);
+        // check colour
+        testTetromino = new Tetromino(jTetrominoMatrix, I_COLOUR, 'j');
+        assertNotEquals(testTetromino, jTetromino);
+        // check shape
+        testTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        assertEquals(testTetromino, jTetromino);
+        testTetromino.rotateCW();
+        assertNotEquals(testTetromino, jTetromino);
+        // check x position
+        testTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        assertEquals(testTetromino, jTetromino);
+        testTetromino.moveLeft();
+        assertNotEquals(testTetromino, jTetromino);
+        // check y position
+        testTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        assertEquals(testTetromino, jTetromino);
+        testTetromino.fall();
+        assertNotEquals(testTetromino, jTetromino);
+        // test rotation position
+        testTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        assertEquals(testTetromino, jTetromino);
+        testTetromino.decrementRotationPosition();
+        assertNotEquals(testTetromino, jTetromino);
+    }
+
     // no tests for draw() function
 }

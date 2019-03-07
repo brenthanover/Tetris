@@ -1,6 +1,6 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
-import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
+import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 
 import java.io.IOException;
 

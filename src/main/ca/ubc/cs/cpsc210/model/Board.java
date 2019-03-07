@@ -1,6 +1,7 @@
 package ca.ubc.cs.cpsc210.model;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +25,12 @@ public class Board {
     /**
      * Constants
      */
-    private char[][] boardGrid = new char[BLOCKS_HIGH][BLOCKS_WIDE];
     private Map<Character, Color> colourHashMap = new HashMap<>();
+
+    /**
+     *  Declarations
+     */
+    private char[][] boardGrid;
 
     /**
      * Getters
@@ -49,11 +54,14 @@ public class Board {
      * Constructor
      */
     public Board() {
+        boardGrid = new char[BLOCKS_HIGH][BLOCKS_WIDE];
+
         for (int i = 0; i < BLOCKS_HIGH; i++) {
             for (int j = 0; j < BLOCKS_WIDE; j++) {
                 boardGrid[i][j] = 'e';
             }
         }
+
         colourHashMap.put('i', I_COLOUR);
         colourHashMap.put('j', J_COLOUR);
         colourHashMap.put('l', L_COLOUR);
@@ -66,7 +74,7 @@ public class Board {
     /**
      * Methods
      */
-    //return true if tetromino is at bottom of window
+    // EFFECTS: return true if tetromino is at bottom of window
     public boolean isTetrominoTouchingBottom(Tetromino t) {
         boolean answer = false;
         int[][] tetrominoShape = t.getShape();
@@ -79,7 +87,7 @@ public class Board {
         return answer;
     }
 
-    //return true if tetromino is directly above a non-empty block in the grid
+    // EFFECTS: return true if tetromino is directly above a non-empty block in the grid
     public boolean isTetrominoAboveBlock(Tetromino t) {
         boolean answer = false;
         int[][] tetrominoShape = t.getShape();
@@ -105,7 +113,8 @@ public class Board {
         return answer;
     }
 
-    // takes a tetromino and freezes it in place to the board
+    // MODIFIES: this
+    // EFFECTS: takes a tetromino and freezes it in place to the board
     public void freezeTetrominoToBoard(Tetromino t) {
         char tetrominoColour = t.getLabel();
         int[][] tetrominoShape = t.getShape();
@@ -124,14 +133,16 @@ public class Board {
         }
     }
 
-    // immediately drops the tetromino to the bottom of the board
+    // MODIFIES: Tetromino t
+    // EFFECTS: immediately drops the tetromino to the bottom of the board
     public void dropTetrominoToBottom(Tetromino t) {
         while (!isTetrominoTouchingBottom(t) && !isTetrominoAboveBlock(t)) {
             t.fall();
         }
     }
 
-    // removes the first full row, starting from the top
+    // MODIFIES: this
+    // EFFECTS: removes the first full row, starting with the closest full row to the top
     public void clearRow() {
         char[][] output = new char[BLOCKS_HIGH][BLOCKS_WIDE];
 
@@ -154,7 +165,7 @@ public class Board {
         }
     }
 
-    // returns the number of full rows in the board
+    // EFFECTS: returns the number of full rows in the board
     public int countFullRows() {
         int rowsToClear = 0;
 
@@ -167,31 +178,32 @@ public class Board {
         return rowsToClear;
     }
 
-    // produces true if the given char[] does not contain 'e'
+    // EFFECTS: produces true if the given char[] does not contain 'e'
     public boolean isRowFull(char[] row) {
         for (char c : row) {
             if (c == 'e') {
                 return false;
             }
         }
+
         return true;
     }
 
-    // produce true if new tetromino overlaps grid
+    // EFFECTS: produce true if new tetromino overlaps grid
     public boolean isGameOver(Tetromino t) {
         int numCols = t.getShape()[0].length;
 
         if (numCols == 4) {
-            return isObstructingIBlock();
+            return isBoardObstructingNewIBlock();
         } else if (numCols == 2) {
-            return isObstructingOBlock();
+            return isBoardObstructingNewOBlock();
         } else {
-            return isObstructingOtherBlocks(t);
+            return isBoardObstructingNewOtherBlocks(t);
         }
     }
 
-    // prevents I block from appearing at top of game board
-    public boolean isObstructingIBlock() {
+    // EFFECTS: produce true if board has block in position where new I block would appear
+    public boolean isBoardObstructingNewIBlock() {
         for (int j = 3; j < 7; j++) {
             if (boardGrid[0][j] != 'e') {
                 return true;
@@ -201,8 +213,8 @@ public class Board {
         return false;
     }
 
-    // prevents O block from appearing at top of game board
-    public boolean isObstructingOBlock() {
+    // EFFECTS: produce true if board has block in position where new O block would appear
+    public boolean isBoardObstructingNewOBlock() {
         for (int i = 0; i < 2; i++) {
             for (int j = 4; j < 6; j++) {
                 if (boardGrid[i][j] != 'e') {
@@ -214,8 +226,8 @@ public class Board {
         return false;
     }
 
-    // prevents other blocks from appearing at top of game board
-    public boolean isObstructingOtherBlocks(Tetromino t) {
+    // EFFECTS: produce true if board has block in position where new all other blocks would appear
+    public boolean isBoardObstructingNewOtherBlocks(Tetromino t) {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
                 if (boardGrid[i][j + 3] != 'e'
@@ -228,7 +240,7 @@ public class Board {
         return false;
     }
 
-    // returns true if tetromino cannot move left without hitting a wall or a block
+    // EFFECTS: Returns true if tetromino cannot move left without hitting the window edge or a block
     public boolean isTetrominoMovementRestrictedOnLeft(Tetromino t) {
         int tetrominoPosX = t.getTetrominoX() / BLOCK_SIZE;
         int tetrominoPosY = t.getTetrominoY() / BLOCK_SIZE;
@@ -246,7 +258,7 @@ public class Board {
         return false;
     }
 
-    // returns true if tetromino cannot move right without hitting a wall or a block
+    // EFFECTS: returns true if tetromino cannot move right without hitting the window edge or a block
     public boolean isTetrominoMovementRestrictedOnRight(Tetromino t) {
         int tetrominoPosX = t.getTetrominoX() / BLOCK_SIZE;
         int tetrominoPosY = t.getTetrominoY() / BLOCK_SIZE;
@@ -264,7 +276,7 @@ public class Board {
         return false;
     }
 
-    // return true if the tetromino can rotate CW without overlapping board
+    // EFFECTS: return true if the tetromino can rotate CW without overlapping board
     public boolean canRotateCW(Tetromino t) {
         t.rotateCW();
 
@@ -277,7 +289,7 @@ public class Board {
         return true;
     }
 
-    // return true if the tetromino can rotate CCW without overlapping board
+    // EFFECTS: return true if the tetromino can rotate CCW without overlapping board
     public boolean canRotateCCw(Tetromino t) {
         t.rotateCCw();
 
@@ -290,7 +302,7 @@ public class Board {
         return true;
     }
 
-    // produces true if tetromino is overlapping non-empty block in grid
+    // EFFECTS: produces true if tetromino is overlapping non-empty block in grid
     public boolean isTetrominoOverlappingBoard(Tetromino t) {
         int tetrominoPosX = t.getTetrominoX() / BLOCK_SIZE;
         int tetrominoPosY = t.getTetrominoY() / BLOCK_SIZE;
@@ -307,7 +319,7 @@ public class Board {
         return false;
     }
 
-    // draw method not included in tests
+    // EFFECTS: draw method not included in tests
     public void draw(Graphics g) {
         int blockXPos = 0;
         int blockYPos = 0;
@@ -329,5 +341,28 @@ public class Board {
             blockYPos += BLOCK_SIZE;
             blockXPos = 0;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Board board = (Board) o;
+
+        for (int i = 0; i < BLOCKS_HIGH; i++) {
+            for (int j = 0; j < BLOCKS_WIDE; j++) {
+                if (boardGrid[i][j] != ((Board) o).getBoardGrid()[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(boardGrid);
     }
 }

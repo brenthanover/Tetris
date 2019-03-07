@@ -1,7 +1,7 @@
 package ca.ubc.cs.cpsc210.tests;
 
-import ca.ubc.cs.cpsc210.parsers.SaveGame;
-import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
+import ca.ubc.cs.cpsc210.persistence.SaveGame;
+import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.Tetris;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.LoadGame.*;
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
-import static ca.ubc.cs.cpsc210.parsers.SaveGame.saveGame;
+import static ca.ubc.cs.cpsc210.persistence.SaveGame.saveGame;
 import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCKS_HIGH;
 import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCKS_WIDE;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,8 +53,8 @@ public class SaveLoadGameTests {
             fail("should not throw exception");
         }
 
-        tetris.setCurrentTetromino('l');
-        tetris.setNextTetromino('i');
+        tetris.setCurrentTetrominoByLabel('l');
+        tetris.setNextTetrominoByLabel('i');
         testBoardGrid[19][9] = 'i';
         testBoardGrid[19][8] = 'i';
         testBoardGrid[19][7] = 'i';
@@ -88,8 +88,8 @@ public class SaveLoadGameTests {
 
     @Test
     public void testSaveGameIOException() {
-        tetris.setCurrentTetromino('l');
-        tetris.setNextTetromino('i');
+        tetris.setCurrentTetrominoByLabel('l');
+        tetris.setNextTetrominoByLabel('i');
 
         try {
             saveGame("/", tetris);
@@ -108,8 +108,8 @@ public class SaveLoadGameTests {
         } catch (IOException e) {
             fail("should not produce IOException");
         }
-        tetris.setCurrentTetromino('l');
-        tetris.setNextTetromino('i');
+        tetris.setCurrentTetrominoByLabel('l');
+        tetris.setNextTetrominoByLabel('i');
         testBoardGrid[19][9] = 'i';
         testBoardGrid[19][8] = 'i';
         testBoardGrid[19][7] = 'i';
@@ -153,8 +153,8 @@ public class SaveLoadGameTests {
 
     @Test
     public void testLoadTetris() {
-        tetris.setCurrentTetromino('l');
-        tetris.setNextTetromino('i');
+        tetris.setCurrentTetrominoByLabel('l');
+        tetris.setNextTetrominoByLabel('i');
         testBoardGrid[19][9] = 'i';
         testBoardGrid[19][8] = 'i';
         testBoardGrid[19][7] = 'i';

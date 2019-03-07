@@ -1,6 +1,8 @@
 package ca.ubc.cs.cpsc210.model;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static ca.ubc.cs.cpsc210.ui.Tetris.*;
 
@@ -59,7 +61,7 @@ public class Tetromino {
     /**
      * Declarations
      */
-    Block block;
+    private Block block;
 
     /**
      * Variables
@@ -94,6 +96,10 @@ public class Tetromino {
         return tetrominoColour;
     }
 
+    public int getRotationPosition() {
+        return rotationPosition;
+    }
+
     /**
      * Setters
      */
@@ -113,6 +119,10 @@ public class Tetromino {
         rotationPosition--;
     }
 
+    public void setRotationPosition(int rp) {
+        rotationPosition = rp;
+    }
+
     /**
      * Constructor
      */
@@ -127,32 +137,40 @@ public class Tetromino {
     /**
      * Methods
      */
+    // MODIFIES: this
+    // EFFECTS:  places tetromino at top of board
     public void initializeTetromino() {
         tetrominoX = (BLOCKS_WIDE - shape[0].length) / 2 * BLOCK_SIZE;
         tetrominoY = 0;
     }
 
+    // MODIFIES: this
+    // EFFECTS:  places tetromino in centre of preview window on right side of the game screen
     public void previewTetromino() {
         tetrominoX = BOARD_WIDTH / 2 - shape[0].length * BLOCK_SIZE / 2;
         tetrominoY = 14 * BLOCK_SIZE;
     }
 
-    // moves tetromino down by one block
+    // MODIFIES: this
+    // EFFECTS:  moves tetromino down by one block
     public void fall() {
         tetrominoY += BLOCK_SIZE;
     }
 
-    // moves tetromino left by one block
+    // MODIFIES: this
+    // EFFECTS:  moves tetromino left by one block
     public void moveLeft() {
         tetrominoX -= BLOCK_SIZE;
     }
 
-    // moves tetromino right by one block
+    // MODIFIES: this
+    // EFFECTS:  moves tetromino right by one block
     public void moveRight() {
         tetrominoX += BLOCK_SIZE;
     }
 
-    // transposes matrix
+    // MODIFIES: this
+    // EFFECTS:  transposes shape field
     public void transpose() {
         int numRows = shape.length;
         int numCols = shape[0].length;
@@ -167,7 +185,8 @@ public class Tetromino {
         shape = output;
     }
 
-    // flips matrix horizontally
+    // MODIFIES: this
+    // EFFECTS:  flips matrix horizontally, ie rows stay the same, column order is reversed
     public void flipHorizontal() {
         int numRows = shape.length;
         int numCols = shape[0].length;
@@ -182,7 +201,8 @@ public class Tetromino {
         shape = output;
     }
 
-    // flips matrix vertically
+    // MODIFIES: this
+    // EFFECTS:  flips matrix vertically, ie columns stay the same, row order is reversed
     public void flipVertical() {
         int numRows = shape.length;
         int numCols = shape[0].length;
@@ -195,7 +215,8 @@ public class Tetromino {
         shape = output;
     }
 
-    // rotates matrix clockwise
+    // MODIFIES: this
+    // EFFECTS:  rotates matrix clockwise
     public void rotateCW() {
         // reposition I tetromino
         if (shape.length == 4 || shape[0].length == 4) {
@@ -212,7 +233,26 @@ public class Tetromino {
         keepTetrominoInBounds();
     }
 
-    // repositions I tetromino to match classic tetris rotation pattern
+    // MODIFIES: this
+    // EFFECTS:  rotates matrix counter clockwise
+    public void rotateCCw() {
+        // reposition I tetromino
+        if (shape.length == 4 || shape[0].length == 4) {
+            repositionITetromino();
+            //reposition other tetrominos except square
+        } else if (shape.length != shape[0].length) {
+            repositionOtherTetrominosCCw();
+        }
+
+        transpose();
+        flipVertical();
+        rotationPosition--;
+        keepTetrominoInBounds();
+    }
+
+    // REQUIRES: current tetromino is an I (straight) tetromino
+    // MODIFIES: this
+    // EFFECTS:  repositions I tetromino to match classic tetris rotation pattern
     public void repositionITetromino() {
         if (rotationPosition % 2 == 0) {
             tetrominoX += 2 * BLOCK_SIZE;
@@ -223,7 +263,9 @@ public class Tetromino {
         }
     }
 
-    // repositions 2x3 tetromino to match classic tetris CW rotation pattern
+    // REQUIRES: current tetromino is any tetromino but an I (straight) or O (square) tetromino
+    // MODIFIES: this
+    // EFFECTS:  repositions 2x3 tetromino to match classic tetris CW rotation pattern
     public void repositionOtherTetrominosCW() {
         int n = rotationPosition % 4;
         switch (n) {
@@ -242,25 +284,9 @@ public class Tetromino {
         }
     }
 
-    // rotates matrix counter clockwise
-    public void rotateCCw() {
-        // reposition I tetromino
-        if (shape.length == 4 || shape[0].length == 4) {
-            repositionITetromino();
-            //reposition other tetrominos except square
-        } else if (shape.length != shape[0].length) {
-            repositionOtherTetrominosCCw();
-        }
-
-
-        transpose();
-        flipVertical();
-        rotationPosition--;
-
-        keepTetrominoInBounds();
-    }
-
-    // repositions 2x3 tetromino to match classic tetris CCW rotation pattern
+    // REQUIRES: current tetromino is any tetromino but an I (straight) or O (square) tetromino
+    // MODIFIES: this
+    // EFFECTS:  repositions 2x3 tetromino to match classic tetris CCW rotation pattern
     public void repositionOtherTetrominosCCw() {
         int n = rotationPosition % 4;
         switch (n) {
@@ -279,7 +305,8 @@ public class Tetromino {
         }
     }
 
-    // moves tetromino to back within the game board
+    // MODIFIES: this
+    // EFFECTS: moves tetromino to back within the game board if it's moved out of bounds from rotating
     public void keepTetrominoInBounds() {
         // ensure block doesn't go off left side of board
         while (tetrominoX < 0) {
@@ -302,7 +329,36 @@ public class Tetromino {
         }
     }
 
-    // draw method not included in tests
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tetromino tetromino = (Tetromino) o;
+        for (int i = 0; i < shape.length; i++) {
+            for (int j = 0; j < shape[0].length; j++) {
+                if (shape[i][j] != tetromino.getShape()[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return getTetrominoX() == tetromino.getTetrominoX() && getTetrominoY() == tetromino.getTetrominoY()
+                && getLabel() == tetromino.getLabel() && rotationPosition == tetromino.rotationPosition
+                && getTetrominoColour().equals(tetromino.getTetrominoColour());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getTetrominoColour(), getTetrominoX(), getTetrominoY(), getLabel(), rotationPosition);
+        result = 31 * result + Arrays.hashCode(getShape());
+        return result;
+    }
+
+    // EFFECTS: draw method not included in tests
     public void draw(Graphics g) {
         int toDrawX = tetrominoX;
         int toDrawY = tetrominoY;

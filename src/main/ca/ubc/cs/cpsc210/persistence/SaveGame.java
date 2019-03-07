@@ -1,4 +1,4 @@
-package ca.ubc.cs.cpsc210.parsers;
+package ca.ubc.cs.cpsc210.persistence;
 
 import ca.ubc.cs.cpsc210.ui.Tetris;
 

@@ -44,37 +44,33 @@ public class GameBackground {
     /**
      * Methods
      */
+    // EFFECTS:  renders game background on game screen
     public void draw(Graphics g) {
         // fill background black
-        drawBackground(g);
+        drawWindow(g);
 
         // draw blank board with grey squares
         g.translate(BOARD_X_POS, BOARD_Y_POS);
         drawBlankBoard(g);
-
         g.translate(-BOARD_X_POS, -BOARD_Y_POS);
 
         // draw score, preview screen
-        g.translate(BOARD_X_POS * 2 + BOARD_WIDTH, BOARD_Y_POS);
         // menu window
+        g.translate(BOARD_X_POS * 2 + BOARD_WIDTH, BOARD_Y_POS);
         g.setColor(OUTLINE_COLOUR);
         g.drawRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
-
-        // score
         drawScore(g);
-
-        // box around next block
         drawNextBox(g);
-
-        // translate back to original coordinates
         g.translate(-BOARD_X_POS * 2 - BOARD_WIDTH, -BOARD_Y_POS);
     }
 
-    private void drawBackground(Graphics g) {
+    // EFFECTS: draws window of game background
+    private void drawWindow(Graphics g) {
         g.setColor(backgroundColour);
         g.fillRect(0, 0, Tetris.WINDOW_WIDTH, Tetris.WINDOW_HEIGHT);
     }
 
+    // EFFECTS: draws blank game board
     private void drawBlankBoard(Graphics g) {
         g.setColor(OUTLINE_COLOUR);
         for (int i = 0; i < BOARD_WIDTH; i += BLOCK_SIZE) {
@@ -84,6 +80,7 @@ public class GameBackground {
         }
     }
 
+    // EFFECTS: draws box that will show upcoming tetrominos
     private void drawNextBox(Graphics g) {
         g.setColor(OUTLINE_COLOUR);
         int halfBlock = BLOCK_SIZE / 2;
@@ -104,6 +101,7 @@ public class GameBackground {
         g.drawString("NEXT", nextX + offsetX, nextY + offsetY - BLOCK_SIZE * 2);
     }
 
+    // EFFECTS: draws the high score, current score, and lines cleared to the game window
     private void drawScore(Graphics g) {
         g.setColor(TEXT_COLOUR);
         g.setFont(new Font(FONT_TYPE, FONT_STYLE, FONT_SIZE));

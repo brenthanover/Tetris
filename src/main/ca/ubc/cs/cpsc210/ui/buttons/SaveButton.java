@@ -4,7 +4,7 @@ import ca.ubc.cs.cpsc210.ui.Tetris;
 
 import java.io.IOException;
 
-import static ca.ubc.cs.cpsc210.parsers.SaveGame.saveGame;
+import static ca.ubc.cs.cpsc210.persistence.SaveGame.saveGame;
 
 public class SaveButton extends TetrisButton {
 

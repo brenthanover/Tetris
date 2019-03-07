@@ -1,6 +1,6 @@
 package ca.ubc.cs.cpsc210.tests;
 
-import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
+import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.Tetris;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

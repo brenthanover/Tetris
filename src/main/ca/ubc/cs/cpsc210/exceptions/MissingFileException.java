@@ -1,4 +1,4 @@
-package ca.ubc.cs.cpsc210.parsers.exceptions;
+package ca.ubc.cs.cpsc210.exceptions;
 
 public class MissingFileException extends Exception {
 

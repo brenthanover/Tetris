@@ -1,6 +1,6 @@
 package ca.ubc.cs.cpsc210.parsers;
 
-import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
+import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.Tetris;
 
 import java.io.BufferedReader;
@@ -45,8 +45,8 @@ public class LoadGame {
 
         loadedTetris.setScore(score);
         loadedTetris.setGameBoard(loadedBoard(boardString));
-        loadedTetris.setCurrentTetromino(currentColour);
-        loadedTetris.setNextTetromino(nextColour);
+        loadedTetris.setCurrentTetrominoByLabel(currentColour);
+        loadedTetris.setNextTetrominoByLabel(nextColour);
 
         return loadedTetris;
     }

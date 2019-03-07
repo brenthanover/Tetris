@@ -3,7 +3,7 @@ package ca.ubc.cs.cpsc210.ui;
 
 import ca.ubc.cs.cpsc210.audio.SoundEffects;
 import ca.ubc.cs.cpsc210.audio.Music;
-import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
+import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.buttons.*;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
@@ -12,11 +12,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Random;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
-import static ca.ubc.cs.cpsc210.parsers.SaveHighScore.saveHighScore;
+import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 
 
 public class Tetris implements ActionListener, KeyListener, MouseListener {
@@ -37,13 +38,14 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     private static final int TETROMINO_SCORE = 10;
     private static final int SCORE_ZEROES = 6;
     private static final int LINE_ZEROES = 3;
+    private static final int fallSpeed = 20;
     private static final String highScoreFileName = "highscore";
 
     /**
      * Declarations
      */
     // Game classes
-    private static Board board;
+    private Board board;
     private static Tetris tetris;
     private static Render render;
     private static GameBackground gameBackground;
@@ -63,8 +65,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     /**
      * Variables
      */
-    private int ticks = 0;
-    private int fallSpeed = 20;
+    private static int ticks = 0;
     private static boolean gameStart = false;
     private static boolean paused = false;
     private static boolean playMusic = true;
@@ -110,6 +111,10 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         return fillZeroes(SCORE_ZEROES, highScore);
     }
 
+    public int getLinesCleared() {
+        return linesCleared;
+    }
+
     public static String getLinesClearedString() {
         return fillZeroes(LINE_ZEROES, linesCleared);
     }
@@ -132,6 +137,14 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
     public char getNextTetrominoLabel() {
         return nextTetromino.getLabel();
+    }
+
+    public Tetromino getCurrentTetromino() {
+        return currentTetromino;
+    }
+
+    public Tetromino getNextTetromino() {
+        return nextTetromino;
     }
 
     /**
@@ -157,12 +170,28 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         score = newScore;
     }
 
-    public void setCurrentTetromino(char c) {
-        currentTetromino = getTetromino(c);
+    public void setHighScore(int hs) {
+        highScore = hs;
     }
 
-    public void setNextTetromino(char c) {
-        nextTetromino = getTetromino(c);
+    public void setLinesCleared(int lc) {
+        linesCleared = lc;
+    }
+
+    public void setCurrentTetrominoByLabel(char c) {
+        currentTetromino = getTetrominoByLabel(c);
+    }
+
+    public void setNextTetrominoByLabel(char c) {
+        nextTetromino = getTetrominoByLabel(c);
+    }
+
+    public void setCurrentTetromino(Tetromino t) {
+        currentTetromino = t;
+    }
+
+    public void setNextTetromino(Tetromino t) {
+        nextTetromino = t;
     }
 
     /**
@@ -205,7 +234,12 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         timer.start();
     }
 
-
+    // REQUIRES: game is started, game is not paused, game is not over
+    // MODIFIES: this
+    // EFFECTS:  runs the game based on time
+    //           causes current tetromino to drop at rate fallSpeed if it can fall
+    //           when tetromino cannot fall any more, freeze to board and get new current and next tetrominos
+    //           when cycling tetromino, clear any full lines
     @Override
     public void actionPerformed(ActionEvent e) {
         if (gameStart && !paused && !gameOver) {
@@ -234,6 +268,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         ticks++;
     }
 
+    // EFFECTS: draws all aspects of the Tetris game
     public void draw(Graphics g) {
         // draw background
         gameBackground.draw(g);
@@ -258,6 +293,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         drawGameOver(g);
     }
 
+    // EFFECTS: draws buttons on game screen
     private void drawButtons(Graphics g) {
         musicButton.draw(g);
         sfxButton.draw(g);
@@ -267,6 +303,8 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         mysteryButton.draw(g);
     }
 
+    // REQUIRES: game is not started
+    // EFFECTS:  draw start game message on game window
     private void drawGameStart(Graphics g) {
         if (!gameStart) {
             g.setFont(new Font("Arial", 1, BLOCK_SIZE));
@@ -276,6 +314,8 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
+    // REQUIRES: game over
+    // EFFECTS:  draw game over message on game window
     private void drawGameOver(Graphics g) {
         if (gameOver) {
             g.setColor(Color.white);
@@ -285,7 +325,9 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
-    // on game over, record score as new high score if score > old high score
+    // REQUIRES: game is over and high score is not saved
+    // MODIFIES: highscore save file
+    // EFFECTS:  on game over, record score as new high score if score > old high score
     private void gameOverScoreRecord() {
         if (gameOver && !highScoreSaved) {
             highScoreSaved = true;
@@ -303,8 +345,13 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
-    // saves current tetromino to board, summons next one to top, gets random new one
-    // adds score, checks to see if game is over
+    // REQUIRES: current tetromino is directly above block on board or at bottom of game board
+    // MODIFIES: this
+    // EFFECTS:  saves currentTetromino to board,
+    //           changes nextTetromino to currentTetromino
+    //           sets new random tetromino to nextTetromino
+    //           adds score
+    //           checks to see if game is over, makes game over if true
     private void cycleTetromino() {
         board.freezeTetrominoToBoard(currentTetromino);
         currentTetromino = nextTetromino;
@@ -319,8 +366,9 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
+    // REQUIRES: board has at least one full row, ie a row with no value marked 'e'
+    // EFFECTS:  plays different sound effects based on number of rows cleared simultaneously
     private void clearRowSoundEffects(int numFullRows) {
-
         switch (numFullRows) {
             case 1:
                 soundEffects.playOneCleared();
@@ -339,17 +387,20 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
+    // REQUIRES: board with at least one full row, ie a row with no value marked 'e'
+    // MODIFIES: this
+    // EFFECTS:  adds score based on number of rows cleared at once: 100, 300, 600, 1000 for 1, 2, 3, 4 lines
     private void addRowClearScore(int numFullRows) {
         for (int i = 0; i < numFullRows; i++) {
-            if (i == 0) {
-                score -= TETROMINO_SCORE;
-            }
             score += LINE_SCORE * (i + 1);
             linesCleared++;
             board.clearRow();
         }
+        score -= TETROMINO_SCORE;
     }
 
+    // MODIFIES: this
+    // EFFECTS:  intitialize game: set gameStart to true, assign new random tetrominos to current, next tetromino
     private void startGame() {
         gameStart = true;
         currentTetromino = getRandomTetromino();
@@ -358,7 +409,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         soundEffects.playGameStart();
     }
 
-    // return random tetromino
+    // EFFECTS:  return random tetromino from available seven tetrominos as discussed in Tetromino class
     private Tetromino getRandomTetromino() {
         Random rand = new Random();
         int n = rand.nextInt(7);
@@ -380,8 +431,8 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
-    // return random tetromino
-    private Tetromino getTetromino(char c) {
+    // EFFECTS:  return tetromino according to character label as described in Tetromino class
+    private Tetromino getTetrominoByLabel(char c) {
         switch (c) {
             case 'o':
                 return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
@@ -400,7 +451,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
-    // fill score with zeroes on left
+    // EFFECTS:  fill score with zeroes on left to maximum of numZeroes numbers total
     private static String fillZeroes(int numZeroes, int num) {
         StringBuilder outputString = new StringBuilder();
 
@@ -420,42 +471,51 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         return outputString.toString();
     }
 
-    // keystroke event methods
     @Override
     public void keyTyped(KeyEvent e) {
     }
 
+    // REQUIRES: key pressed, game is started, game is not paused
+    // MODIFIES: this
+    // EFFECTS:  down arrow:  move tetromino down on button press if move downwards is not obstructed
+    //           right arrow: move tetromino right on button press if move right is not obstructed
+    //           left arrow:  move tetromino left on button press if move right is not obstructed
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        if (gameStart && !paused) {
+        if (gameStart && !paused && !gameOver) {
             boolean touchingBlock = board.isTetrominoAboveBlock(currentTetromino);
             boolean touchingBottom = board.isTetrominoTouchingBottom(currentTetromino);
 
             // move blocks down with down arrow
-            if (keyCode == KeyEvent.VK_DOWN && !touchingBottom && !touchingBlock && !gameOver) {
+            if (keyCode == KeyEvent.VK_DOWN && !touchingBottom && !touchingBlock) {
                 currentTetromino.fall();
             }
 
             // move blocks left/right with arrow keys
             if (keyCode == KeyEvent.VK_LEFT
-                    && !board.isTetrominoMovementRestrictedOnLeft(currentTetromino) && !gameOver) {
+                    && !board.isTetrominoMovementRestrictedOnLeft(currentTetromino)) {
                 currentTetromino.moveLeft();
             }
             if (keyCode == KeyEvent.VK_RIGHT
-                    && !board.isTetrominoMovementRestrictedOnRight(currentTetromino) && !gameOver) {
+                    && !board.isTetrominoMovementRestrictedOnRight(currentTetromino)) {
                 currentTetromino.moveRight();
             }
         }
     }
 
+    // REQUIRES: key released, game is not started or game is not over
+    // MODIFIES: this
+    // EFFECTS:  start game on spacebar press
+    //           drop currentTetromino to bottom of board on spacebar press
+    //           rotate currentTetromino clockwise on D button press
+    //           rotate currentTetromino counter-clockwise on A button press
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        // start game on spacebar, initialize tetrominos
-        // pause/unpause game
+        // start game on spacebar, initialize tetrominos, or drop tetromino to bottom of board if game is started
         if (keyCode == KeyEvent.VK_SPACE) {
             if (!gameStart) {
                 startGame();
@@ -467,7 +527,6 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
         // rotate tetromino CW or CCW
         if (!gameOver) {
-
             if (keyCode == KeyEvent.VK_D && gameStart && board.canRotateCW(currentTetromino)) {
                 currentTetromino.rotateCW();
             }
@@ -477,12 +536,13 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         }
     }
 
-    // mouse event methods
     @Override
     public void mouseClicked(MouseEvent e) {
     }
 
-    // show visual of button pressed when button is clicked
+    // REQUIRES: MouseEvent: button pressed
+    // MODIFIES: TetrisButton
+    // EFFECTS:  show visual of button pressed when button is clicked by changing colour
     @Override
     public void mousePressed(MouseEvent e) {
         int mouseCode = e.getButton();
@@ -502,7 +562,10 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
     }
 
-    // execute button action when button released, play sound effect, show visual
+    // REQUIRES: MouseEvent: mouse released
+    // MODIFIES: TetrisButton, this
+    // EFFECTS:  execute button action when button released, play sound effect, show visual
+    //           iterate through button array, executing button if mouse is touching it
     @Override
     public void mouseReleased(MouseEvent e) {
         int mouseCode = e.getButton();
@@ -532,6 +595,31 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tetris tetris = (Tetris) o;
+        return getScore() == tetris.getScore()
+                && getLinesCleared() == tetris.getLinesCleared()
+                && getHighScore() == tetris.getHighScore()
+                && Objects.equals(board, tetris.board)
+                && Objects.equals(getCurrentTetromino(), tetris.getCurrentTetromino())
+                && Objects.equals(getNextTetromino(), tetris.getNextTetromino());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, getCurrentTetromino(), getNextTetromino(), getScore(), getLinesCleared(),
+                getHighScore());
+    }
+
+    // EFFECTS: main method for Tetris
+    //          starts game, starts music
     public static void main(String[] args) {
         try {
             tetris = new Tetris(loadHighScore(highScoreFileName));

@@ -1,6 +1,6 @@
 package ca.ubc.cs.cpsc210.tests;
 
-import ca.ubc.cs.cpsc210.parsers.exceptions.MissingFileException;
+import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.Tetris;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
-import static ca.ubc.cs.cpsc210.parsers.SaveHighScore.saveHighScore;
+import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
