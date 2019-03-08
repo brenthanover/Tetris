@@ -21,7 +21,7 @@ public class TetrominoTests {
     private int[][] jMatrixRotatedCCW = {{1, 1}, {1, 0}, {1, 0}};
     private int[][] iMatrixRotated = {{1}, {1}, {1}, {1}};
 
-    @BeforeEach
+    @BeforeEach 
     public void setup() {
         iTetromino = new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
         jTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
