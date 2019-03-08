@@ -606,5 +606,15 @@ public class TetrominoTests {
         assertNotEquals(testTetromino, jTetromino);
     }
 
+    @Test
+    public void testSameTetrominoEqual() {
+        assertEquals(jTetromino, jTetromino);
+    }
+
+    @Test
+    public void testTetrominoEqualsNull() {
+        assertNotEquals(jTetromino, null);
+    }
+
     // no tests for draw() function
 }

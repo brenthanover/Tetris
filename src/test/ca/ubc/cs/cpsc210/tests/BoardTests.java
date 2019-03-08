@@ -457,5 +457,15 @@ public class BoardTests {
         assertNotEquals(board, testBoard);
     }
 
+    @Test
+    public void testSameBoardEqual() {
+        assertEquals(board, board);
+    }
+
+    @Test
+    public void testBoardEqualsNull() {
+        assertNotEquals(board, null);
+    }
+
     // no tests for draw() function
 }

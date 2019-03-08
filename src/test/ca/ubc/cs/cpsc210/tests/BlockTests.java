@@ -42,5 +42,15 @@ public class BlockTests {
         assertNotEquals(block, testBlock);
     }
 
+    @Test
+    public void testSameBlockEqual() {
+        assertEquals(block, block);
+    }
+
+    @Test
+    public void testBlockEqualsNull() {
+        assertNotEquals(block, null);
+    }
+
     // no tests for draw() function
 }

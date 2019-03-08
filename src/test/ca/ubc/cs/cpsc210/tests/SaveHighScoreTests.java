@@ -17,7 +17,7 @@ public class SaveHighScoreTests {
     /**
      *  Declarations
      */
-    Tetris tetris;
+    private Tetris tetris;
 
     @BeforeEach
     public void setup() {

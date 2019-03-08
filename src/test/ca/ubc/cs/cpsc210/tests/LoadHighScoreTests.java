@@ -16,7 +16,7 @@ public class LoadHighScoreTests {
     /**
      *  Declarations
      */
-    Tetris tetris;
+    private Tetris tetris;
 
     @BeforeEach
     public void setup() {
