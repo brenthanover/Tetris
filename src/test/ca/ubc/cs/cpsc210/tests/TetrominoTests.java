@@ -5,13 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TetrominoTests {
 
     private Tetromino iTetromino;
     private Tetromino jTetromino;
+    private Tetromino lTetromino;
     private Tetromino oTetromino;
     private int[][] jMatrixTransposed = {{1, 0}, {1, 0}, {1, 1}};
     private int[][] jMatrixHorizontalFlipped = {{1, 1, 1}, {1, 0, 0}};
@@ -21,10 +22,11 @@ public class TetrominoTests {
     private int[][] jMatrixRotatedCCW = {{1, 1}, {1, 0}, {1, 0}};
     private int[][] iMatrixRotated = {{1}, {1}, {1}, {1}};
 
-    @BeforeEach 
+    @BeforeEach
     public void setup() {
         iTetromino = new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
         jTetromino = new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        lTetromino = new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
         oTetromino = new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
 
     }
@@ -609,6 +611,19 @@ public class TetrominoTests {
     @Test
     public void testSameTetrominoEqual() {
         assertEquals(jTetromino, jTetromino);
+        assertEquals(jTetromino, new Tetromino(jTetrominoMatrix, J_COLOUR, 'j'));
+    }
+
+    @Test
+    public void testDifferentTetrominoSameShapeMatrixSizeEqual() {
+        assertNotEquals(jTetromino, lTetromino);
+    }
+
+    @Test
+    public void testDifferentTetrominoDifferentShapeMatrixSizeEqual() {
+        assertNotEquals(jTetromino, iTetromino);
+        assertNotEquals(jTetromino, oTetromino);
+        assertNotEquals(oTetromino, iTetromino);
     }
 
     @Test

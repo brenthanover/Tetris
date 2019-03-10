@@ -1,16 +1,15 @@
-package ca.ubc.cs.cpsc210.ui;
-
+package ca.ubc.cs.cpsc210.model;
 
 import ca.ubc.cs.cpsc210.audio.SoundEffects;
 import ca.ubc.cs.cpsc210.audio.Music;
 import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
+import ca.ubc.cs.cpsc210.ui.Game;
+import ca.ubc.cs.cpsc210.ui.GameBackground;
 import ca.ubc.cs.cpsc210.ui.buttons.*;
-import ca.ubc.cs.cpsc210.model.Board;
-import ca.ubc.cs.cpsc210.model.Tetromino;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
@@ -18,96 +17,82 @@ import java.util.Random;
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
 import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 
-
-public class Tetris implements ActionListener, KeyListener, MouseListener {
+public class Tetris implements KeyListener, MouseListener {
 
     /**
      * Constants
      */
-    public static final int BLOCK_SIZE = 30;
-    public static final int BOARD_X_POS = 30;
-    public static final int BOARD_Y_POS = 30;
-    public static final int BLOCKS_WIDE = 10;
-    public static final int BLOCKS_HIGH = 20;
-    public static final int BOARD_WIDTH = BLOCK_SIZE * BLOCKS_WIDE;
-    public static final int BOARD_HEIGHT = BLOCK_SIZE * BLOCKS_HIGH;
-    public static final int WINDOW_WIDTH = BOARD_X_POS * 3 + BOARD_WIDTH * 2 + 10;
-    public static final int WINDOW_HEIGHT = BOARD_Y_POS * 2 + BOARD_HEIGHT + 30;
     private static final int LINE_SCORE = 100;
     private static final int TETROMINO_SCORE = 10;
     private static final int SCORE_ZEROES = 6;
     private static final int LINE_ZEROES = 3;
-    private static final int fallSpeed = 20;
-    private static final String highScoreFileName = "highscore";
 
     /**
      * Declarations
      */
-    // Game classes
     private Board board;
-    private static Tetris tetris;
-    private static Render render;
-    private static GameBackground gameBackground;
-    private static Music tetrisMusic;
+    private GameBackground gameBackground;
+    private Music tetrisMusic;
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
     private SoundEffects soundEffects;
-    // Buttons
-    private MusicButton musicButton;
-    private SoundEffectsButton sfxButton;
-    private PauseButton pauseButton;
-    private SaveButton saveButton;
-    private LoadButton loadButton;
-    private MysteryButton mysteryButton;
     private TetrisButton[] buttonList;
 
     /**
      * Variables
      */
-    private static int ticks = 0;
-    private static boolean gameStart = false;
-    private static boolean paused = false;
-    private static boolean playMusic = true;
-    private static boolean playSfx = true;
-    private static boolean gameOver = false;
-    private static boolean highScoreSaved = false;
-    private static int score = 0;
-    private static int linesCleared = 0;
-    private static int highScore = 0;
+    private boolean gameStart = false;
+    private boolean paused = false;
+    private boolean playMusic = true;
+    private boolean playSfx = true;
+    private boolean gameOver = false;
+    private boolean highScoreSaved = false;
+    private int score = 0;
+    private int linesCleared = 0;
+    private int highScore = 0;
 
     /**
      * Getters
      */
-    public static Music getTetrisMusic() {
+    public Music getTetrisMusic() {
         return tetrisMusic;
     }
 
-    public static GameBackground getGameBackground() {
+    public GameBackground getGameBackground() {
         return gameBackground;
     }
 
-    public static Tetris getTetris() {
-        return tetris;
-    }
-
-    public static boolean isPaused() {
+    public boolean isPaused() {
         return paused;
     }
 
-    public static boolean isPlayMusic() {
+    public boolean isPlayMusic() {
         return playMusic;
     }
 
-    public static boolean isPlaySfx() {
+    public boolean isPlaySfx() {
         return playSfx;
     }
 
-    public static String getScoreString() {
+    public boolean isGameStart() {
+        return gameStart;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public boolean isHighScoreSaved() {
+        return highScoreSaved;
+    }
+
+    public String getScoreString() {
         return fillZeroes(SCORE_ZEROES, score);
     }
 
-    public static String getHighScoreString() {
+    public String getHighScoreString() {
         return fillZeroes(SCORE_ZEROES, highScore);
     }
 
@@ -115,7 +100,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         return linesCleared;
     }
 
-    public static String getLinesClearedString() {
+    public String getLinesClearedString() {
         return fillZeroes(LINE_ZEROES, linesCleared);
     }
 
@@ -150,16 +135,20 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     /**
      * Setters
      */
-    public static void setPaused(boolean p) {
+    public void setPaused(boolean p) {
         paused = p;
     }
 
-    public static void setPlayMusic(boolean p) {
+    public void setPlayMusic(boolean p) {
         playMusic = p;
     }
 
-    public static void setPlaySfx(boolean p) {
+    public void setPlaySfx(boolean p) {
         playSfx = p;
+    }
+
+    public void setGameOver(boolean b) {
+        gameOver = b;
     }
 
     public void setGameBoard(char[][] newBoard) {
@@ -198,74 +187,173 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
      * Constructor
      */
     public Tetris(int highScore) {
-        JFrame tetrisJFrame = new JFrame();
-        Timer timer = new Timer(20, this);
-        tetrisMusic = new Music();
-        soundEffects = new SoundEffects();
-        render = new Render(this);
+        soundEffects = new SoundEffects(this);
         board = new Board();
+        gameBackground = new GameBackground(this);
+        tetrisMusic = new Music();
 
-        tetrisJFrame.add(render);
-        tetrisJFrame.setResizable(false);
-        tetrisJFrame.addKeyListener(this);
-        tetrisJFrame.addMouseListener(this);
-        tetrisJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        tetrisJFrame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        tetrisJFrame.setTitle("Tetris");
-        tetrisJFrame.setVisible(true);
-
-        gameBackground = new GameBackground();
         buttonList = new TetrisButton[6];
-        musicButton = new MusicButton();
-        buttonList[0] = musicButton;
-        sfxButton = new SoundEffectsButton();
-        buttonList[1] = sfxButton;
-        mysteryButton = new MysteryButton();
-        buttonList[2] = mysteryButton;
-        pauseButton = new PauseButton();
-        buttonList[3] = pauseButton;
-        saveButton = new SaveButton();
-        buttonList[4] = saveButton;
-        loadButton = new LoadButton();
-        buttonList[5] = loadButton;
+        buttonList[0] = new MusicButton(this);
+        buttonList[1] = new SoundEffectsButton(this);
+        buttonList[2] = new MysteryButton(this);
+        buttonList[3] = new PauseButton(this);
+        buttonList[4] = new SaveButton(this);
+        buttonList[5] = new LoadButton();
 
         this.highScore = highScore;
 
-        timer.start();
     }
 
-    // REQUIRES: game is started, game is not paused, game is not over
-    // MODIFIES: this
-    // EFFECTS:  runs the game based on time
-    //           causes current tetromino to drop at rate fallSpeed if it can fall
-    //           when tetromino cannot fall any more, freeze to board and get new current and next tetrominos
-    //           when cycling tetromino, clear any full lines
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (gameStart && !paused && !gameOver) {
+    // REQUIRES: game is over, high score is not saved
+    // MODIFIES: highscore save file
+    // EFFECTS:  on game over, record score as new high score if score > old high score
+    public void gameOverScoreRecord(String highScoreFileName) {
+        if (gameOver && !highScoreSaved) {
+            highScoreSaved = true;
+            int loadedHighScore = 0;
+            try {
+                loadedHighScore = loadHighScore(highScoreFileName);
+            } catch (MissingFileException | IOException e) {
+                e.printStackTrace();
+            }
 
-            if (ticks % fallSpeed == 0) {
-                if (board.isTetrominoTouchingBottom(currentTetromino)
-                        || board.isTetrominoAboveBlock(currentTetromino)) {
-                    cycleTetromino();
-
-                    // add score based on number of rows cleared
-                    // then clear rows
-                    int numFullRows = board.countFullRows();
-                    clearRowSoundEffects(numFullRows);
-                    addRowClearScore(numFullRows);
-
-                } else {
-                    currentTetromino.fall();
+            if (score > loadedHighScore) {
+                try {
+                    System.out.println("Your new high score is " + score + "!");
+                    saveHighScore(highScoreFileName, score);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
+    }
 
-        gameOverScoreRecord();
+    // REQUIRES: current tetromino is directly above block on board or at bottom of game board
+    // MODIFIES: this
+    // EFFECTS:  saves currentTetromino to board,
+    //           changes nextTetromino to currentTetromino
+    //           sets new random tetromino to nextTetromino
+    //           adds score
+    //           checks to see if game is over, makes game over if true
+    public void cycleTetromino() {
+        board.freezeTetrominoToBoard(currentTetromino);
+        currentTetromino = nextTetromino;
+        currentTetromino.initializeTetromino();
+        nextTetromino = getRandomTetromino();
 
+        score += TETROMINO_SCORE;
 
-        render.repaint();
-        ticks++;
+        if (board.isGameOver(currentTetromino)) {
+            gameOver = true;
+            soundEffects.playGameOver();
+        }
+    }
+
+    // REQUIRES: board has at least one full row, ie a row with no value marked 'e'
+    // EFFECTS:  plays different sound effects based on number of rows cleared simultaneously
+    public void clearRowSoundEffects(int numFullRows) {
+        switch (numFullRows) {
+            case 1:
+                soundEffects.playOneCleared();
+                break;
+            case 2:
+                soundEffects.playTwoCleared();
+                break;
+            case 3:
+                soundEffects.playThreeCleared();
+                break;
+            case 4:
+                soundEffects.playFourCleared();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // REQUIRES: board with at least one full row, ie a row with no value marked 'e'
+    // MODIFIES: this
+    // EFFECTS:  adds score based on number of rows cleared at once: 100, 300, 600, 1000 for 1, 2, 3, 4 lines
+    public void addRowClearScore(int numFullRows) {
+        for (int i = 0; i < numFullRows; i++) {
+            score += LINE_SCORE * (i + 1);
+            linesCleared++;
+            board.clearRow();
+        }
+
+        score -= TETROMINO_SCORE;
+    }
+
+    // MODIFIES: this
+    // EFFECTS:  intitialize game: set gameStart to true, assign new random tetrominos to current, next tetromino
+    public void initializeTetris() {
+        gameStart = true;
+        currentTetromino = getRandomTetromino();
+        currentTetromino.initializeTetromino();
+        nextTetromino = getRandomTetromino();
+        soundEffects.playGameStart();
+    }
+
+    // EFFECTS:  return random tetromino from available seven tetrominos as discussed in Tetromino class
+    public Tetromino getRandomTetromino() {
+        Random rand = new Random();
+        int n = rand.nextInt(7);
+        switch (n) {
+            case 1:
+                return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
+            case 2:
+                return new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
+            case 3:
+                return new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
+            case 4:
+                return new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
+            case 5:
+                return new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
+            case 6:
+                return new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
+            default:
+                return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        }
+    }
+
+    // EFFECTS:  return tetromino according to character label as described in Tetromino class
+    public Tetromino getTetrominoByLabel(char c) {
+        switch (c) {
+            case 'o':
+                return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
+            case 'z':
+                return new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
+            case 'i':
+                return new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
+            case 's':
+                return new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
+            case 't':
+                return new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
+            case 'l':
+                return new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
+            default:
+                return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
+        }
+    }
+
+    // EFFECTS:  fill score with zeroes on left to maximum of numZeroes numbers total
+    //           assuming nobody will get more than a 6 digit score, but will still function if they do
+    public String fillZeroes(int numZeroes, int score) {
+        StringBuilder outputString = new StringBuilder();
+
+        if (score == 0) {
+            for (int i = 0; i < numZeroes; i++) {
+                outputString.append(0);
+            }
+        } else {
+            outputString.append(score);
+            int n = outputString.length();
+
+            for (int i = 0; i < numZeroes - n; i++) {
+                outputString.insert(0, 0);
+            }
+        }
+
+        return outputString.toString();
     }
 
     // EFFECTS: draws all aspects of the Tetris game
@@ -295,12 +383,9 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
 
     // EFFECTS: draws buttons on game screen
     private void drawButtons(Graphics g) {
-        musicButton.draw(g);
-        sfxButton.draw(g);
-        pauseButton.draw(g);
-        saveButton.draw(g);
-        loadButton.draw(g);
-        mysteryButton.draw(g);
+        for (TetrisButton b : buttonList) {
+            b.draw(g);
+        }
     }
 
     // REQUIRES: game is not started
@@ -323,152 +408,6 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
             g.drawString("GAME", BLOCK_SIZE, BLOCK_SIZE * 9);
             g.drawString("OVER", BLOCK_SIZE, BLOCK_SIZE * 9 + BLOCK_SIZE * 3);
         }
-    }
-
-    // REQUIRES: game is over and high score is not saved
-    // MODIFIES: highscore save file
-    // EFFECTS:  on game over, record score as new high score if score > old high score
-    private void gameOverScoreRecord() {
-        if (gameOver && !highScoreSaved) {
-            highScoreSaved = true;
-            try {
-                if (score > loadHighScore(highScoreFileName)) {
-                    try {
-                        saveHighScore(highScoreFileName, score);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (MissingFileException | IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // REQUIRES: current tetromino is directly above block on board or at bottom of game board
-    // MODIFIES: this
-    // EFFECTS:  saves currentTetromino to board,
-    //           changes nextTetromino to currentTetromino
-    //           sets new random tetromino to nextTetromino
-    //           adds score
-    //           checks to see if game is over, makes game over if true
-    private void cycleTetromino() {
-        board.freezeTetrominoToBoard(currentTetromino);
-        currentTetromino = nextTetromino;
-        currentTetromino.initializeTetromino();
-        nextTetromino = getRandomTetromino();
-
-        score += TETROMINO_SCORE;
-
-        if (board.isGameOver(currentTetromino)) {
-            gameOver = true;
-            soundEffects.playGameOver();
-        }
-    }
-
-    // REQUIRES: board has at least one full row, ie a row with no value marked 'e'
-    // EFFECTS:  plays different sound effects based on number of rows cleared simultaneously
-    private void clearRowSoundEffects(int numFullRows) {
-        switch (numFullRows) {
-            case 1:
-                soundEffects.playOneCleared();
-                break;
-            case 2:
-                soundEffects.playTwoCleared();
-                break;
-            case 3:
-                soundEffects.playThreeCleared();
-                break;
-            case 4:
-                soundEffects.playFourCleared();
-                break;
-            default:
-                break;
-        }
-    }
-
-    // REQUIRES: board with at least one full row, ie a row with no value marked 'e'
-    // MODIFIES: this
-    // EFFECTS:  adds score based on number of rows cleared at once: 100, 300, 600, 1000 for 1, 2, 3, 4 lines
-    private void addRowClearScore(int numFullRows) {
-        for (int i = 0; i < numFullRows; i++) {
-            score += LINE_SCORE * (i + 1);
-            linesCleared++;
-            board.clearRow();
-        }
-        score -= TETROMINO_SCORE;
-    }
-
-    // MODIFIES: this
-    // EFFECTS:  intitialize game: set gameStart to true, assign new random tetrominos to current, next tetromino
-    private void startGame() {
-        gameStart = true;
-        currentTetromino = getRandomTetromino();
-        currentTetromino.initializeTetromino();
-        nextTetromino = getRandomTetromino();
-        soundEffects.playGameStart();
-    }
-
-    // EFFECTS:  return random tetromino from available seven tetrominos as discussed in Tetromino class
-    private Tetromino getRandomTetromino() {
-        Random rand = new Random();
-        int n = rand.nextInt(7);
-        switch (n) {
-            case 1:
-                return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
-            case 2:
-                return new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
-            case 3:
-                return new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
-            case 4:
-                return new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
-            case 5:
-                return new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
-            case 6:
-                return new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
-            default:
-                return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
-        }
-    }
-
-    // EFFECTS:  return tetromino according to character label as described in Tetromino class
-    private Tetromino getTetrominoByLabel(char c) {
-        switch (c) {
-            case 'o':
-                return new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
-            case 'z':
-                return new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
-            case 'i':
-                return new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
-            case 's':
-                return new Tetromino(sTetrominoMatrix, S_COLOUR, 's');
-            case 't':
-                return new Tetromino(tTetrominoMatrix, T_COLOUR, 't');
-            case 'l':
-                return new Tetromino(lTetrominoMatrix, L_COLOUR, 'l');
-            default:
-                return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
-        }
-    }
-
-    // EFFECTS:  fill score with zeroes on left to maximum of numZeroes numbers total
-    private static String fillZeroes(int numZeroes, int num) {
-        StringBuilder outputString = new StringBuilder();
-
-        if (num == 0) {
-            for (int i = 0; i < numZeroes; i++) {
-                outputString.append(0);
-            }
-        } else {
-            outputString.append(num);
-            int n = outputString.length();
-
-            for (int i = 0; i < numZeroes - n; i++) {
-                outputString.insert(0, 0);
-            }
-        }
-
-        return outputString.toString();
     }
 
     @Override
@@ -518,10 +457,10 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
         // start game on spacebar, initialize tetrominos, or drop tetromino to bottom of board if game is started
         if (keyCode == KeyEvent.VK_SPACE) {
             if (!gameStart) {
-                startGame();
+                initializeTetris();
             } else if (!gameOver) {
                 board.dropTetrominoToBottom(currentTetromino);
-                ticks = 0;
+                Game.resetTicks();
             }
         }
 
@@ -595,6 +534,7 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -616,16 +556,5 @@ public class Tetris implements ActionListener, KeyListener, MouseListener {
     public int hashCode() {
         return Objects.hash(board, getCurrentTetromino(), getNextTetromino(), getScore(), getLinesCleared(),
                 getHighScore());
-    }
-
-    // EFFECTS: main method for Tetris
-    //          starts game, starts music
-    public static void main(String[] args) {
-        try {
-            tetris = new Tetris(loadHighScore(highScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            e.printStackTrace();
-        }
-        tetrisMusic.playTetrisTheme();
     }
 }

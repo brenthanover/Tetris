@@ -2,7 +2,7 @@ package ca.ubc.cs.cpsc210.tests;
 
 import ca.ubc.cs.cpsc210.persistence.SaveGame;
 import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
-import ca.ubc.cs.cpsc210.ui.Tetris;
+import ca.ubc.cs.cpsc210.model.Tetris;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ import java.io.IOException;
 import static ca.ubc.cs.cpsc210.parsers.LoadGame.*;
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
 import static ca.ubc.cs.cpsc210.persistence.SaveGame.saveGame;
-import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCKS_HIGH;
-import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCKS_WIDE;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_HIGH;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SaveLoadGameTests {

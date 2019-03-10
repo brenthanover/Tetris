@@ -3,7 +3,7 @@ package ca.ubc.cs.cpsc210.model;
 import java.awt.*;
 import java.util.Objects;
 
-import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCK_SIZE;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCK_SIZE;
 
 public class Block {
 
@@ -39,7 +39,7 @@ public class Block {
     }
 
     /**
-     *  Methods
+     * Methods
      */
     // EFFECTS: draws blockColour coloured square with grey border at blockXPos, blockYPos, of size BLOCK_SIZE
     public void draw(Graphics g) {

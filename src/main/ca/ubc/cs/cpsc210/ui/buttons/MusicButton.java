@@ -1,25 +1,34 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
 
-import ca.ubc.cs.cpsc210.ui.Tetris;
-
-import static ca.ubc.cs.cpsc210.ui.Tetris.isPlayMusic;
-import static ca.ubc.cs.cpsc210.ui.Tetris.setPlayMusic;
+import ca.ubc.cs.cpsc210.model.Tetris;
 
 public class MusicButton extends TetrisButton {
 
-    public MusicButton() {
+    /**
+     *  Declarations
+     */
+    private Tetris tetris;
+
+    /**
+     *  Constructor
+     */
+    public MusicButton(Tetris tetris) {
         super(mBX, mBY, mBW, mBH, mBN);
+        this.tetris = tetris;
     }
 
+    /**
+     *  Methods
+     */
     public void buttonAction() {
-        if (Tetris.isPlayMusic()) {
-            Tetris.getTetrisMusic().stop();
-            Tetris.setPlayMusic(false);
+        if (tetris.isPlayMusic()) {
+            tetris.getTetrisMusic().stop();
+            tetris.setPlayMusic(false);
             buttonName = "MUSIC OFF";
         } else {
-            Tetris.getTetrisMusic().playTetrisTheme();
-            setPlayMusic(true);
+            tetris.getTetrisMusic().playTetrisTheme();
+            tetris.setPlayMusic(true);
             buttonName = "MUSIC ON";
         }
     }

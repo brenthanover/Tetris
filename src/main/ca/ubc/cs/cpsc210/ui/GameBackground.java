@@ -1,9 +1,11 @@
 package ca.ubc.cs.cpsc210.ui;
 
+import ca.ubc.cs.cpsc210.model.Tetris;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 
 public class GameBackground {
 
@@ -23,6 +25,11 @@ public class GameBackground {
     private static final int LINES_Y = BLOCK_SIZE * 2;
 
     /**
+     *  Declarations
+     */
+    Tetris tetris;
+
+    /**
      * Variables
      */
     private Color backgroundColour = Color.black;
@@ -38,7 +45,8 @@ public class GameBackground {
     /**
      * Constructor
      */
-    public GameBackground() {
+    public GameBackground(Tetris tetris) {
+        this.tetris = tetris;
     }
 
     /**
@@ -67,7 +75,7 @@ public class GameBackground {
     // EFFECTS: draws window of game background
     private void drawWindow(Graphics g) {
         g.setColor(backgroundColour);
-        g.fillRect(0, 0, Tetris.WINDOW_WIDTH, Tetris.WINDOW_HEIGHT);
+        g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
     // EFFECTS: draws blank game board
@@ -106,10 +114,10 @@ public class GameBackground {
         g.setColor(TEXT_COLOUR);
         g.setFont(new Font(FONT_TYPE, FONT_STYLE, FONT_SIZE));
         g.drawString("LINES", BLOCK_SIZE, LINES_Y);
-        g.drawString(getLinesClearedString(), LINES_X, LINES_Y);
+        g.drawString(tetris.getLinesClearedString(), LINES_X, LINES_Y);
         g.drawString("TOP", BLOCK_SIZE, HIGH_SCORE_Y);
-        g.drawString(getHighScoreString(), HIGH_SCORE_X, HIGH_SCORE_Y);
+        g.drawString(tetris.getHighScoreString(), HIGH_SCORE_X, HIGH_SCORE_Y);
         g.drawString("SCORE", BLOCK_SIZE, SCORE_Y);
-        g.drawString(getScoreString(), SCORE_X, SCORE_Y);
+        g.drawString(tetris.getScoreString(), SCORE_X, SCORE_Y);
     }
 }

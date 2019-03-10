@@ -2,7 +2,7 @@ package ca.ubc.cs.cpsc210.tests;
 
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
-import ca.ubc.cs.cpsc210.ui.Tetris;
+import ca.ubc.cs.cpsc210.model.Tetris;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

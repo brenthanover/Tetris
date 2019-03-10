@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 
 public class Board {
 

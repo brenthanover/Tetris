@@ -3,7 +3,7 @@ package ca.ubc.cs.cpsc210.tests;
 import ca.ubc.cs.cpsc210.model.Board;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import ca.ubc.cs.cpsc210.model.Tetromino;

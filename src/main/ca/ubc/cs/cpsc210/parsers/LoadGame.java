@@ -1,7 +1,7 @@
 package ca.ubc.cs.cpsc210.parsers;
 
 import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
-import ca.ubc.cs.cpsc210.ui.Tetris;
+import ca.ubc.cs.cpsc210.model.Tetris;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,7 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_HIGH;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
 
 public class LoadGame {
 

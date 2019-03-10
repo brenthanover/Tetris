@@ -3,7 +3,7 @@ package ca.ubc.cs.cpsc210.ui.buttons;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 
 public abstract class TetrisButton {
 

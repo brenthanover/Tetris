@@ -1,44 +1,56 @@
 package ca.ubc.cs.cpsc210.ui.buttons;
 
-import ca.ubc.cs.cpsc210.ui.Tetris;
+import ca.ubc.cs.cpsc210.model.Tetris;
 
 import java.awt.*;
 
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
-
-
 public class MysteryButton extends TetrisButton {
 
+    /**
+     * Declarations
+     */
+    private Tetris tetris;
+
+    /**
+     * Variables
+     */
     private int count;
 
-    public MysteryButton() {
+    /**
+     * Constructor
+     */
+    public MysteryButton(Tetris tetris) {
         super(qBX, qBY, qBW, qBH, qBN);
         count = 0;
+        this.tetris = tetris;
     }
 
+    /**
+     * Methods
+     */
     public void buttonAction() {
-        Tetris.getTetrisMusic().stop();
+        tetris.getTetrisMusic().stop();
         playNextSong();
         count++;
-        setPlayMusic(true);
+        tetris.setPlayMusic(true);
     }
 
     private void playNextSong() {
         switch (count % 3) {
             case 0:
-                Tetris.getTetrisMusic().shrek();
+                tetris.getTetrisMusic().shrek();
                 buttonName = "SAX";
-                Tetris.getGameBackground().setBackgroundColour(Color.green.darker());
+                tetris.getGameBackground().setBackgroundColour(Color.green.darker());
                 break;
             case 1:
-                Tetris.getTetrisMusic().sax();
+                tetris.getTetrisMusic().sax();
                 buttonName = "TETRIS";
-                Tetris.getGameBackground().setBackgroundColour(Color.cyan.darker());
+                tetris.getGameBackground().setBackgroundColour(Color.cyan.darker());
                 break;
             default:
-                Tetris.getTetrisMusic().playTetrisTheme();
+                tetris.getTetrisMusic().playTetrisTheme();
                 buttonName = "SHREK";
-                Tetris.getGameBackground().setBackgroundColour(Color.black);
+                tetris.getGameBackground().setBackgroundColour(Color.black);
                 break;
 
         }

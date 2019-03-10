@@ -2,14 +2,12 @@ package ca.ubc.cs.cpsc210.persistence;
 
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
-import ca.ubc.cs.cpsc210.ui.Tetris;
+import ca.ubc.cs.cpsc210.model.Tetris;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
-
-import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCKS_HIGH;
-import static ca.ubc.cs.cpsc210.ui.Tetris.BLOCKS_WIDE;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_HIGH;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
 
 public class Jsonifier {
 

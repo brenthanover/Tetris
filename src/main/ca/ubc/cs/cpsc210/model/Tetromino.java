@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static ca.ubc.cs.cpsc210.ui.Tetris.*;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 
 
 public class Tetromino {
@@ -331,13 +331,14 @@ public class Tetromino {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Tetromino tetromino = (Tetromino) o;
+        if (shape.length != tetromino.getShape().length
+                || shape[0].length != tetromino.getShape()[0].length) {
+            return false;
+        }
         for (int i = 0; i < shape.length; i++) {
             for (int j = 0; j < shape[0].length; j++) {
                 if (shape[i][j] != tetromino.getShape()[i][j]) {
