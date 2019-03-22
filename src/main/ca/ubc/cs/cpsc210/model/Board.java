@@ -53,6 +53,7 @@ public class Board {
     /**
      * Constructor
      */
+    // EFFECTS: constructs Board object
     public Board() {
         boardGrid = new char[BLOCKS_HIGH][BLOCKS_WIDE];
 
@@ -355,7 +356,7 @@ public class Board {
 
         for (int i = 0; i < BLOCKS_HIGH; i++) {
             for (int j = 0; j < BLOCKS_WIDE; j++) {
-                if (boardGrid[i][j] != ((Board) o).getBoardGrid()[i][j]) {
+                if (boardGrid[i][j] != board.getBoardGrid()[i][j]) {
                     return false;
                 }
             }

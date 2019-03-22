@@ -20,6 +20,9 @@ public class PauseButton extends TetrisButton {
     /**
      *  Methods
      */
+    // REQUIRES: gameStart = true
+    // EFFECTS:  pauses and unpauses game and music
+    //           note music is just paused, replays at same spot it was paused at
     public void buttonAction() {
         if (!tetris.isPaused()) {
             tetris.setPaused(true);

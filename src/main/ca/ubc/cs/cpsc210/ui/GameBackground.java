@@ -27,7 +27,7 @@ public class GameBackground {
     /**
      *  Declarations
      */
-    Tetris tetris;
+    private Tetris tetris;
 
     /**
      * Variables

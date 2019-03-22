@@ -9,13 +9,11 @@ import ca.ubc.cs.cpsc210.ui.buttons.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
-import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
 import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 import static ca.ubc.cs.cpsc210.ui.Game.*;
 
@@ -33,11 +31,11 @@ public class Tetris implements KeyListener, MouseListener {
      * Declarations
      */
     private Board board;
-    private GameBackground gameBackground;
-    private Music tetrisMusic;
+    private static GameBackground gameBackground;
+    private static Music tetrisMusic;
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
-    private SoundEffects soundEffects;
+    private static SoundEffects soundEffects;
     private TetrisButton[] buttonList;
 
     /**
@@ -151,6 +149,10 @@ public class Tetris implements KeyListener, MouseListener {
         gameOver = b;
     }
 
+    public void setGameStart(boolean b) {
+        gameStart = b;
+    }
+
     public void setGameBoard(char[][] newBoard) {
         board.setBoardGrid(newBoard);
     }
@@ -186,6 +188,7 @@ public class Tetris implements KeyListener, MouseListener {
     /**
      * Constructor
      */
+    // EFFECTS: constructs Tetris object
     public Tetris(int highScore) {
         soundEffects = new SoundEffects(this);
         board = new Board();
@@ -198,10 +201,9 @@ public class Tetris implements KeyListener, MouseListener {
         buttonList[2] = new MysteryButton(this);
         buttonList[3] = new PauseButton(this);
         buttonList[4] = new SaveButton(this);
-        buttonList[5] = new LoadButton();
+        buttonList[5] = new LoadButton(this);
 
         this.highScore = highScore;
-
     }
 
     // REQUIRES: game is over, high score is not saved
@@ -210,14 +212,8 @@ public class Tetris implements KeyListener, MouseListener {
     public void gameOverScoreRecord(String highScoreFileName) {
         if (gameOver && !highScoreSaved) {
             highScoreSaved = true;
-            int loadedHighScore = 0;
-            try {
-                loadedHighScore = loadHighScore(highScoreFileName);
-            } catch (MissingFileException | IOException e) {
-                e.printStackTrace();
-            }
 
-            if (score > loadedHighScore) {
+            if (score > highScore) {
                 try {
                     System.out.println("Your new high score is " + score + "!");
                     saveHighScore(highScoreFileName, score);
@@ -455,7 +451,7 @@ public class Tetris implements KeyListener, MouseListener {
         int keyCode = e.getKeyCode();
 
         // start game on spacebar, initialize tetrominos, or drop tetromino to bottom of board if game is started
-        if (keyCode == KeyEvent.VK_SPACE) {
+        if (keyCode == KeyEvent.VK_SPACE && !paused) {
             if (!gameStart) {
                 initializeTetris();
             } else if (!gameOver) {
@@ -557,4 +553,6 @@ public class Tetris implements KeyListener, MouseListener {
         return Objects.hash(board, getCurrentTetromino(), getNextTetromino(), getScore(), getLinesCleared(),
                 getHighScore());
     }
+
+
 }

@@ -1,10 +1,8 @@
 package ca.ubc.cs.cpsc210.ui;
 
-import ca.ubc.cs.cpsc210.audio.Music;
 import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetris;
-import ca.ubc.cs.cpsc210.model.Tetromino;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +13,6 @@ import java.io.IOException;
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
 
 public class Game implements ActionListener {
-
     /**
      * Constants
      */
@@ -36,13 +33,38 @@ public class Game implements ActionListener {
      */
     private static Tetris tetris;
     private static Render render;
-    private static Game game;
+    private static JFrame gameJFrame;
+    private static Timer timer;
 
+    /**
+     * Constructor
+     */
+    // EFFECTS: constructs Game object
     public Game() {
-        JFrame gameJFrame = new JFrame();
-        Timer timer = new Timer(20, this);
+    }
+
+    /**
+     * Variables
+     */
+    private static int ticks = 0;
+
+    /**
+     * Setters
+     */
+    public static void resetTicks() {
+        ticks = 0;
+    }
+
+    /**
+     * Methods
+     */
+    // MODIFIES: this
+    // EFFECTS: runs Tetris game
+    //          creates JFrame GUI with timer
+    public void run() {
+        gameJFrame = new JFrame();
+        timer = new Timer(20, this);
         render = new Render(this);
-        tetris = new Tetris(0);
 
         gameJFrame.add(render);
         gameJFrame.setResizable(false);
@@ -53,22 +75,8 @@ public class Game implements ActionListener {
         gameJFrame.setTitle("Tetris");
         gameJFrame.setVisible(true);
 
-
         timer.start();
     }
-
-    /**
-     * Variables
-     */
-    private static int ticks = 0;
-
-    /**
-     *  Setters
-     */
-    public static void resetTicks() {
-        ticks = 0;
-    }
-
 
     // REQUIRES: game is started, game is not paused, game is not over
     // MODIFIES: this
@@ -104,19 +112,23 @@ public class Game implements ActionListener {
         ticks++;
     }
 
+    // EFFECTS: draws game to JFrame
     public void draw(Graphics g) {
         tetris.draw(g);
     }
 
-    // EFFECTS: main method for Tetris
-    //          starts game, starts music
+    // MODIFIES: this
+    // EFFECTS:  main method for Tetris
+    //           starts game, starts music
     public static void main(String[] args) {
         try {
             tetris = new Tetris(loadHighScore(highScoreFileName));
         } catch (MissingFileException | IOException e) {
             e.printStackTrace();
         }
-        game = new Game();
+
+        Game game = new Game();
+        game.run();
         tetris.getTetrisMusic().playTetrisTheme();
     }
 }

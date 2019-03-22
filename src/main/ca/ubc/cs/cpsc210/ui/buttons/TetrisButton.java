@@ -85,6 +85,7 @@ public abstract class TetrisButton {
     /**
      *  Constructor
      */
+    // EFFECTS: constructs a TetrisButton object
     public TetrisButton(int buttonX, int buttonY, int buttonWidth, int buttonHeight, String buttonName) {
         this.buttonX = buttonX;
         this.buttonY = buttonY;
@@ -96,6 +97,7 @@ public abstract class TetrisButton {
     /**
      *  Methods
      */
+    // EFFECTS: produces true if mouse is inside the butotn
     public boolean isMouseTouching(int mouseX, int mouseY) {
         initializeMouseCoords(mouseX, mouseY);
 
@@ -104,18 +106,20 @@ public abstract class TetrisButton {
         return onX && onY;
     }
 
+    // EFFECTS: abstract method for button action
     public abstract void buttonAction();
 
-    // changes button colour to provide feedback
+    // EFFECTS: changes button colour to provide feedback
     public void showButtonPressed() {
         buttonColour = Color.gray;
     }
 
-    // changes button colour to provide feedback
+    // EFFECTS: changes button colour to provide feedback
     public void showButtonReleased() {
         buttonColour = Color.white;
     }
 
+    // EFFECTS: draws tetris button
     public void draw(Graphics g) {
         // set up button on screen
         g.setColor(buttonColour);
@@ -134,7 +138,10 @@ public abstract class TetrisButton {
         g.drawString(buttonName, buttonX + offsetX, buttonY + offsetY);
     }
 
-    // for whatever reason, clicking on 0,0 in the window yields 3, 25
+    // REQUIRES: mouse listener
+    // EFFECTS:  for whatever reason, clicking on 0,0 in the window yields 3, 25
+    //           something to do with the margins of the window maybe?
+    //           offsetting by 3 and 25 fixes the issue
     public void initializeMouseCoords(int mouseX, int mouseY) {
         this.mouseX = mouseX - 3 - BOARD_X_POS - BLOCK_SIZE - BOARD_WIDTH;
         this.mouseY = mouseY - 25 - BLOCK_SIZE;

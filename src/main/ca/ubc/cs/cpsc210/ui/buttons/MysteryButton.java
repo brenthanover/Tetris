@@ -28,6 +28,7 @@ public class MysteryButton extends TetrisButton {
     /**
      * Methods
      */
+    // EFFECTS: cycles between songs and background themes
     public void buttonAction() {
         tetris.getTetrisMusic().stop();
         playNextSong();
@@ -35,6 +36,9 @@ public class MysteryButton extends TetrisButton {
         tetris.setPlayMusic(true);
     }
 
+    // EFFECTS:  if playing tetris theme, play shrek theme, set backgorund to green
+    //           if playing shrek theme, play sax theme, set background to blue
+    //           if playing sax theme, play tetris theme, set background to black
     private void playNextSong() {
         switch (count % 3) {
             case 0:

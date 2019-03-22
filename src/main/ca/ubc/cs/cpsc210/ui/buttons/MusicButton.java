@@ -13,6 +13,7 @@ public class MusicButton extends TetrisButton {
     /**
      *  Constructor
      */
+    // EFFECTS: constructs MusicButton object
     public MusicButton(Tetris tetris) {
         super(mBX, mBY, mBW, mBH, mBN);
         this.tetris = tetris;
@@ -21,6 +22,9 @@ public class MusicButton extends TetrisButton {
     /**
      *  Methods
      */
+    // MODIFIES: tetris
+    // EFFECTS:  toggles music on and off
+    //           music starts at beginning when it is turned on
     public void buttonAction() {
         if (tetris.isPlayMusic()) {
             tetris.getTetrisMusic().stop();

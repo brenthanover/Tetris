@@ -11,13 +11,23 @@ public class SaveButton extends TetrisButton {
     /**
      * Declarations
      */
-    Tetris tetris;
+    private Tetris tetris;
 
+    /**
+     *  Constructor
+     */
+    // EFFECTS: constructs a SaveButton object
     public SaveButton(Tetris tetris) {
         super(sBX, sBY, sBW, sBH, sBN);
         this.tetris = tetris;
     }
 
+    /**
+     *  Methods
+     */
+    // REQUIRES: gameStart = true
+    // MODIFIES: save file on disk
+    // EFFECTS:  saves current game state to file
     public void buttonAction() {
         try {
             saveGame("savegame", tetris);

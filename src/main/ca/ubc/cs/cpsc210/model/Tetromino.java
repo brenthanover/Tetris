@@ -126,6 +126,7 @@ public class Tetromino {
     /**
      * Constructor
      */
+    // EFFECTS: constructs Tetromino object
     public Tetromino(int[][] shape, Color c, char label) {
         this.shape = shape;
         this.tetrominoColour = c;

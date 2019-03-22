@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
+import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -26,13 +27,15 @@ public class LoadHighScoreTests {
     @Test
     public void testLoadHighScore() {
         try {
-            tetris = new Tetris(loadHighScore("testhighscore"));
+            saveHighScore("testHighScore", 1000);
+        } catch (IOException e) {
+            fail("should not throw exception");
+        }
+        try {
+            tetris = new Tetris(loadHighScore("testHighScore"));
             assertEquals(1000, tetris.getHighScore());
             // expected
-        } catch (MissingFileException e) {
-            e.printStackTrace();
-            fail("no exception should be thrown, testhighscore exists");
-        } catch (IOException e) {
+        } catch (MissingFileException | IOException e) {
             fail("no exception should be thrown, testhighscore exists");
         }
     }
@@ -40,7 +43,7 @@ public class LoadHighScoreTests {
     @Test
     public void testNoFile() {
         try {
-            int highScore = loadHighScore("nonexistenthighscore");
+            int highScore = loadHighScore("nonexistenthighscorefile");
             fail("MissingFileException should have been thrown");
         } catch (MissingFileException e) {
             // expected

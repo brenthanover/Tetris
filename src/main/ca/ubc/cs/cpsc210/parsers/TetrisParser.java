@@ -24,22 +24,20 @@ public class TetrisParser {
         try {
             parsedTetris = new Tetris(loadHighScore("highscore"));
         } catch (MissingFileException | IOException e) {
-            //
+            e.printStackTrace();
         }
 
         Tetromino currentTetromino = parseTetromino(tetrisJson.getJSONObject("currentTetromino"));
         Tetromino nextTetromino = parseTetromino(tetrisJson.getJSONObject("nextTetromino"));
         Board board = parseBoard(tetrisJson.getJSONObject("board"));
-        int score = tetrisJson.getInt("score");
-        int linesCleared = tetrisJson.getInt("linesCleared");
-        int highScore = tetrisJson.getInt("highScore");
 
         parsedTetris.setCurrentTetromino(currentTetromino);
         parsedTetris.setNextTetromino(nextTetromino);
         parsedTetris.setGameBoard(board.getBoardGrid());
-        parsedTetris.setScore(score);
-        parsedTetris.setLinesCleared(linesCleared);
-        parsedTetris.setHighScore(highScore);
+        parsedTetris.setScore(tetrisJson.getInt("score"));
+        parsedTetris.setLinesCleared(tetrisJson.getInt("linesCleared"));
+        parsedTetris.setHighScore(tetrisJson.getInt("highScore"));
+
 
         return parsedTetris;
     }

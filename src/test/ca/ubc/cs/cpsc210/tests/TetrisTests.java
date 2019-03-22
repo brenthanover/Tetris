@@ -15,12 +15,6 @@ import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TetrisTests {
-    private int leftKeyCode = 37;
-    private int rightKeyCode = 39;
-    private int downKeyCode = 40;
-    private int spaceKeyCode = 32;
-    private int aKeyCode = 65;
-    private int dKeyCode = 68;
     private Tetris testTetris;
     private Board board;
     private int testHighScore = 1000;
@@ -42,7 +36,7 @@ public class TetrisTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        testTetris = new Tetris(testHighScore);
+        testTetris = new Tetris(0);
         board = new Board();
         oTetromino = new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
         zTetromino = new Tetromino(zTetrominoMatrix, Z_COLOUR, 'z');
@@ -55,7 +49,7 @@ public class TetrisTests {
 
     @Test
     public void testConstructor() {
-        assertEquals(testTetris.getHighScore(), testHighScore);
+        assertEquals(0, testTetris.getHighScore());
         assertEquals(board, testTetris.getGameBoard());
         assertEquals(0, testTetris.getScore());
     }
@@ -92,6 +86,8 @@ public class TetrisTests {
 
     @Test
     public void testGameOverScoreRecordRightBooleansNoHighScore() {
+        testTetris = new Tetris(testHighScore * 2);
+
         try {
             saveHighScore(testHighScoreFileName, testHighScore * 2);
         } catch (IOException e) {
@@ -305,33 +301,33 @@ public class TetrisTests {
 
     @Test
     public void testEquals() {
-        Tetris t = new Tetris(testHighScore);
+        Tetris t = new Tetris(0);
         assertEquals(t, testTetris);
         assertEquals(t, t);
     }
 
     @Test
     public void testNotEquals() {
-        Tetris t = new Tetris(testHighScore);
+        Tetris t = new Tetris(0);
         assertEquals(t, testTetris);
         t.addRowClearScore(1);
         assertNotEquals(t, testTetris);
 
-        t = new Tetris(0);
+        t = new Tetris(testHighScore);
         assertNotEquals(t, testTetris);
 
-        t = new Tetris(testHighScore);
+        t = new Tetris(0);
         assertEquals(t, testTetris);
         t.getGameBoard().setBoardGridBlock(0,0,'i');
         assertNotEquals(t, testTetris);
 
 
-        t = new Tetris(testHighScore);
+        t = new Tetris(0);
         assertEquals(t, testTetris);
         t.setLinesCleared(1);
         assertNotEquals(t, testTetris);
 
-        t = new Tetris(testHighScore);
+        t = new Tetris(0);
         t.initializeTetris();
         testTetris.initializeTetris();
         t.setCurrentTetrominoByLabel('i');

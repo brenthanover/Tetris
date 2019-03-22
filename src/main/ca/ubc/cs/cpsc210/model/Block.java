@@ -32,6 +32,7 @@ public class Block {
     /**
      * Constructor
      */
+    // EFFECTS: constructs Block object
     public Block(int x, int y, Color c) {
         this.blockXPos = x;
         this.blockYPos = y;

@@ -2,23 +2,35 @@ package ca.ubc.cs.cpsc210.parsers;
 
 import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.model.Tetris;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
-import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_HIGH;
-import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
+import static ca.ubc.cs.cpsc210.parsers.TetrisParser.parseTetris;
 
 public class LoadGame {
 
-    // EFFECTS: loads saved game data from text file and produce Tetris game state
-    public static Tetris loadGame(String fileName) throws MissingFileException, IOException {
+    // MODIFIES: Game
+    // EFFECTS:  loads saved game data from String fileName
+    //           parses string into JSONObject
+    //           parses JSONObject into Tetris object
+    //           sets current game state to parsed Tetris object
+    public static void loadGame(String fileName, Tetris tetris) throws MissingFileException, IOException {
+        String data = loadString(fileName);
+
+        JSONObject obj = new JSONObject(data);
+        Tetris parsedTetris = parseTetris(obj);
+
+        setTetris(tetris, parsedTetris);
+    }
+
+    // EFFECTS: returns data string from file in savefiles directory
+    public static String loadString(String fileName) throws MissingFileException, IOException {
         String directory = "src/main/ca/ubc/cs/cpsc210/resources/savefiles/";
         fileName = directory + fileName;
-        String data = "";
         File file = new File(fileName);
 
         if (!file.exists()) {
@@ -26,43 +38,18 @@ public class LoadGame {
         }
 
         BufferedReader br = new BufferedReader(new FileReader(fileName));
-        data = br.readLine();
 
-
-        // decode the data here from string data
-        String[] parsedData = data.split("@", 5);
-
-        return loadTetris(parsedData);
+        return br.readLine();
     }
 
-    public static Tetris loadTetris(String[] parsedData) throws MissingFileException, IOException {
-        String boardString = parsedData[0];
-        char currentColour = parsedData[1].charAt(0);
-        char nextColour = parsedData[2].charAt(0);
-        int score = Integer.parseInt(parsedData[3]);
-        Tetris loadedTetris;
-
-        loadedTetris = new Tetris(loadHighScore("highscore"));
-
-        loadedTetris.setScore(score);
-        loadedTetris.setGameBoard(loadedBoard(boardString));
-        loadedTetris.setCurrentTetrominoByLabel(currentColour);
-        loadedTetris.setNextTetrominoByLabel(nextColour);
-
-        return loadedTetris;
-    }
-
-    public static char[][] loadedBoard(String data) {
-        int count = 0;
-        char[][] output = new char[BLOCKS_HIGH][BLOCKS_WIDE];
-
-        for (int i = 0; i < BLOCKS_HIGH; i++) {
-            for (int j = 0; j < BLOCKS_WIDE; j++) {
-                output[i][j] = data.charAt(count);
-                count++;
-            }
-        }
-
-        return output;
+    // EFFECTS: sets current game state tetris to parameters of parsedTetris
+    public static void setTetris(Tetris tetris, Tetris parsedTetris) {
+        tetris.setCurrentTetromino(parsedTetris.getCurrentTetromino());
+        tetris.setNextTetromino(parsedTetris.getNextTetromino());
+        tetris.setGameBoard(parsedTetris.getGameBoard().getBoardGrid());
+        tetris.setScore(parsedTetris.getScore());
+        tetris.setLinesCleared(parsedTetris.getLinesCleared());
+        tetris.setHighScore(parsedTetris.getHighScore());
+        tetris.setPaused(true);
     }
 }
