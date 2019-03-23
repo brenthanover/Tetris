@@ -330,6 +330,24 @@ public class Tetromino {
         }
     }
 
+    // EFFECTS: draw method not included in tests
+    public void draw(Graphics g) {
+        int toDrawX = tetrominoX;
+        int toDrawY = tetrominoY;
+
+        for (int[] row : shape) {
+            for (int col : row) {
+                if (col == 1) {
+                    block = new Block(toDrawX, toDrawY, tetrominoColour);
+                    block.draw(g);
+                }
+                toDrawX += BLOCK_SIZE;
+            }
+            toDrawX = tetrominoX;
+            toDrawY += BLOCK_SIZE;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -358,23 +376,5 @@ public class Tetromino {
         int result = Objects.hash(getTetrominoColour(), getTetrominoX(), getTetrominoY(), getLabel(), rotationPosition);
         result = 31 * result + Arrays.hashCode(getShape());
         return result;
-    }
-
-    // EFFECTS: draw method not included in tests
-    public void draw(Graphics g) {
-        int toDrawX = tetrominoX;
-        int toDrawY = tetrominoY;
-
-        for (int[] row : shape) {
-            for (int col : row) {
-                if (col == 1) {
-                    block = new Block(toDrawX, toDrawY, tetrominoColour);
-                    block.draw(g);
-                }
-                toDrawX += BLOCK_SIZE;
-            }
-            toDrawX = tetrominoX;
-            toDrawY += BLOCK_SIZE;
-        }
     }
 }

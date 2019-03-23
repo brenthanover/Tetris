@@ -11,7 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class BoardTests {
-
+    /**
+     *  Declarations
+     */
     private Board board;
     private Board testBoard;
     private Tetromino squareTetromino;
@@ -19,6 +21,9 @@ public class BoardTests {
     private Tetromino sTetromino;
     private char[][] testBoardGrid;
 
+    /**
+     *  Tests
+     */
     @BeforeEach
     public void setup() {
         board = new Board();
@@ -453,6 +458,8 @@ public class BoardTests {
 
     @Test
     public void testBoardNotEquals() {
+        assertNotEquals(board, new Object());
+
         board.setBoardGridBlock(0,0,'i');
         assertNotEquals(board, testBoard);
     }
@@ -467,5 +474,8 @@ public class BoardTests {
         assertNotEquals(board, null);
     }
 
-    // no tests for draw() function
+    @Test
+    public void testDraw() {
+        // not in scope for this project
+    }
 }

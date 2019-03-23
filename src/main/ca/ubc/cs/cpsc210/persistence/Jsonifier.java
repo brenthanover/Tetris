@@ -3,6 +3,7 @@ package ca.ubc.cs.cpsc210.persistence;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
 import ca.ubc.cs.cpsc210.model.Tetris;
+import ca.ubc.cs.cpsc210.ui.GameBackground;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,18 +11,42 @@ import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_HIGH;
 import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
 
 public class Jsonifier {
+    /**
+     *  Constants
+     */
+    public static final String KEY_TETROMINO_LABEL = "label";
+    public static final String KEY_TETROMINO_COLOUR = "tetrominoColour";
+    public static final String KEY_TETROMINO_X = "tetrominoX";
+    public static final String KEY_TETROMINO_Y = "tetrominoY";
+    public static final String KEY_TETROMINO_ROTATION_POSITION = "rotationPosition";
+    public static final String KEY_TETROMINO_SHAPE_ROWS = "shapeRows";
+    public static final String KEY_TETROMINO_SHAPE_COLS = "shapeCols";
+    public static final String KEY_TETROMINO_SHAPE = "shape";
+    public static final String KEY_BOARD = "board";
+    public static final String KEY_GAME_BACKGROUND_SCORE = "score";
+    public static final String KEY_GAME_BACKGROUND_HIGH_SCORE = "highScore";
+    public static final String KEY_GAME_BACKGROUND_LINES_CLEARED = "linesCleared";
+    public static final String KEY_GAME_BACKGROUND_BACKGROUND_COLOUR = "backgroundColour";
+    public static final String KEY_TETRIS_CURRENT_TETROMINO = "currentTetromino";
+    public static final String KEY_TETRIS_NEXT_TETROMINO = "nextTetromino";
+    public static final String KEY_TETRIS_BOARD = "board";
+    public static final String KEY_TETRIS_GAME_BACKGROUND = "gameBackground";
+    public static final String KEY_TETRIS_HIGH_SCORE = "highScore";
 
+    /**
+     *  Methods
+     */
     // EFFECTS: returns JSON object representing a Tetromino object
     public static JSONObject tetrominoToJson(Tetromino t) {
         JSONObject tetrominoJson = new JSONObject();
 
-        tetrominoJson.put("label", String.valueOf(t.getLabel()));
-        tetrominoJson.put("tetrominoColour", Integer.toString(t.getTetrominoColour().getRGB()));
-        tetrominoJson.put("tetrominoX", t.getTetrominoX());
-        tetrominoJson.put("tetrominoY", t.getTetrominoY());
-        tetrominoJson.put("rotationPosition", t.getRotationPosition());
-        tetrominoJson.put("shapeRows", t.getShape().length);
-        tetrominoJson.put("shapeCols", t.getShape()[0].length);
+        tetrominoJson.put(KEY_TETROMINO_LABEL, String.valueOf(t.getLabel()));
+        tetrominoJson.put(KEY_TETROMINO_COLOUR, Integer.toString(t.getTetrominoColour().getRGB()));
+        tetrominoJson.put(KEY_TETROMINO_X, t.getTetrominoX());
+        tetrominoJson.put(KEY_TETROMINO_Y, t.getTetrominoY());
+        tetrominoJson.put(KEY_TETROMINO_ROTATION_POSITION, t.getRotationPosition());
+        tetrominoJson.put(KEY_TETROMINO_SHAPE_ROWS, t.getShape().length);
+        tetrominoJson.put(KEY_TETROMINO_SHAPE_COLS, t.getShape()[0].length);
 
         JSONArray tetrominoShapeJsonArrayRow = new JSONArray();
 
@@ -29,7 +54,7 @@ public class Jsonifier {
             for (int j = 0; j < t.getShape()[0].length; j++) {
                 tetrominoShapeJsonArrayRow.put(t.getShape()[i][j]);
             }
-            tetrominoJson.put("shape" + i, tetrominoShapeJsonArrayRow);
+            tetrominoJson.put(KEY_TETROMINO_SHAPE + i, tetrominoShapeJsonArrayRow);
             tetrominoShapeJsonArrayRow = new JSONArray();
         }
 
@@ -45,23 +70,33 @@ public class Jsonifier {
             for (int j = 0; j < BLOCKS_WIDE; j++) {
                 boardJsonArrayRow.put(String.valueOf(b.getBoardGrid()[i][j]));
             }
-            boardJson.put("board" + i, boardJsonArrayRow);
+            boardJson.put(KEY_BOARD + i, boardJsonArrayRow);
             boardJsonArrayRow = new JSONArray();
         }
 
         return boardJson;
     }
 
+    public static JSONObject gameBackgroundToJson(GameBackground gb) {
+        JSONObject gbJson = new JSONObject();
+
+        gbJson.put(KEY_GAME_BACKGROUND_SCORE, gb.getScore());
+        gbJson.put(KEY_GAME_BACKGROUND_HIGH_SCORE, gb.getHighScore());
+        gbJson.put(KEY_GAME_BACKGROUND_LINES_CLEARED, gb.getLinesCleared());
+        gbJson.put(KEY_GAME_BACKGROUND_BACKGROUND_COLOUR, Integer.toString(gb.getBackgroundColour().getRGB()));
+
+        return gbJson;
+    }
+
     // EFFECTS: returns JSON object representing a Tetris object
     public static JSONObject tetrisToJson(Tetris t) {
         JSONObject tetrisJson = new JSONObject();
 
-        tetrisJson.put("currentTetromino", tetrominoToJson(t.getCurrentTetromino()));
-        tetrisJson.put("nextTetromino", tetrominoToJson(t.getNextTetromino()));
-        tetrisJson.put("board", boardToJson(t.getGameBoard()));
-        tetrisJson.put("score", t.getScore());
-        tetrisJson.put("linesCleared", t.getLinesCleared());
-        tetrisJson.put("highScore", t.getHighScore());
+        tetrisJson.put(KEY_TETRIS_CURRENT_TETROMINO, tetrominoToJson(t.getCurrentTetromino()));
+        tetrisJson.put(KEY_TETRIS_NEXT_TETROMINO, tetrominoToJson(t.getNextTetromino()));
+        tetrisJson.put(KEY_TETRIS_BOARD, boardToJson(t.getBoard()));
+        tetrisJson.put(KEY_TETRIS_GAME_BACKGROUND, gameBackgroundToJson(t.getGameBackground()));
+        tetrisJson.put(KEY_TETRIS_HIGH_SCORE, t.getHighScore());
 
         return tetrisJson;
     }

@@ -1,24 +1,25 @@
 package ca.ubc.cs.cpsc210.tests;
 
-import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetris;
 import ca.ubc.cs.cpsc210.model.Tetromino;
+import ca.ubc.cs.cpsc210.ui.GameBackground;
+import ca.ubc.cs.cpsc210.ui.buttons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
+import static ca.ubc.cs.cpsc210.model.Tetris.*;
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
-import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
-import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
+import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
+import static ca.ubc.cs.cpsc210.ui.GameBackground.TETROMINO_SCORE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TetrisTests {
+    /**
+     *  Declarations
+     */
     private Tetris testTetris;
     private Board board;
-    private int testHighScore = 1000;
-    private String testHighScoreFileName = "testHighScore";
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
     private Tetromino oTetromino;
@@ -29,13 +30,11 @@ public class TetrisTests {
     private Tetromino lTetromino;
     private Tetromino jTetromino;
 
+    /**
+     *  Tests
+     */
     @BeforeEach
     public void setup() {
-        try {
-            saveHighScore(testHighScoreFileName, 0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         testTetris = new Tetris(0);
         board = new Board();
         oTetromino = new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
@@ -50,132 +49,83 @@ public class TetrisTests {
     @Test
     public void testConstructor() {
         assertEquals(0, testTetris.getHighScore());
-        assertEquals(board, testTetris.getGameBoard());
-        assertEquals(0, testTetris.getScore());
+        assertEquals(board, testTetris.getBoard());
+        assertEquals(new GameBackground(testTetris.getHighScore()), testTetris.getGameBackground());
+
+        assertEquals(new MusicButton(testTetris), testTetris.getButtonList()[0]);
+        assertEquals(new SoundEffectsButton(testTetris), testTetris.getButtonList()[1]);
+        assertEquals(new MysteryButton(testTetris), testTetris.getButtonList()[2]);
+        assertEquals(new PauseButton(testTetris), testTetris.getButtonList()[3]);
+        assertEquals(new SaveButton(testTetris), testTetris.getButtonList()[4]);
+        assertEquals(new LoadButton(testTetris), testTetris.getButtonList()[5]);
+
+        assertEquals(EVENT_ONE_LINE_CLEARED, testTetris.getScoreClearedLinesMap().get(1));
+        assertEquals(EVENT_TWO_LINES_CLEARED, testTetris.getScoreClearedLinesMap().get(2));
+        assertEquals(EVENT_THREE_LINES_CLEARED, testTetris.getScoreClearedLinesMap().get(3));
+        assertEquals(EVENT_FOUR_LINES_CLEARED, testTetris.getScoreClearedLinesMap().get(4));
     }
 
     @Test
     public void testGameOverScoreRecordWrongBoolean() {
-        testTetris.setGameOver(false);
-        testTetris.setHighScore(testHighScore);
-        try {
-            assertEquals(0, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not throw exception");
-        }
-    }
-
-    @Test
-    public void testGameOverScoreRecordRightBooleansNewHighScore() {
-        testTetris.setGameOver(true);
-        try {
-            assertEquals(0, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not throw exception");
-        }
-        testTetris.setScore(testHighScore);
-        assertTrue(testTetris.isGameOver());
         assertFalse(testTetris.isHighScoreSaved());
-        testTetris.gameOverScoreRecord(testHighScoreFileName);
-        try {
-            assertEquals(testHighScore, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not throw exception");
-        }
+        testTetris.setGameOver(false);
+
+        testTetris.gameOverScoreRecord();
+
+        assertFalse(testTetris.isHighScoreSaved());
     }
 
     @Test
-    public void testGameOverScoreRecordRightBooleansNoHighScore() {
-        testTetris = new Tetris(testHighScore * 2);
-
-        try {
-            saveHighScore(testHighScoreFileName, testHighScore * 2);
-        } catch (IOException e) {
-            fail("should not throw exception");
-        }
-        try {
-            assertEquals(testHighScore * 2, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not throw exception");
-        }
+    public void testGameOverScoreRecordRightBooleans() {
+        assertFalse(testTetris.isHighScoreSaved());
         testTetris.setGameOver(true);
-        testTetris.setScore(testHighScore);
-        testTetris.gameOverScoreRecord(testHighScoreFileName);
-        try {
-            assertEquals(testHighScore * 2, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not throw exception");
-        }
-    }
 
-    @Test
-    public void testGameOverScoreRecordTwice() {
-        testTetris.setGameOver(true);
-        testTetris.setScore(testHighScore);
-        testTetris.gameOverScoreRecord(testHighScoreFileName);
-        try {
-            assertEquals(testHighScore, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not throw exception");
-        }
-        testTetris.setScore(testHighScore * 2);
-        testTetris.gameOverScoreRecord(testHighScoreFileName);
-        try {
-            assertEquals(testHighScore, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not throw exception");
-        }
-    }
+        testTetris.gameOverScoreRecord();
 
-    @Test
-    public void testGameOverScoreRecordNoCurrentHighScore() {
-        testTetris.setGameOver(true);
-        try {
-            assertEquals(0, loadHighScore("wrongFileName"));
-        } catch (MissingFileException e) {
-            // expected
-        } catch (IOException e) {
-            fail("should not have thrown IOException");
-        }
-        testTetris.setScore(testHighScore);
-        testTetris.gameOverScoreRecord(testHighScoreFileName);
-        try {
-            assertEquals(testHighScore, loadHighScore(testHighScoreFileName));
-        } catch (MissingFileException | IOException e) {
-            fail("should not have thrown exception");
-        }
+        assertTrue(testTetris.isHighScoreSaved());
     }
 
     @Test
     public void testCycleTetrominoNoGameOver() {
         testTetris.initializeTetris();
-        currentTetromino = testTetris.getCurrentTetromino();
+        testTetris.setCurrentTetrominoByLabel('o');
+        testTetris.getCurrentTetromino().initializeTetromino();
+        testTetris.getCurrentTetromino().fall();
+        testTetris.getCurrentTetromino().fall();
         nextTetromino = testTetris.getNextTetromino();
-        assertEquals(0, testTetris.getScore());
         assertFalse(testTetris.isGameOver());
-        testTetris.getCurrentTetromino().fall();
-        testTetris.getCurrentTetromino().fall();
+        assertEquals(0, testTetris.getGameBackground().getScore());
+        assertEquals(board, testTetris.getBoard());
 
         testTetris.cycleTetromino();
-        assertEquals(10, testTetris.getScore());
         assertEquals(nextTetromino, testTetris.getCurrentTetromino());
         assertNotEquals(nextTetromino, testTetris.getNextTetromino());
         assertFalse(testTetris.isGameOver());
+        assertEquals(TETROMINO_SCORE, testTetris.getGameBackground().getScore());
 
+        board.setBoardGridBlock(2,4,'o');
+        board.setBoardGridBlock(3,4,'o');
+        board.setBoardGridBlock(2,5,'o');
+        board.setBoardGridBlock(3,5,'o');
+        assertEquals(board, testTetris.getBoard());
     }
 
     @Test
     public void testCycleTetrominoGameOver() {
         testTetris.initializeTetris();
-        currentTetromino = testTetris.getCurrentTetromino();
-        nextTetromino = testTetris.getNextTetromino();
-        assertEquals(0, testTetris.getScore());
-        testTetris.getGameBoard().setBoardGridBlock(0, 4, 'i');
-        testTetris.setCurrentTetrominoByLabel('i');
-
+        testTetris.setCurrentTetrominoByLabel('o');
+        testTetris.getCurrentTetromino().initializeTetromino();
         assertFalse(testTetris.isGameOver());
+        assertEquals(board, testTetris.getBoard());
+
         testTetris.cycleTetromino();
         assertTrue(testTetris.isGameOver());
+
+        board.setBoardGridBlock(0,4,'o');
+        board.setBoardGridBlock(1,4,'o');
+        board.setBoardGridBlock(0,5,'o');
+        board.setBoardGridBlock(1,5,'o');
+        assertEquals(board, testTetris.getBoard());
     }
 
     @Test
@@ -185,30 +135,6 @@ public class TetrisTests {
         testTetris.clearRowSoundEffects(2);
         testTetris.clearRowSoundEffects(3);
         testTetris.clearRowSoundEffects(4);
-    }
-
-    @Test
-    public void testAddRowClearScore() {
-        testTetris.initializeTetris();
-        testTetris.cycleTetromino();
-        testTetris.addRowClearScore(0);
-        assertEquals(0, testTetris.getScore());
-
-        testTetris.cycleTetromino();
-        testTetris.addRowClearScore(1);
-        assertEquals(100, testTetris.getScore());
-
-        testTetris.cycleTetromino();
-        testTetris.addRowClearScore(2);
-        assertEquals(400, testTetris.getScore());
-
-        testTetris.cycleTetromino();
-        testTetris.addRowClearScore(3);
-        assertEquals(1000, testTetris.getScore());
-
-        testTetris.cycleTetromino();
-        testTetris.addRowClearScore(4);
-        assertEquals(2000, testTetris.getScore());
     }
 
     @Test
@@ -255,48 +181,129 @@ public class TetrisTests {
     }
 
     @Test
-    public void testFillZeroesInputZero() {
-        String testString = testTetris.fillZeroes(6, 0);
-        assertEquals("000000", testString);
+    public void testClearOneRow() {
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(0, testTetris.getGameBackground().getScore());
 
-        testString = testTetris.fillZeroes(2, 0);
-        assertEquals("00", testString);
+        for (int i = 0; i < BLOCKS_WIDE; i++) {
+            testTetris.getBoard().setBoardGridBlock(0, i, 'i');
+        }
+        assertNotEquals(testTetris.getBoard(), board);
 
-        testString = testTetris.fillZeroes(0, 0);
-        assertEquals("", testString);
+        testTetris.clearRows(1);
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(90, testTetris.getGameBackground().getScore());
     }
 
     @Test
-    public void testFillZeroesInputNonZero() {
-        String testString = testTetris.fillZeroes(6, 123);
-        assertEquals("000123", testString);
+    public void testClearTwoRows() {
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(0, testTetris.getGameBackground().getScore());
 
-        testString = testTetris.fillZeroes(3, 123);
-        assertEquals("123", testString);
+        for (int i = 0; i < BLOCKS_WIDE; i++) {
+            testTetris.getBoard().setBoardGridBlock(0, i, 'i');
+            testTetris.getBoard().setBoardGridBlock(1, i, 'i');
+        }
+        assertNotEquals(testTetris.getBoard(), board);
 
-        testString = testTetris.fillZeroes(1, 123);
-        assertEquals("123", testString);
+        testTetris.clearRows(2);
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(290, testTetris.getGameBackground().getScore());
     }
 
     @Test
-    public void testKeyPressLeft() {
-        testTetris.initializeTetris();
-        assertFalse(testTetris.isPaused());
-        assertFalse(testTetris.isGameOver());
-        assertEquals(0, testTetris.getCurrentTetromino().getTetrominoY());
-        //TODO: figure out how tf key pressing will work
+    public void testClearThreeRows() {
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(0, testTetris.getGameBackground().getScore());
+
+        for (int i = 0; i < BLOCKS_WIDE; i++) {
+            testTetris.getBoard().setBoardGridBlock(0, i, 'i');
+            testTetris.getBoard().setBoardGridBlock(1, i, 'i');
+            testTetris.getBoard().setBoardGridBlock(2, i, 'i');
+        }
+        assertNotEquals(testTetris.getBoard(), board);
+
+        testTetris.clearRows(3);
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(590, testTetris.getGameBackground().getScore());
     }
 
     @Test
-    public void testKeyPressedWhenWrongBooleans() {
-        testTetris.initializeTetris();
-        assertEquals(0, testTetris.getCurrentTetromino().getTetrominoY());
-        //TODO: figure out how tf key pressing will work
+    public void testClearFourRows() {
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(0, testTetris.getGameBackground().getScore());
+
+        for (int i = 0; i < BLOCKS_WIDE; i++) {
+            testTetris.getBoard().setBoardGridBlock(0, i, 'i');
+            testTetris.getBoard().setBoardGridBlock(1, i, 'i');
+            testTetris.getBoard().setBoardGridBlock(2, i, 'i');
+            testTetris.getBoard().setBoardGridBlock(3, i, 'i');
+        }
+        assertNotEquals(testTetris.getBoard(), board);
+
+        testTetris.clearRows(4);
+        assertEquals(testTetris.getBoard(), board);
+        assertEquals(990, testTetris.getGameBackground().getScore());
     }
 
     @Test
-    public void testMouseEvent() {
-        //TODO: okay how tf are mouse tests supposed to work
+    public void testDraw() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testDrawButtons() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testDrawGameStart() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testDrawGameOver() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testKeyTyped() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testKeyPressed() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testKeyReleased() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testMouseClicked() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testMousePressed() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testMouseReleased() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testMouseEntered() {
+        // not in scope for this project
+    }
+
+    @Test
+    public void testMouseExited() {
+        // not in scope for this project
     }
 
     @Test
@@ -308,23 +315,21 @@ public class TetrisTests {
 
     @Test
     public void testNotEquals() {
+        assertNotEquals(testTetris, new Object());
+
         Tetris t = new Tetris(0);
         assertEquals(t, testTetris);
-        t.addRowClearScore(1);
-        assertNotEquals(t, testTetris);
-
-        t = new Tetris(testHighScore);
+        t.clearRows(1);
         assertNotEquals(t, testTetris);
 
         t = new Tetris(0);
         assertEquals(t, testTetris);
-        t.getGameBoard().setBoardGridBlock(0,0,'i');
+        t.getBoard().setBoardGridBlock(0, 0, 'i');
         assertNotEquals(t, testTetris);
-
 
         t = new Tetris(0);
         assertEquals(t, testTetris);
-        t.setLinesCleared(1);
+        t.getGameBackground().setScore(1);
         assertNotEquals(t, testTetris);
 
         t = new Tetris(0);

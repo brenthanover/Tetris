@@ -46,10 +46,10 @@ public class LoadGame {
     public static void setTetris(Tetris tetris, Tetris parsedTetris) {
         tetris.setCurrentTetromino(parsedTetris.getCurrentTetromino());
         tetris.setNextTetromino(parsedTetris.getNextTetromino());
-        tetris.setGameBoard(parsedTetris.getGameBoard().getBoardGrid());
-        tetris.setScore(parsedTetris.getScore());
-        tetris.setLinesCleared(parsedTetris.getLinesCleared());
+        tetris.setGameBoard(parsedTetris.getBoard().getBoardGrid());
+        tetris.setGameBackground(parsedTetris.getGameBackground());
         tetris.setHighScore(parsedTetris.getHighScore());
         tetris.setPaused(true);
+        tetris.setPlayMusic(false);
     }
 }

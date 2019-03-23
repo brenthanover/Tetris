@@ -142,6 +142,7 @@ public class Board {
         }
     }
 
+    // REQUIRES: has at least one full row on the board, ie isRowFull is true for at least one line
     // MODIFIES: this
     // EFFECTS: removes the first full row, starting with the closest full row to the top
     public void clearRow() {

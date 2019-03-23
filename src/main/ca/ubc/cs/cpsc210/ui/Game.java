@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
+import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.HIGH_SCORE_FILENAME;
 
 public class Game implements ActionListener {
     /**
@@ -26,7 +27,7 @@ public class Game implements ActionListener {
     public static final int BOARD_HEIGHT = BLOCK_SIZE * BLOCKS_HIGH;
     public static final int WINDOW_WIDTH = BOARD_X_POS * 3 + BOARD_WIDTH * 2 + 10;
     public static final int WINDOW_HEIGHT = BOARD_Y_POS * 2 + BOARD_HEIGHT + 30;
-    public static String highScoreFileName = "highscore";
+
 
     /**
      * Declarations
@@ -86,7 +87,7 @@ public class Game implements ActionListener {
     //           when cycling tetromino, clear any full lines
     @Override
     public void actionPerformed(ActionEvent e) {
-        Board board = tetris.getGameBoard();
+        Board board = tetris.getBoard();
 
         if (tetris.isGameStart() && !tetris.isPaused() && !tetris.isGameOver()) {
             if (ticks % fallSpeed == 0) {
@@ -97,7 +98,7 @@ public class Game implements ActionListener {
                     // add score based on number of rows cleared, then clear rows
                     if (board.countFullRows() != 0) {
                         tetris.clearRowSoundEffects(board.countFullRows());
-                        tetris.addRowClearScore(board.countFullRows());
+                        tetris.clearRows(board.countFullRows());
                     }
 
                 } else {
@@ -106,7 +107,7 @@ public class Game implements ActionListener {
             }
         }
 
-        tetris.gameOverScoreRecord(highScoreFileName);
+        tetris.gameOverScoreRecord();
 
         render.repaint();
         ticks++;
@@ -122,7 +123,7 @@ public class Game implements ActionListener {
     //           starts game, starts music
     public static void main(String[] args) {
         try {
-            tetris = new Tetris(loadHighScore(highScoreFileName));
+            tetris = new Tetris(loadHighScore(HIGH_SCORE_FILENAME));
         } catch (MissingFileException | IOException e) {
             e.printStackTrace();
         }

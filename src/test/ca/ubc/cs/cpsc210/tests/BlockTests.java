@@ -10,10 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class BlockTests {
-
+    /**
+     *  Declarations
+     */
     private Block block;
     private Block testBlock;
 
+    /**
+     *  Tests
+     */
     @BeforeEach
     public void setup() {
         block = new Block(0, 0, Color.white);
@@ -34,6 +39,8 @@ public class BlockTests {
 
     @Test
     public void testNotEquals() {
+        assertNotEquals(testBlock, new Object());
+
         testBlock = new Block(0, 1, Color.white);
         assertNotEquals(block, testBlock);
         testBlock = new Block(1, 0, Color.white);
@@ -52,5 +59,8 @@ public class BlockTests {
         assertNotEquals(block, null);
     }
 
-    // no tests for draw() function
+    @Test
+    public void testDraw() {
+        // not in scope for this project
+    }
 }

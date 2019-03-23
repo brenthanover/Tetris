@@ -16,18 +16,23 @@ import static ca.ubc.cs.cpsc210.persistence.SaveGame.saveGame;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SaveLoadGameTests {
-
+    /**
+     *  Declarations
+     */
     private Tetris testTetris;
     private Tetris loadedTetris;
     private String testSaveFullFilename;
     private String testFilename;
     private String saveJsonString;
 
+    /**
+     *  Tests
+     */
     @BeforeEach
     public void setup() {
         testTetris = new Tetris(0);
         try {
-            testTetris = new Tetris(loadHighScore("testhighscore"));
+            testTetris = new Tetris(loadHighScore("testhighscore0"));
         } catch (MissingFileException | IOException e) {
             fail("should not throw exception");
         }

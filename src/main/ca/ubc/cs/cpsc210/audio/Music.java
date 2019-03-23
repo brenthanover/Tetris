@@ -4,17 +4,20 @@ import javax.sound.sampled.*;
 import java.io.File;
 
 public class Music {
-
     /**
      * Constants
      */
-    private String themeSong = "src/main/ca/ubc/cs/cpsc210/resources/audio/songs/tetrisTheme.wav";
-    private String shrekSong = "src/main/ca/ubc/cs/cpsc210/resources/audio/songs/shrek.wav";
-    private String saxSong = "src/main/ca/ubc/cs/cpsc210/resources/audio/songs/sax.wav";
+    private String musicDirectory = "src/main/ca/ubc/cs/cpsc210/resources/audio/songs/";
+    private String themeFilename = "tetrisTheme.wav";
+    private String shrekFilename = "shrek.wav";
+    private String saxFilename = "sax.wav";
 
-    private File themeFileName = new File(themeSong);
-    private File shrekFileName = new File(shrekSong);
-    private File saxFileName = new File(saxSong);
+    /**
+     *  Declarations
+     */
+    private File tetrisFileName;
+    private File shrekFileName;
+    private File saxFileName;
     private AudioInputStream stream;
     private AudioFormat format;
     private DataLine.Info info;
@@ -24,16 +27,17 @@ public class Music {
      * Constructor
      */
     public Music() {
-
+        tetrisFileName = new File(musicDirectory + themeFilename);
+        shrekFileName = new File(musicDirectory + shrekFilename);
+        saxFileName = new File(musicDirectory + saxFilename);
     }
 
     /**
      * Methods
      */
     public void playTetrisTheme() {
-
         try {
-            stream = AudioSystem.getAudioInputStream(themeFileName);
+            stream = AudioSystem.getAudioInputStream(tetrisFileName);
             format = stream.getFormat();
             info = new DataLine.Info(Clip.class, format);
             clip = (Clip) AudioSystem.getLine(info);
@@ -41,12 +45,11 @@ public class Music {
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme theme tetrisMusic");
+            System.out.println("Could not play Tetris theme");
         }
     }
 
-    public void shrek() {
-
+    public void playShrekTheme() {
         try {
             stream = AudioSystem.getAudioInputStream(shrekFileName);
             format = stream.getFormat();
@@ -56,12 +59,11 @@ public class Music {
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme theme tetrisMusic");
+            System.out.println("Could not play Shrek theme");
         }
     }
 
-    public void sax() {
-
+    public void playSaxTheme() {
         try {
             stream = AudioSystem.getAudioInputStream(saxFileName);
             format = stream.getFormat();
@@ -71,7 +73,7 @@ public class Music {
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme theme tetrisMusic");
+            System.out.println("Could not play Sax theme");
         }
     }
 

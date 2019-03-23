@@ -2,41 +2,41 @@ package ca.ubc.cs.cpsc210.model;
 
 import ca.ubc.cs.cpsc210.audio.SoundEffects;
 import ca.ubc.cs.cpsc210.audio.Music;
-import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.ui.Game;
 import ca.ubc.cs.cpsc210.ui.GameBackground;
 import ca.ubc.cs.cpsc210.ui.buttons.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
-import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 import static ca.ubc.cs.cpsc210.ui.Game.*;
 
-public class Tetris implements KeyListener, MouseListener {
+public class Tetris extends Observable implements KeyListener, MouseListener {
 
     /**
-     * Constants
+     * Observer Strings
      */
-    private static final int LINE_SCORE = 100;
-    private static final int TETROMINO_SCORE = 10;
-    private static final int SCORE_ZEROES = 6;
-    private static final int LINE_ZEROES = 3;
+    public static final String EVENT_TETROMINO_SCORE_ADD = "ADD SCORE";
+    public static final String EVENT_ONE_LINE_CLEARED = "ONE LINE CLEARED";
+    public static final String EVENT_TWO_LINES_CLEARED = "TWO LINES CLEARE";
+    public static final String EVENT_THREE_LINES_CLEARED = "THREE LINES CLEARED";
+    public static final String EVENT_FOUR_LINES_CLEARED = "FOUR LINES CLEARED";
+    public static final String EVENT_GAME_OVER = "GAME OVER";
 
     /**
      * Declarations
      */
     private Board board;
-    private static GameBackground gameBackground;
-    private static Music tetrisMusic;
+    private GameBackground gameBackground;
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
-    private static SoundEffects soundEffects;
     private TetrisButton[] buttonList;
+    private Map<Integer, String> scoreLinesClearedMap;
+    private static Music tetrisMusic;
+    private static SoundEffects soundEffects;
+
 
     /**
      * Variables
@@ -47,9 +47,7 @@ public class Tetris implements KeyListener, MouseListener {
     private boolean playSfx = true;
     private boolean gameOver = false;
     private boolean highScoreSaved = false;
-    private int score = 0;
-    private int linesCleared = 0;
-    private int highScore = 0;
+    private int highScore;
 
     /**
      * Getters
@@ -86,31 +84,11 @@ public class Tetris implements KeyListener, MouseListener {
         return highScoreSaved;
     }
 
-    public String getScoreString() {
-        return fillZeroes(SCORE_ZEROES, score);
-    }
-
-    public String getHighScoreString() {
-        return fillZeroes(SCORE_ZEROES, highScore);
-    }
-
-    public int getLinesCleared() {
-        return linesCleared;
-    }
-
-    public String getLinesClearedString() {
-        return fillZeroes(LINE_ZEROES, linesCleared);
-    }
-
     public int getHighScore() {
         return highScore;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public Board getGameBoard() {
+    public Board getBoard() {
         return board;
     }
 
@@ -128,6 +106,14 @@ public class Tetris implements KeyListener, MouseListener {
 
     public Tetromino getNextTetromino() {
         return nextTetromino;
+    }
+
+    public TetrisButton[] getButtonList() {
+        return buttonList;
+    }
+
+    public Map<Integer, String> getScoreClearedLinesMap() {
+        return scoreLinesClearedMap;
     }
 
     /**
@@ -157,16 +143,8 @@ public class Tetris implements KeyListener, MouseListener {
         board.setBoardGrid(newBoard);
     }
 
-    public void setScore(int newScore) {
-        score = newScore;
-    }
-
     public void setHighScore(int hs) {
         highScore = hs;
-    }
-
-    public void setLinesCleared(int lc) {
-        linesCleared = lc;
     }
 
     public void setCurrentTetrominoByLabel(char c) {
@@ -185,14 +163,23 @@ public class Tetris implements KeyListener, MouseListener {
         nextTetromino = t;
     }
 
+    public void setGameBackground(GameBackground gameBackground) {
+        this.gameBackground.setScore(gameBackground.getScore());
+        this.gameBackground.setHighScore(gameBackground.getHighScore());
+        this.gameBackground.setLinesCleared(gameBackground.getLinesCleared());
+        this.gameBackground.setBackgroundColour(gameBackground.getBackgroundColour());
+    }
+
     /**
      * Constructor
      */
     // EFFECTS: constructs Tetris object
     public Tetris(int highScore) {
-        soundEffects = new SoundEffects(this);
+        this.highScore = highScore;
         board = new Board();
-        gameBackground = new GameBackground(this);
+        gameBackground = new GameBackground(highScore);
+
+        soundEffects = new SoundEffects(this);
         tetrisMusic = new Music();
 
         buttonList = new TetrisButton[6];
@@ -203,24 +190,24 @@ public class Tetris implements KeyListener, MouseListener {
         buttonList[4] = new SaveButton(this);
         buttonList[5] = new LoadButton(this);
 
-        this.highScore = highScore;
+        scoreLinesClearedMap = new HashMap<>();
+        scoreLinesClearedMap.put(1, EVENT_ONE_LINE_CLEARED);
+        scoreLinesClearedMap.put(2, EVENT_TWO_LINES_CLEARED);
+        scoreLinesClearedMap.put(3, EVENT_THREE_LINES_CLEARED);
+        scoreLinesClearedMap.put(4, EVENT_FOUR_LINES_CLEARED);
+
+        addObserver(gameBackground);
     }
 
     // REQUIRES: game is over, high score is not saved
     // MODIFIES: highscore save file
     // EFFECTS:  on game over, record score as new high score if score > old high score
-    public void gameOverScoreRecord(String highScoreFileName) {
+    public void gameOverScoreRecord() {
         if (gameOver && !highScoreSaved) {
             highScoreSaved = true;
 
-            if (score > highScore) {
-                try {
-                    System.out.println("Your new high score is " + score + "!");
-                    saveHighScore(highScoreFileName, score);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            setChanged();
+            notifyObservers(EVENT_GAME_OVER);
         }
     }
 
@@ -237,7 +224,8 @@ public class Tetris implements KeyListener, MouseListener {
         currentTetromino.initializeTetromino();
         nextTetromino = getRandomTetromino();
 
-        score += TETROMINO_SCORE;
+        setChanged();
+        notifyObservers(EVENT_TETROMINO_SCORE_ADD);
 
         if (board.isGameOver(currentTetromino)) {
             gameOver = true;
@@ -266,17 +254,16 @@ public class Tetris implements KeyListener, MouseListener {
         }
     }
 
-    // REQUIRES: board with at least one full row, ie a row with no value marked 'e'
+    // REQUIRES: board with number of full rows in board == numFullRows
     // MODIFIES: this
-    // EFFECTS:  adds score based on number of rows cleared at once: 100, 300, 600, 1000 for 1, 2, 3, 4 lines
-    public void addRowClearScore(int numFullRows) {
+    // EFFECTS:  clears number of full rows equal to input numFullRows
+    public void clearRows(int numFullRows) {
+        setChanged();
+        notifyObservers(scoreLinesClearedMap.get(numFullRows));
+
         for (int i = 0; i < numFullRows; i++) {
-            score += LINE_SCORE * (i + 1);
-            linesCleared++;
             board.clearRow();
         }
-
-        score -= TETROMINO_SCORE;
     }
 
     // MODIFIES: this
@@ -329,27 +316,6 @@ public class Tetris implements KeyListener, MouseListener {
             default:
                 return new Tetromino(jTetrominoMatrix, J_COLOUR, 'j');
         }
-    }
-
-    // EFFECTS:  fill score with zeroes on left to maximum of numZeroes numbers total
-    //           assuming nobody will get more than a 6 digit score, but will still function if they do
-    public String fillZeroes(int numZeroes, int score) {
-        StringBuilder outputString = new StringBuilder();
-
-        if (score == 0) {
-            for (int i = 0; i < numZeroes; i++) {
-                outputString.append(0);
-            }
-        } else {
-            outputString.append(score);
-            int n = outputString.length();
-
-            for (int i = 0; i < numZeroes - n; i++) {
-                outputString.insert(0, 0);
-            }
-        }
-
-        return outputString.toString();
     }
 
     // EFFECTS: draws all aspects of the Tetris game
@@ -540,17 +506,16 @@ public class Tetris implements KeyListener, MouseListener {
             return false;
         }
         Tetris tetris = (Tetris) o;
-        return getScore() == tetris.getScore()
-                && getLinesCleared() == tetris.getLinesCleared()
-                && getHighScore() == tetris.getHighScore()
+        return getHighScore() == tetris.getHighScore()
                 && Objects.equals(board, tetris.board)
                 && Objects.equals(getCurrentTetromino(), tetris.getCurrentTetromino())
-                && Objects.equals(getNextTetromino(), tetris.getNextTetromino());
+                && Objects.equals(getNextTetromino(), tetris.getNextTetromino())
+                && Objects.equals((gameBackground), tetris.getGameBackground());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, getCurrentTetromino(), getNextTetromino(), getScore(), getLinesCleared(),
+        return Objects.hash(board, getCurrentTetromino(), getNextTetromino(),
                 getHighScore());
     }
 

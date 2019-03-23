@@ -4,12 +4,16 @@ import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 
 import java.io.*;
 
-public class LoadHighScore {
+import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.HIGH_SCORE_DIRECTORY;
 
+public class LoadHighScore {
+    /**
+     *  Methods
+     */
     // EFFECTS: loads saved game data from text file and produce Tetris game state
     public static int loadHighScore(String fileName) throws MissingFileException, IOException {
         String data = "0";
-        String path = "src/main/ca/ubc/cs/cpsc210/resources/savefiles/";
+        String path = HIGH_SCORE_DIRECTORY;
         fileName = path + fileName;
 
         File file = new File(fileName);

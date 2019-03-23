@@ -2,13 +2,14 @@ package ca.ubc.cs.cpsc210.ui.buttons;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.Objects;
 
 import static ca.ubc.cs.cpsc210.ui.Game.*;
 
 public abstract class TetrisButton {
 
     /**
-     *  Constants
+     * Constants
      */
     private int buttonArcWidth = 10;
     private int buttonArcHeight = 10;
@@ -17,7 +18,7 @@ public abstract class TetrisButton {
     private int fontSize = 16;
 
     /**
-     *  MusicButton constants
+     * MusicButton constants
      */
     protected static final int mBX = BLOCK_SIZE;
     protected static final int mBY = BLOCK_SIZE * 7;
@@ -26,7 +27,7 @@ public abstract class TetrisButton {
     protected static final String mBN = "MUSIC ON";
 
     /**
-     *  SoundEffectsButton constants
+     * SoundEffectsButton constants
      */
     protected static final int sfxBX = BLOCK_SIZE * 6;
     protected static final int sfxBY = BLOCK_SIZE * 7;
@@ -35,7 +36,7 @@ public abstract class TetrisButton {
     protected static final String sfxBN = "SFX ON";
 
     /**
-     *  SaveButton constants
+     * SaveButton constants
      */
     protected static final int sBX = BLOCK_SIZE;
     protected static final int sBY = BLOCK_SIZE * 10;
@@ -44,7 +45,7 @@ public abstract class TetrisButton {
     protected static final String sBN = "SAVE";
 
     /**
-     *  LoadButton constants
+     * LoadButton constants
      */
     protected static final int lBX = BLOCK_SIZE * 6;
     protected static final int lBY = BLOCK_SIZE * 10;
@@ -53,7 +54,7 @@ public abstract class TetrisButton {
     protected static final String lBN = "LOAD";
 
     /**
-     *  MysteryButton constants
+     * MysteryButton constants
      */
     protected static final int qBX = BLOCK_SIZE * 6;
     protected static final int qBY = BLOCK_SIZE * 17;
@@ -62,7 +63,7 @@ public abstract class TetrisButton {
     protected static final String qBN = "SHREK";
 
     /**
-     *  PauseButton constants
+     * PauseButton constants
      */
     protected static final int pBX = BLOCK_SIZE;
     protected static final int pBY = BLOCK_SIZE * 17;
@@ -71,7 +72,7 @@ public abstract class TetrisButton {
     protected static final String pBN = "PAUSE";
 
     /**
-     *  Variables
+     * Variables
      */
     private int mouseX;
     private int mouseY;
@@ -83,7 +84,7 @@ public abstract class TetrisButton {
     private Color buttonColour = Color.white;
 
     /**
-     *  Constructor
+     * Constructor
      */
     // EFFECTS: constructs a TetrisButton object
     public TetrisButton(int buttonX, int buttonY, int buttonWidth, int buttonHeight, String buttonName) {
@@ -95,7 +96,14 @@ public abstract class TetrisButton {
     }
 
     /**
-     *  Methods
+     * Getters
+     */
+    public String getButtonName() {
+        return buttonName;
+    }
+
+    /**
+     * Methods
      */
     // EFFECTS: produces true if mouse is inside the butotn
     public boolean isMouseTouching(int mouseX, int mouseY) {
@@ -145,6 +153,26 @@ public abstract class TetrisButton {
     public void initializeMouseCoords(int mouseX, int mouseY) {
         this.mouseX = mouseX - 3 - BOARD_X_POS - BLOCK_SIZE - BOARD_WIDTH;
         this.mouseY = mouseY - 25 - BLOCK_SIZE;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TetrisButton that = (TetrisButton) o;
+        return buttonX == that.buttonX
+                && buttonY == that.buttonY
+                && Objects.equals(buttonName, that.buttonName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(buttonX, buttonY, buttonName);
     }
 
     // Tutorial cited from StackOverflow:

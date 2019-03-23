@@ -4,6 +4,7 @@ import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
 import ca.ubc.cs.cpsc210.model.Tetris;
+import ca.ubc.cs.cpsc210.ui.GameBackground;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,44 +12,22 @@ import java.awt.*;
 import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.LoadHighScore.loadHighScore;
+import static ca.ubc.cs.cpsc210.persistence.Jsonifier.*;
+import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.HIGH_SCORE_FILENAME;
 import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_HIGH;
 import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
 
 public class TetrisParser {
-
-
-    // EFFECTS: parses JSONObject representing a Tetris object, returns Tetris object
-    public static Tetris parseTetris(JSONObject tetrisJson) {
-        Tetris parsedTetris = new Tetris(0);
-
-        try {
-            parsedTetris = new Tetris(loadHighScore("highscore"));
-        } catch (MissingFileException | IOException e) {
-            e.printStackTrace();
-        }
-
-        Tetromino currentTetromino = parseTetromino(tetrisJson.getJSONObject("currentTetromino"));
-        Tetromino nextTetromino = parseTetromino(tetrisJson.getJSONObject("nextTetromino"));
-        Board board = parseBoard(tetrisJson.getJSONObject("board"));
-
-        parsedTetris.setCurrentTetromino(currentTetromino);
-        parsedTetris.setNextTetromino(nextTetromino);
-        parsedTetris.setGameBoard(board.getBoardGrid());
-        parsedTetris.setScore(tetrisJson.getInt("score"));
-        parsedTetris.setLinesCleared(tetrisJson.getInt("linesCleared"));
-        parsedTetris.setHighScore(tetrisJson.getInt("highScore"));
-
-
-        return parsedTetris;
-    }
-
+    /**
+     *  Methods
+     */
     // EFFECTS: parses JSONObject representing a Tetromino object, returns Tetromino object
     public static Tetromino parseTetromino(JSONObject tetrominoJson) {
-        char label = tetrominoJson.getString("label").charAt(0);
-        Color tetrominoColour = new Color(Integer.parseInt(tetrominoJson.getString("tetrominoColour")));
-        int tetrominoX = tetrominoJson.getInt("tetrominoX");
-        int tetrominoY = tetrominoJson.getInt("tetrominoY");
-        int rotationPosition = tetrominoJson.getInt("rotationPosition");
+        char label = tetrominoJson.getString(KEY_TETROMINO_LABEL).charAt(0);
+        Color tetrominoColour = new Color(Integer.parseInt(tetrominoJson.getString(KEY_TETROMINO_COLOUR)));
+        int tetrominoX = tetrominoJson.getInt(KEY_TETROMINO_X);
+        int tetrominoY = tetrominoJson.getInt(KEY_TETROMINO_Y);
+        int rotationPosition = tetrominoJson.getInt(KEY_TETROMINO_ROTATION_POSITION);
         int[][] shape = getShapeFromJson(tetrominoJson);
 
         Tetromino parsedTetromino = new Tetromino(shape, tetrominoColour, label);
@@ -61,12 +40,12 @@ public class TetrisParser {
 
     // EFFECTS: parses JSONObject representing a Tetromino object, returns tetromino shape
     private static int[][] getShapeFromJson(JSONObject tetrominoJson) {
-        int shapeRows = tetrominoJson.getInt("shapeRows");
-        int shapeCols = tetrominoJson.getInt("shapeCols");
+        int shapeRows = tetrominoJson.getInt(KEY_TETROMINO_SHAPE_ROWS);
+        int shapeCols = tetrominoJson.getInt(KEY_TETROMINO_SHAPE_COLS);
         int[][] shape = new int[shapeRows][shapeCols];
         JSONArray shapeRow;
         for (int i = 0; i < shapeRows; i++) {
-            shapeRow = (tetrominoJson.getJSONArray("shape" + i));
+            shapeRow = (tetrominoJson.getJSONArray(KEY_TETROMINO_SHAPE + i));
             for (int j = 0; j < shapeCols; j++) {
                 shape[i][j] = shapeRow.getInt(j);
             }
@@ -81,12 +60,55 @@ public class TetrisParser {
         JSONArray boardRow;
 
         for (int i = 0; i < BLOCKS_HIGH; i++) {
-            boardRow = boardJson.getJSONArray("board" + i);
+            boardRow = boardJson.getJSONArray(KEY_BOARD + i);
             for (int j = 0; j < BLOCKS_WIDE; j++) {
                 parsedBoard.setBoardGridBlock(i, j, boardRow.getString(j).charAt(0));
             }
         }
 
         return parsedBoard;
+    }
+
+    // EFFECTS: parses JSONObject representing a GameBackgroundObject, returns GameBackground object
+    public static GameBackground parseGameBackground(JSONObject gameBackgroundJson) {
+        GameBackground parsedGameBackground = new GameBackground(0);
+
+        int score = gameBackgroundJson.getInt(KEY_GAME_BACKGROUND_SCORE);
+        int highScore = gameBackgroundJson.getInt(KEY_GAME_BACKGROUND_HIGH_SCORE);
+        int linesCleared = gameBackgroundJson.getInt(KEY_GAME_BACKGROUND_LINES_CLEARED);
+        String colorString = gameBackgroundJson.getString(KEY_GAME_BACKGROUND_BACKGROUND_COLOUR);
+        Color backgroundColour = new Color(Integer.parseInt(colorString));
+
+        parsedGameBackground.setScore(score);
+        parsedGameBackground.setHighScore(highScore);
+        parsedGameBackground.setLinesCleared(linesCleared);
+        parsedGameBackground.setBackgroundColour(backgroundColour);
+
+        return parsedGameBackground;
+    }
+
+    // EFFECTS: parses JSONObject representing a Tetris object, returns Tetris object
+    public static Tetris parseTetris(JSONObject tetrisJson) {
+        Tetris parsedTetris = new Tetris(0);
+
+        try {
+            parsedTetris = new Tetris(loadHighScore(HIGH_SCORE_FILENAME));
+        } catch (MissingFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        Tetromino currentTetromino = parseTetromino(tetrisJson.getJSONObject(KEY_TETRIS_CURRENT_TETROMINO));
+        Tetromino nextTetromino = parseTetromino(tetrisJson.getJSONObject(KEY_TETRIS_NEXT_TETROMINO));
+        Board board = parseBoard(tetrisJson.getJSONObject(KEY_TETRIS_BOARD));
+        GameBackground gameBackground = parseGameBackground(tetrisJson.getJSONObject(KEY_TETRIS_GAME_BACKGROUND));
+
+        parsedTetris.setCurrentTetromino(currentTetromino);
+        parsedTetris.setNextTetromino(nextTetromino);
+        parsedTetris.setGameBoard(board.getBoardGrid());
+        parsedTetris.setGameBackground(gameBackground);
+        parsedTetris.setHighScore(tetrisJson.getInt(KEY_TETRIS_HIGH_SCORE));
+
+
+        return parsedTetris;
     }
 }
