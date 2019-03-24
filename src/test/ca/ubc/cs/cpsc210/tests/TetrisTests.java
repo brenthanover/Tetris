@@ -80,6 +80,7 @@ public class TetrisTests {
         assertFalse(testTetris.isHighScoreSaved());
         testTetris.setGameOver(true);
 
+        testTetris.getGameBackground().setHighScore(32670);
         testTetris.gameOverScoreRecord();
 
         assertTrue(testTetris.isHighScoreSaved());

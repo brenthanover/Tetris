@@ -7,7 +7,6 @@ import java.util.Objects;
 import static ca.ubc.cs.cpsc210.ui.Game.*;
 
 public abstract class TetrisButton {
-
     /**
      * Constants
      */
@@ -154,7 +153,6 @@ public abstract class TetrisButton {
         this.mouseX = mouseX - 3 - BOARD_X_POS - BLOCK_SIZE - BOARD_WIDTH;
         this.mouseY = mouseY - 25 - BLOCK_SIZE;
     }
-
 
     @Override
     public boolean equals(Object o) {

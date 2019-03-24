@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TetrominoTests {
     /**
-     *  Declarations
+     * Declarations
      */
     private Tetromino iTetromino;
     private Tetromino jTetromino;
@@ -18,7 +18,7 @@ public class TetrominoTests {
     private Tetromino oTetromino;
 
     /**
-     *  Constants
+     * Constants
      */
     private int[][] jMatrixTransposed = {{1, 0}, {1, 0}, {1, 1}};
     private int[][] jMatrixHorizontalFlipped = {{1, 1, 1}, {1, 0, 0}};
@@ -27,9 +27,9 @@ public class TetrominoTests {
     private int[][] jMatrixTwiceRotated = {{1, 0, 0}, {1, 1, 1}};
     private int[][] jMatrixRotatedCCW = {{1, 1}, {1, 0}, {1, 0}};
     private int[][] iMatrixRotated = {{1}, {1}, {1}, {1}};
-    
+
     /**
-     *  Tests
+     * Tests
      */
     @BeforeEach
     public void setup() {
@@ -46,13 +46,13 @@ public class TetrominoTests {
         assertEquals(I_COLOUR, iTetromino.getTetrominoColour());
         assertEquals('i', iTetromino.getLabel());
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
     }
 
     @Test
     public void testInitializeTetromino() {
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
         iTetromino.initializeTetromino();
         assertEquals((BLOCKS_WIDE - iTetromino.getShape()[0].length) / 2 * BLOCK_SIZE, iTetromino.getTetrominoX());
         assertEquals(0, iTetromino.getTetrominoY());
@@ -61,13 +61,13 @@ public class TetrominoTests {
     @Test
     public void testPreviewTetromino() {
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
         iTetromino.initializeTetromino();
         assertEquals((BLOCKS_WIDE - iTetromino.getShape()[0].length) / 2 * BLOCK_SIZE, iTetromino.getTetrominoX());
         assertEquals(0, iTetromino.getTetrominoY());
         iTetromino.previewTetromino();
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
     }
 
     @Test
@@ -642,5 +642,8 @@ public class TetrominoTests {
         assertNotEquals(jTetromino, null);
     }
 
-    // no tests for draw() function
+    @Test
+    public void testDraw() {
+        // not covered in scope of project
+    }
 }

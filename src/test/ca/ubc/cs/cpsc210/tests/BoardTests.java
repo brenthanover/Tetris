@@ -19,7 +19,6 @@ public class BoardTests {
     private Tetromino squareTetromino;
     private Tetromino straightTetromino;
     private Tetromino sTetromino;
-    private char[][] testBoardGrid;
 
     /**
      *  Tests
@@ -27,7 +26,6 @@ public class BoardTests {
     @BeforeEach
     public void setup() {
         board = new Board();
-        testBoardGrid = new char[BLOCKS_HIGH][BLOCKS_WIDE];
         testBoard = new Board();
         squareTetromino = new Tetromino(oTetrominoMatrix, O_COLOUR, 'o');
         straightTetromino = new Tetromino(iTetrominoMatrix, I_COLOUR, 'i');
@@ -35,24 +33,14 @@ public class BoardTests {
         squareTetromino.initializeTetromino();
         straightTetromino.initializeTetromino();
         sTetromino.initializeTetromino();
-
-        for (int i = 0; i < BLOCKS_HIGH; i++) {
-            for (int j = 0; j < BLOCKS_WIDE; j++) {
-                testBoardGrid[i][j] = 'e';
-            }
-        }
-        testBoard.setBoardGrid(testBoardGrid);
     }
 
     @Test
     public void testConstructor() {
-        for (int i = 0; i < BLOCKS_HIGH; i++) {
-            for (int j = 0; j < BLOCKS_WIDE; j++) {
-                assertEquals('e', board.getBoardGrid()[i][j]);
-            }
+        for (char b : board) {
+            assertEquals('e', b);
         }
     }
-
 
     @Test
     public void testIsStraightTetrominoAboveBlock() {
@@ -128,6 +116,9 @@ public class BoardTests {
         assertTrue(board.isGameOver(straightTetromino));
         assertFalse(board.isGameOver(squareTetromino));
         assertTrue(board.isGameOver(sTetromino));
+
+        board.setBoardGridBlock(18,9,'i');
+        board.setBoardGridBlock(19,9,'m');
     }
 
     @Test
@@ -190,7 +181,7 @@ public class BoardTests {
         assertEquals(0, straightTetromino.getTetrominoY());
         assertTrue(board.equals(testBoard));
         board.setBoardGridBlock(19, 5, 'o');
-        testBoardGrid[19][5] = 'o';
+        testBoard.setBoardGridBlock(19,5,'o');
         for (int i = 3; i < 7; i++) {
             testBoard.setBoardGridBlock(18, i, 'i');
         }

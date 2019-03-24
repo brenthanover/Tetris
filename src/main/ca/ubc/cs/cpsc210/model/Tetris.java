@@ -34,7 +34,7 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
     private Tetromino nextTetromino;
     private TetrisButton[] buttonList;
     private Map<Integer, String> scoreLinesClearedMap;
-    private static Music tetrisMusic;
+    private Music tetrisMusic;
     private static SoundEffects soundEffects;
 
 
@@ -90,14 +90,6 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
 
     public Board getBoard() {
         return board;
-    }
-
-    public char getCurrentTetrominoLabel() {
-        return currentTetromino.getLabel();
-    }
-
-    public char getNextTetrominoLabel() {
-        return nextTetromino.getLabel();
     }
 
     public Tetromino getCurrentTetromino() {
@@ -201,7 +193,7 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
 
     // REQUIRES: game is over, high score is not saved
     // MODIFIES: highscore save file
-    // EFFECTS:  on game over, record score as new high score if score > old high score
+    // EFFECTS:  on game over, notify GameBackground observer to update high score if necessary
     public void gameOverScoreRecord() {
         if (gameOver && !highScoreSaved) {
             highScoreSaved = true;
@@ -454,8 +446,8 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
 
             for (int i = 0; i < buttonList.length; i++) {
                 if (buttonList[i].isMouseTouching(mouseX, mouseY)
-                        && (i < 3
-                        || gameStart)) {
+                        && (i < 3 || gameStart)
+                        && (i < 4 || !paused)) {
                     buttonList[i].showButtonPressed();
                 }
             }
@@ -477,8 +469,8 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
 
             for (int i = 0; i < buttonList.length; i++) {
                 if (buttonList[i].isMouseTouching(mouseX, mouseY)
-                        && (i < 3
-                        || gameStart)) {
+                        && (i < 3 || gameStart)
+                        && (i < 4 || !paused)) {
                     buttonList[i].showButtonReleased();
                     buttonList[i].buttonAction();
                     soundEffects.playButtonClick();
@@ -518,6 +510,4 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         return Objects.hash(board, getCurrentTetromino(), getNextTetromino(),
                 getHighScore());
     }
-
-
 }

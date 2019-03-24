@@ -9,6 +9,7 @@ import static ca.ubc.cs.cpsc210.model.Tetris.*;
 import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.HIGH_SCORE_FILENAME;
 import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 import static ca.ubc.cs.cpsc210.ui.Game.*;
+import static sun.swing.MenuItemLayoutHelper.max;
 
 
 // this class tracks score, lines cleared, and high score, and renders the game window,
@@ -136,14 +137,14 @@ public class GameBackground implements Observer {
     // MODIFIES: file saved under resources/savefiles/HIGH_SCORE_FILENAME
     // EFFECTS:  if score > highScore, saves new high score to HIGH_SCORE_FILENAME, prints new high score
     public void recordHighScore() {
-        if (score > highScore) {
-            try {
-                System.out.println("Your new high score is " + score + "!");
-                saveHighScore(HIGH_SCORE_FILENAME, score);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        highScore = max(score, highScore);
+        try {
+            System.out.println("Your new high score is " + score + "!");
+            saveHighScore(HIGH_SCORE_FILENAME, highScore);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     // REQUIRES: event is one of: EVENT_ONE_LINE_CLEARED

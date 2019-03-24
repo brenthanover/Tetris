@@ -42,6 +42,14 @@ public class Game implements ActionListener {
      */
     // EFFECTS: constructs Game object
     public Game() {
+        try {
+            tetris = new Tetris(loadHighScore(HIGH_SCORE_FILENAME));
+        } catch (MissingFileException | IOException e) {
+            e.printStackTrace();
+        }
+
+        gameJFrame = new JFrame();
+        render = new Render(this);
     }
 
     /**
@@ -63,9 +71,7 @@ public class Game implements ActionListener {
     // EFFECTS: runs Tetris game
     //          creates JFrame GUI with timer
     public void run() {
-        gameJFrame = new JFrame();
         timer = new Timer(20, this);
-        render = new Render(this);
 
         gameJFrame.add(render);
         gameJFrame.setResizable(false);
@@ -122,12 +128,6 @@ public class Game implements ActionListener {
     // EFFECTS:  main method for Tetris
     //           starts game, starts music
     public static void main(String[] args) {
-        try {
-            tetris = new Tetris(loadHighScore(HIGH_SCORE_FILENAME));
-        } catch (MissingFileException | IOException e) {
-            e.printStackTrace();
-        }
-
         Game game = new Game();
         game.run();
         tetris.getTetrisMusic().playTetrisTheme();

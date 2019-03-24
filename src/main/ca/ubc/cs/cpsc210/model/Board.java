@@ -1,14 +1,12 @@
 package ca.ubc.cs.cpsc210.model;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
 import static ca.ubc.cs.cpsc210.ui.Game.*;
 
-public class Board {
+public class Board implements Iterable<Character> {
 
 
     // Board is represented by matrix by blocks wide by blocks high
@@ -33,24 +31,6 @@ public class Board {
     private char[][] boardGrid;
 
     /**
-     * Getters
-     */
-    public char[][] getBoardGrid() {
-        return boardGrid;
-    }
-
-    /**
-     * Setters
-     */
-    public void setBoardGridBlock(int row, int col, char val) {
-        boardGrid[row][col] = val;
-    }
-
-    public void setBoardGrid(char[][] newBoard) {
-        boardGrid = newBoard;
-    }
-
-    /**
      * Constructor
      */
     // EFFECTS: constructs Board object
@@ -70,6 +50,24 @@ public class Board {
         colourHashMap.put('s', S_COLOUR);
         colourHashMap.put('t', T_COLOUR);
         colourHashMap.put('z', Z_COLOUR);
+    }
+
+    /**
+     * Getters
+     */
+    public char[][] getBoardGrid() {
+        return boardGrid;
+    }
+
+    /**
+     * Setters
+     */
+    public void setBoardGridBlock(int row, int col, char val) {
+        boardGrid[row][col] = val;
+    }
+
+    public void setBoardGrid(char[][] newBoard) {
+        boardGrid = newBoard;
     }
 
     /**
@@ -369,5 +367,39 @@ public class Board {
     @Override
     public int hashCode() {
         return Arrays.hashCode(boardGrid);
+    }
+
+    @Override
+    public Iterator<Character> iterator() {
+        return new BoardIterator();
+    }
+
+    private class BoardIterator implements Iterator<Character> {
+        private int colIndex;
+        private int rowIndex;
+
+        private BoardIterator() {
+            colIndex = 0;
+            rowIndex = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return ((colIndex) * (rowIndex) < BLOCKS_WIDE * BLOCKS_HIGH - BLOCKS_WIDE - 1);
+        }
+
+        @Override
+        public Character next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            if (colIndex >= BLOCKS_WIDE) {
+                rowIndex++;
+                colIndex = 0;
+            }
+
+            return boardGrid[rowIndex][colIndex++];
+        }
     }
 }

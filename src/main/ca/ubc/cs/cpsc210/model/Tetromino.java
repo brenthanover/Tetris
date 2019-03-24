@@ -12,7 +12,6 @@ public class Tetromino {
     /**
      * Constants
      */
-    // Colors
     public static final Color I_COLOUR = Color.cyan;
     public static final Color J_COLOUR = Color.blue;
     public static final Color L_COLOUR = Color.orange;
@@ -22,7 +21,7 @@ public class Tetromino {
     public static final Color Z_COLOUR = Color.red;
 
     /**
-     * Tetrominos
+     * Tetromino Matrices
      */
     // I block: 5 wide, 1 high, I shape
     //          [X] [X] [X] [X] [X]
@@ -72,6 +71,18 @@ public class Tetromino {
     private int tetrominoY;
     private char label;
     private int rotationPosition = 1000;
+
+    /**
+     * Constructor
+     */
+    // EFFECTS: constructs Tetromino object
+    public Tetromino(int[][] shape, Color c, char label) {
+        this.shape = shape;
+        this.tetrominoColour = c;
+        this.label = label;
+
+        previewTetromino();
+    }
 
     /**
      * Getters
@@ -124,18 +135,6 @@ public class Tetromino {
     }
 
     /**
-     * Constructor
-     */
-    // EFFECTS: constructs Tetromino object
-    public Tetromino(int[][] shape, Color c, char label) {
-        this.shape = shape;
-        this.tetrominoColour = c;
-        this.label = label;
-
-        previewTetromino();
-    }
-
-    /**
      * Methods
      */
     // MODIFIES: this
@@ -149,7 +148,7 @@ public class Tetromino {
     // EFFECTS:  places tetromino in centre of preview window on right side of the game screen
     public void previewTetromino() {
         tetrominoX = BOARD_WIDTH / 2 - shape[0].length * BLOCK_SIZE / 2;
-        tetrominoY = 14 * BLOCK_SIZE;
+        tetrominoY = 15 * BLOCK_SIZE - BLOCK_SIZE / 2 * shape.length;
     }
 
     // MODIFIES: this
@@ -219,14 +218,14 @@ public class Tetromino {
     // MODIFIES: this
     // EFFECTS:  rotates matrix clockwise
     public void rotateCW() {
-        // reposition I tetromino
+        // reposition tetromino according to shape
         if (shape.length == 4 || shape[0].length == 4) {
             repositionITetromino();
-            //reposition other tetrominos except square
         } else if (shape.length != shape[0].length) {
             repositionOtherTetrominosCW();
         }
 
+        // rotate matrix
         transpose();
         flipHorizontal();
         rotationPosition++;
@@ -237,14 +236,14 @@ public class Tetromino {
     // MODIFIES: this
     // EFFECTS:  rotates matrix counter clockwise
     public void rotateCCw() {
-        // reposition I tetromino
+        // reposition tetromino according to shape
         if (shape.length == 4 || shape[0].length == 4) {
             repositionITetromino();
-            //reposition other tetrominos except square
         } else if (shape.length != shape[0].length) {
             repositionOtherTetrominosCCw();
         }
 
+        // rotate matrix
         transpose();
         flipVertical();
         rotationPosition--;
