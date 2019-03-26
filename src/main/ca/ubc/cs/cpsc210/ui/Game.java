@@ -17,7 +17,6 @@ public class Game implements ActionListener {
     /**
      * Constants
      */
-    private static final int fallSpeed = 20;
     public static final int BLOCK_SIZE = 30;
     public static final int BOARD_X_POS = 30;
     public static final int BOARD_Y_POS = 30;
@@ -28,6 +27,10 @@ public class Game implements ActionListener {
     public static final int WINDOW_WIDTH = BOARD_X_POS * 3 + BOARD_WIDTH * 2 + 10;
     public static final int WINDOW_HEIGHT = BOARD_Y_POS * 2 + BOARD_HEIGHT + 30;
 
+    /**
+     *  Variables
+     */
+    private int fallSpeed = 20;
 
     /**
      * Declarations
