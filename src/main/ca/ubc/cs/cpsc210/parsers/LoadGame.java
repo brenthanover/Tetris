@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import static ca.ubc.cs.cpsc210.parsers.TetrisParser.parseTetris;
+import static ca.ubc.cs.cpsc210.ui.buttons.TetrisButton.*;
 
 public class LoadGame {
 
@@ -49,7 +50,10 @@ public class LoadGame {
         tetris.setGameBoard(parsedTetris.getBoard().getBoardGrid());
         tetris.setGameBackground(parsedTetris.getGameBackground());
         tetris.setHighScore(parsedTetris.getHighScore());
-        tetris.setPaused(true);
         tetris.setPlayMusic(false);
+        tetris.getMusicButton().setButtonName(MUSIC_BUTTON_NAME_CLICKED);
+        tetris.getMysteryButton().setButtonName(parsedTetris.getMysteryButton().getButtonName());
+        tetris.getPauseButton().setButtonName(PAUSE_BUTTON_NAME_CLICKED);
+        tetris.setPaused(true);
     }
 }

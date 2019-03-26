@@ -10,21 +10,18 @@ public class SoundEffects {
     /**
      * Constants
      */
-    private final File fileOneCleared = new File("src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/onecleared.wav");
-    private final File fileTwoCleared = new File("src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/twocleared.wav");
-    private final File fileThreeCleared = new File("src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/threecleared.wav");
-    private final File fileFourCleared = new File("src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/fourcleared.wav");
-    private final File fileGameStart = new File("src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/gamestart.wav");
-    private final File fileGameOver = new File("src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/gameover.wav");
-    private final File fileButtonClick = new File("src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/buttonclick.wav");
+    public static final String SFX_PATH = "src/main/ca/ubc/cs/cpsc210/resources/audio/sfx/";
+    public static final  File fileOneCleared = new File(SFX_PATH + "onecleared.wav");
+    public static final  File fileTwoCleared = new File(SFX_PATH + "twocleared.wav");
+    public static final  File fileThreeCleared = new File(SFX_PATH + "threecleared.wav");
+    public static final  File fileFourCleared = new File(SFX_PATH + "fourcleared.wav");
+    public static final  File fileGameStart = new File(SFX_PATH + "gamestart.wav");
+    public static final  File fileGameOver = new File(SFX_PATH + "gameover.wav");
+    public static final  File fileButtonClick = new File(SFX_PATH + "buttonclick.wav");
 
     /**
-     *  Declarations
+     * Declarations
      */
-    private AudioInputStream stream;
-    private AudioFormat format;
-    private DataLine.Info info;
-    private Clip clip;
     private Tetris tetris;
 
     /**
@@ -40,114 +37,45 @@ public class SoundEffects {
 
     // try to optimize, combine into one method, output an array or something?
     public void playOneCleared() {
-
-        try {
-            stream = AudioSystem.getAudioInputStream(fileOneCleared);
-            format = stream.getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.open(stream);
-            if (tetris.isPlaySfx()) {
-                clip.start();
-            }
-        } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme sound effect");
-        }
+        playSoundEffect(fileOneCleared);
     }
 
     public void playTwoCleared() {
-
-        try {
-            stream = AudioSystem.getAudioInputStream(fileTwoCleared);
-            format = stream.getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.open(stream);
-            if (tetris.isPlaySfx()) {
-                clip.start();
-            }
-        } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme sound effect");
-        }
+        playSoundEffect(fileTwoCleared);
     }
 
     public void playThreeCleared() {
-
-        try {
-            stream = AudioSystem.getAudioInputStream(fileThreeCleared);
-            format = stream.getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.open(stream);
-            if (tetris.isPlaySfx()) {
-                clip.start();
-            }
-        } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme sound effect");
-        }
+        playSoundEffect(fileThreeCleared);
     }
 
     public void playFourCleared() {
-
-        try {
-            stream = AudioSystem.getAudioInputStream(fileFourCleared);
-            format = stream.getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.open(stream);
-            if (tetris.isPlaySfx()) {
-                clip.start();
-            }
-        } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme sound effect");
-        }
+        playSoundEffect(fileFourCleared);
     }
 
     public void playGameStart() {
-
-        try {
-            stream = AudioSystem.getAudioInputStream(fileGameStart);
-            format = stream.getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.open(stream);
-            if (tetris.isPlaySfx()) {
-                clip.start();
-            }
-        } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme sound effect");
-        }
+        playSoundEffect(fileGameStart);
     }
 
     public void playGameOver() {
-
-        try {
-            stream = AudioSystem.getAudioInputStream(fileGameOver);
-            format = stream.getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.open(stream);
-            if (tetris.isPlaySfx()) {
-                clip.start();
-            }
-        } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme sound effect");
-        }
+        playSoundEffect(fileGameOver);
     }
 
     public void playButtonClick() {
+        playSoundEffect(fileButtonClick);
+    }
 
-        try {
-            stream = AudioSystem.getAudioInputStream(fileButtonClick);
-            format = stream.getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.open(stream);
-            if (tetris.isPlaySfx()) {
+    private void playSoundEffect(File file) {
+        if (tetris.isPlaySfx()) {
+            try {
+                AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+                AudioFormat format = stream.getFormat();
+                DataLine.Info info = new DataLine.Info(Clip.class, format);
+                Clip clip = (Clip) AudioSystem.getLine(info);
+                clip.open(stream);
                 clip.start();
+            } catch (Exception e) {
+                System.out.println("Could not play sound effect");
             }
-        } catch (Exception e) {
-            System.out.println("Could not playTetrisTheme sound effect");
         }
     }
 }

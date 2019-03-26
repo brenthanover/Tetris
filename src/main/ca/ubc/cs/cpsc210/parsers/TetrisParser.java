@@ -99,15 +99,14 @@ public class TetrisParser {
 
         Tetromino currentTetromino = parseTetromino(tetrisJson.getJSONObject(KEY_TETRIS_CURRENT_TETROMINO));
         Tetromino nextTetromino = parseTetromino(tetrisJson.getJSONObject(KEY_TETRIS_NEXT_TETROMINO));
-        Board board = parseBoard(tetrisJson.getJSONObject(KEY_TETRIS_BOARD));
         GameBackground gameBackground = parseGameBackground(tetrisJson.getJSONObject(KEY_TETRIS_GAME_BACKGROUND));
 
         parsedTetris.setCurrentTetromino(currentTetromino);
         parsedTetris.setNextTetromino(nextTetromino);
-        parsedTetris.setGameBoard(board.getBoardGrid());
+        parsedTetris.setGameBoard(parseBoard(tetrisJson.getJSONObject(KEY_TETRIS_BOARD)).getBoardGrid());
         parsedTetris.setGameBackground(gameBackground);
         parsedTetris.setHighScore(tetrisJson.getInt(KEY_TETRIS_HIGH_SCORE));
-
+        parsedTetris.getMysteryButton().setButtonName(tetrisJson.getString(KEY_TETRIS_MYSTERY_BUTTON_NAME));
 
         return parsedTetris;
     }

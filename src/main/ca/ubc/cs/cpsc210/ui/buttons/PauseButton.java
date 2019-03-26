@@ -2,61 +2,29 @@ package ca.ubc.cs.cpsc210.ui.buttons;
 
 import ca.ubc.cs.cpsc210.model.Tetris;
 
-import static ca.ubc.cs.cpsc210.ui.buttons.MysteryButton.SHREK_NAME;
-import static ca.ubc.cs.cpsc210.ui.buttons.MysteryButton.TETRIS_NAME;
-
 public class PauseButton extends TetrisButton {
 
     /**
-     *  Declarations
+     * Declarations
      */
     private Tetris tetris;
 
     /**
-     *  Constructor
+     * Constructor
      */
     public PauseButton(Tetris tetris) {
-        super(pBX, pBY, pBW, pBH, pBN);
+        super(PAUSE_BUTTON_X_POS, PAUSE_BUTTON_Y_POS,
+                PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT, PAUSE_BUTTON_NAME_INITIAL);
         this.tetris = tetris;
     }
 
     /**
-     *  Methods
+     * Methods
      */
     // REQUIRES: gameStart = true
-    // EFFECTS:  pauses and unpauses game and music
+    // EFFECTS:  pauses and unpauses game and music, switches between PAUSE and UNPAUSE
     public void buttonAction() {
-        if (!tetris.isPaused()) {
-            tetris.setPaused(true);
-            if (tetris.isPlayMusic()) {
-                tetris.getTetrisMusic().stop();
-            }
-            buttonName = "UNPAUSE";
-        } else {
-            tetris.setPaused(false);
-            if (tetris.getTetrisMusic() == null) {
-                playMusicByColour(tetris.getButtonList()[2].getButtonName());
-            } else {
-                tetris.getTetrisMusic().unpause();
-            }
-            buttonName = "PAUSE";
-        }
-    }
-
-    // REQUIRES: music is not playing, ie playMusic is false
-    // MODIFIES: this
-    // EFFECTS:  plays theme music based on background colour
-    public void playMusicByColour(String c) {
-        switch (c) {
-            case TETRIS_NAME:
-                tetris.getTetrisMusic().playShrekTheme();
-                break;
-            case SHREK_NAME:
-                tetris.getTetrisMusic().playSaxTheme();
-                break;
-            default:
-                tetris.getTetrisMusic().playTetrisTheme();
-                break;
-        }
+        buttonName = tetris.isPaused() ? PAUSE_BUTTON_NAME_INITIAL : PAUSE_BUTTON_NAME_CLICKED;
+        tetris.setPaused(!tetris.isPaused());
     }
 }

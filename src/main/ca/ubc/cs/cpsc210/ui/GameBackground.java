@@ -139,8 +139,8 @@ public class GameBackground implements Observer {
     public void recordHighScore() {
         highScore = max(score, highScore);
         try {
-            System.out.println("Your new high score is " + score + "!");
             saveHighScore(HIGH_SCORE_FILENAME, highScore);
+            System.out.println("Your new high score is " + score + "!");
         } catch (IOException e) {
             e.printStackTrace();
         }

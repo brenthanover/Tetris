@@ -108,6 +108,22 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         return scoreLinesClearedMap;
     }
 
+    public TetrisButton getMusicButton() {
+        return buttonList[0];
+    }
+
+    public TetrisButton getSoundEffectsButton() {
+        return buttonList[1];
+    }
+
+    public TetrisButton getMysteryButton() {
+        return buttonList[2];
+    }
+
+    public TetrisButton getPauseButton() {
+        return buttonList[3];
+    }
+
     /**
      * Setters
      */

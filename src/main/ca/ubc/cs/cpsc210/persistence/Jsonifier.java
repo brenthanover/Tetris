@@ -12,7 +12,7 @@ import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
 
 public class Jsonifier {
     /**
-     *  Constants
+     * Constants
      */
     public static final String KEY_TETROMINO_LABEL = "label";
     public static final String KEY_TETROMINO_COLOUR = "tetrominoColour";
@@ -32,9 +32,10 @@ public class Jsonifier {
     public static final String KEY_TETRIS_BOARD = "board";
     public static final String KEY_TETRIS_GAME_BACKGROUND = "gameBackground";
     public static final String KEY_TETRIS_HIGH_SCORE = "highScore";
+    public static final String KEY_TETRIS_MYSTERY_BUTTON_NAME = "mysteryButtonName";
 
     /**
-     *  Methods
+     * Methods
      */
     // EFFECTS: returns JSON object representing a Tetromino object
     public static JSONObject tetrominoToJson(Tetromino t) {
@@ -97,6 +98,7 @@ public class Jsonifier {
         tetrisJson.put(KEY_TETRIS_BOARD, boardToJson(t.getBoard()));
         tetrisJson.put(KEY_TETRIS_GAME_BACKGROUND, gameBackgroundToJson(t.getGameBackground()));
         tetrisJson.put(KEY_TETRIS_HIGH_SCORE, t.getHighScore());
+        tetrisJson.put(KEY_TETRIS_MYSTERY_BUTTON_NAME, t.getMysteryButton().getButtonName());
 
         return tetrisJson;
     }

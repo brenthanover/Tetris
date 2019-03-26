@@ -6,14 +6,11 @@ import java.awt.*;
 
 public class MysteryButton extends TetrisButton {
     /**
-     *  Constants
+     * Constants
      */
     public static final Color TETRIS_COLOUR = Color.black;
     public static final Color SHREK_COLOUR = Color.green.darker();
     public static final Color SAX_COLOUR = Color.cyan.darker();
-    public static final String TETRIS_NAME = "TETRIS";
-    public static final String SHREK_NAME = "SHREK";
-    public static final String SAX_NAME = "SAX";
 
     /**
      * Declarations
@@ -21,16 +18,11 @@ public class MysteryButton extends TetrisButton {
     private Tetris tetris;
 
     /**
-     * Variables
-     */
-    private int count;
-
-    /**
      * Constructor
      */
     public MysteryButton(Tetris tetris) {
-        super(qBX, qBY, qBW, qBH, qBN);
-        count = 0;
+        super(MYSTERY_BUTTON_X_POS, MYSTERY_BUTTON_Y_POS,
+                MYSTERY_BUTTON_WIDTH, MYSTERY_BUTTON_HEIGHT, MYSTERY_BUTTON_NAME_SHREK);
         this.tetris = tetris;
     }
 
@@ -39,35 +31,33 @@ public class MysteryButton extends TetrisButton {
      */
     // EFFECTS: cycles between songs and background themes
     public void buttonAction() {
-        if (tetris.isPlayMusic()) {
-            tetris.getTetrisMusic().stop();
-        }
-        playNextSong();
-        count++;
+        tetris.getTetrisMusic().stop();
         tetris.setPlayMusic(true);
+        tetris.getMusicButton().setButtonName(MUSIC_BUTTON_NAME_INITIAL);
+
+        playNextSong();
     }
 
     // EFFECTS:  if playing tetris theme, play Shrek theme, set background to green
     //           if playing Shrek theme, play sax theme, set background to blue
     //           if playing sax theme, play tetris theme, set background to black
     private void playNextSong() {
-        switch (count % 3) {
-            case 0:
+        switch (buttonName) {
+            case MYSTERY_BUTTON_NAME_SHREK:
                 tetris.getTetrisMusic().playShrekTheme();
-                buttonName = SAX_NAME;
+                buttonName = MYSTERY_BUTTON_NAME_KENNY;
                 tetris.getGameBackground().setBackgroundColour(SHREK_COLOUR);
                 break;
-            case 1:
+            case MYSTERY_BUTTON_NAME_KENNY:
                 tetris.getTetrisMusic().playSaxTheme();
-                buttonName = TETRIS_NAME;
+                buttonName = MYSTERY_BUTTON_NAME_TETRIS;
                 tetris.getGameBackground().setBackgroundColour(SAX_COLOUR);
                 break;
             default:
                 tetris.getTetrisMusic().playTetrisTheme();
-                buttonName = SHREK_NAME;
+                buttonName = MYSTERY_BUTTON_NAME_SHREK;
                 tetris.getGameBackground().setBackgroundColour(TETRIS_COLOUR);
                 break;
-
         }
     }
 }

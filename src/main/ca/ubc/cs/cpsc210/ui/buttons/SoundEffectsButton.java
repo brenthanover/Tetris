@@ -6,31 +6,33 @@ import ca.ubc.cs.cpsc210.model.Tetris;
 public class SoundEffectsButton extends TetrisButton {
 
     /**
-     *  Declarations
+     * Declarations
      */
     private Tetris tetris;
 
     /**
-     *  Constructor
+     * Constructor
      */
     // EFFECTS: constructs a SoundEffectsButton object
     public SoundEffectsButton(Tetris tetris) {
-        super(sfxBX, sfxBY, sfxBW, sfxBH, sfxBN);
+        super(SOUND_EFECTS_BUTTON_X_POS, SOUND_EFECTS_BUTTON_Y_POS,
+                SOUND_EFECTS_BUTTON_WIDTH, SOUND_EFECTS_BUTTON_HEIGHT, SOUND_EFECTS_BUTTON_NAME_INITIAL);
         this.tetris = tetris;
     }
 
     /**
-     *  Methods
+     * Methods
      */
     // MODIFIES: tetris
-    // EFFECTS: toggles the sound effects on and off
+    // EFFECTS: switches the sound effects on and off
+    //          switches between SFX ON and SFX OFF
     public void buttonAction() {
         if (tetris.isPlaySfx()) {
+            buttonName = SOUND_EFECTS_BUTTON_NAME_CLICKED;
             tetris.setPlaySfx(false);
-            buttonName = "SFX OFF";
         } else {
+            buttonName = SOUND_EFECTS_BUTTON_NAME_INITIAL;
             tetris.setPlaySfx(true);
-            buttonName = "SFX ON";
         }
     }
 }

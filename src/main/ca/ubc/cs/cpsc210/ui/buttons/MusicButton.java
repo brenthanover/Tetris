@@ -3,54 +3,49 @@ package ca.ubc.cs.cpsc210.ui.buttons;
 
 import ca.ubc.cs.cpsc210.model.Tetris;
 
-import java.awt.*;
-
-import static ca.ubc.cs.cpsc210.ui.buttons.MysteryButton.*;
-
 public class MusicButton extends TetrisButton {
 
     /**
-     *  Declarations
+     * Declarations
      */
     private Tetris tetris;
 
     /**
-     *  Constructor
+     * Constructor
      */
     // EFFECTS: constructs MusicButton object
     public MusicButton(Tetris tetris) {
-        super(mBX, mBY, mBW, mBH, mBN);
+        super(MUSIC_BUTTON_X_POS, MUSIC_BUTTON_Y_POS,
+                MUSIC_BUTTON_WIDTH, MUSIC_BUTTON_HEIGHT, MUSIC_BUTTON_NAME_INITIAL);
         this.tetris = tetris;
     }
 
     /**
-     *  Methods
+     * Methods
      */
     // MODIFIES: tetris
     // EFFECTS:  toggles music on and off
+    //           song depends on current theme, decided by mystery button
     //           music starts at beginning when it is turned on
     public void buttonAction() {
-        if (tetris.isPlayMusic()) {
-            tetris.getTetrisMusic().stop();
-            tetris.setPlayMusic(false);
-            buttonName = "MUSIC OFF";
-        } else {
-            playMusicByColour(tetris.getButtonList()[2].getButtonName());
-            tetris.getTetrisMusic().playTetrisTheme();
-            tetris.setPlayMusic(true);
-            buttonName = "MUSIC ON";
+        tetris.getTetrisMusic().stop();
+        if (buttonName.equals(MUSIC_BUTTON_NAME_CLICKED)) {
+            playMusicByTheme(tetris.getMysteryButton().getButtonName());
         }
+
+        buttonName = tetris.isPlayMusic() ? MUSIC_BUTTON_NAME_CLICKED : MUSIC_BUTTON_NAME_INITIAL;
+        tetris.setPlayMusic(!tetris.isPlayMusic());
     }
 
     // REQUIRES: music is not playing, ie playMusic is false
     // MODIFIES: this
     // EFFECTS:  plays theme music based on background colour
-    public void playMusicByColour(String c) {
+    public void playMusicByTheme(String c) {
         switch (c) {
-            case TETRIS_NAME:
+            case MYSTERY_BUTTON_NAME_KENNY:
                 tetris.getTetrisMusic().playShrekTheme();
                 break;
-            case SHREK_NAME:
+            case MYSTERY_BUTTON_NAME_TETRIS:
                 tetris.getTetrisMusic().playSaxTheme();
                 break;
             default:

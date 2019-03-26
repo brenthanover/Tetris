@@ -385,7 +385,7 @@ public class Board implements Iterable<Character> {
 
         @Override
         public boolean hasNext() {
-            return ((colIndex) * (rowIndex) < BLOCKS_WIDE * BLOCKS_HIGH - BLOCKS_WIDE - 1);
+            return (colIndex * rowIndex < BLOCKS_WIDE * BLOCKS_HIGH - BLOCKS_WIDE - 1);
         }
 
         @Override
