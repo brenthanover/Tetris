@@ -24,12 +24,15 @@ public class Music {
     /**
      * Constructor
      */
+    // EFFECTS:  constructor for Music
     public Music() {
     }
 
     /**
      * Methods
      */
+    // REQUIRES: Game type to be started
+    // EFFECTS: plays the .wav file at file tetrisFileName
     private void playSong(File tetrisFileName, String s) {
         try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(tetrisFileName);
@@ -44,29 +47,29 @@ public class Music {
         }
     }
 
+    // EFFECTS: plays the tetris theme
     public void playTetrisTheme() {
         playSong(tetrisFileName, "Could not play Tetris theme");
     }
 
+    // EFFECTS: plays a shrek remix
     public void playShrekTheme() {
         playSong(shrekFileName, "Could not play Shrek theme");
     }
 
+    // EFFECTS: plays the sexy sax song
     public void playSaxTheme() {
         playSong(saxFileName, "Could not play Sax theme");
     }
 
+    // REQUIRES: clip != null
+    // MODIFIES: this
+    // EFFECTS:  stops the song from playing
     public void stop() {
         clip.stop();
     }
 
-    public void unpause() {
-        clip.start();
-    }
-
-
     // Tutorial citation:
     // how to play .wav files in java
     // https://stackoverflow.com/questions/2416935/how-to-play-wav-files-with-java
-
 }

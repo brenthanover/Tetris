@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static ca.ubc.cs.cpsc210.parsers.TetrisParser.parseTetris;
+import static ca.ubc.cs.cpsc210.parsers.GameParser.parseTetris;
 import static ca.ubc.cs.cpsc210.ui.buttons.TetrisButton.*;
 
 public class LoadGame {
@@ -23,8 +23,8 @@ public class LoadGame {
         String data = loadString(fileName);
 
         JSONObject obj = new JSONObject(data);
-        Tetris parsedTetris = parseTetris(obj);
 
+        Tetris parsedTetris = parseTetris(obj);
         setTetris(tetris, parsedTetris);
     }
 
@@ -50,10 +50,37 @@ public class LoadGame {
         tetris.setGameBoard(parsedTetris.getBoard().getBoardGrid());
         tetris.setGameBackground(parsedTetris.getGameBackground());
         tetris.setHighScore(parsedTetris.getHighScore());
-        tetris.setPlayMusic(false);
+        tetris.setPlayMusic(parsedTetris.isPlayMusic());
         tetris.getMusicButton().setButtonName(MUSIC_BUTTON_NAME_CLICKED);
         tetris.getMysteryButton().setButtonName(parsedTetris.getMysteryButton().getButtonName());
         tetris.getPauseButton().setButtonName(PAUSE_BUTTON_NAME_CLICKED);
         tetris.setPaused(true);
+        tetris.setLinesToClear(parsedTetris.getLinesToClear());
+        tetris.setLevel(parsedTetris.getLevel());
+        tetris.setFallSpeed(parsedTetris.getFallSpeed());
+        tetris.setGameLoaded(true);
+        setMusic(tetris);
+        tetris.getGameBackground().setLevel(parsedTetris.getLevel());
+        tetris.getGameBackground().setLinesToClear(parsedTetris.getLinesToClear());
+    }
+
+    // EFFECTS: plays music according to mystery button name if loaded tetris has music on
+    private static void setMusic(Tetris tetris) {
+        if (tetris.isPlayMusic()) {
+            tetris.getMusicButton().setButtonName(MUSIC_BUTTON_NAME_INITIAL);
+            switch (tetris.getMysteryButton().getButtonName()) {
+                case MYSTERY_BUTTON_NAME_SHREK:
+                    tetris.getTetrisMusic().playTetrisTheme();
+                    break;
+                case MYSTERY_BUTTON_NAME_KENNY:
+                    tetris.getTetrisMusic().playShrekTheme();
+                    break;
+                default:
+                    tetris.getTetrisMusic().playSaxTheme();
+                    break;
+            }
+        } else {
+            tetris.getMusicButton().setButtonName(MUSIC_BUTTON_NAME_CLICKED);
+        }
     }
 }

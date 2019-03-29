@@ -9,7 +9,6 @@ import static ca.ubc.cs.cpsc210.model.Tetris.*;
 import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.HIGH_SCORE_FILENAME;
 import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.saveHighScore;
 import static ca.ubc.cs.cpsc210.ui.Game.*;
-import static sun.swing.MenuItemLayoutHelper.max;
 
 
 // this class tracks score, lines cleared, and high score, and renders the game window,
@@ -23,14 +22,21 @@ public class GameBackground implements Observer {
     private static final int FONT_STYLE = 1;
     private static final int FONT_SIZE = 30;
     private static final String FONT_TYPE = "Arial";
-    private static final int SCORE_X_POS = BLOCK_SIZE * 5 + 19;
-    private static final int SCORE_Y_POS = BLOCK_SIZE * 6;
-    private static final int HIGH_SCORE_X_POS = BLOCK_SIZE * 5 + 19;
-    private static final int HIGH_SCORE_Y_POS = BLOCK_SIZE * 4;
+    private static final int OFFSET = 10;
+    private static final int LEVEL_X_POS = BLOCK_SIZE * 7 + 9;
+    private static final int LEVEL_Y_POS = BLOCK_SIZE + BLOCK_SIZE / 2 + OFFSET;
+    private static final int LINES_TO_CLEAR_X_POS = BLOCK_SIZE * 7 + 9;
+    private static final int LINES_TO_CLEAR_Y_POS = BLOCK_SIZE * 3 + OFFSET;
     private static final int LINES_X_POS = BLOCK_SIZE * 7 + 9;
-    private static final int LINES_Y_POS = BLOCK_SIZE * 2;
+    private static final int LINES_Y_POS = BLOCK_SIZE * 4 + BLOCK_SIZE / 2 + OFFSET;
+    private static final int HIGH_SCORE_X_POS = BLOCK_SIZE * 5 + 19;
+    private static final int HIGH_SCORE_Y_POS = BLOCK_SIZE * 6 + OFFSET;
+    private static final int SCORE_X_POS = BLOCK_SIZE * 5 + 19;
+    private static final int SCORE_Y_POS = BLOCK_SIZE * 7 + BLOCK_SIZE / 2 + OFFSET;
     private static final int SCORE_ZEROES = 6;
     private static final int LINE_ZEROES = 3;
+    private static final int LEVEL_ZEROES = 3;
+    private static final int LINES_TO_CLEAR_ZEROES = 3;
     public static final int LINE_SCORE = 100;
     public static final int TETROMINO_SCORE = 10;
 
@@ -41,7 +47,8 @@ public class GameBackground implements Observer {
     private int score;
     private int linesCleared;
     private int highScore;
-    private Map<String, Integer> linesClearedScoreMap;
+    private int level;
+    private int linesToClear;
 
     /**
      * Getters
@@ -81,20 +88,25 @@ public class GameBackground implements Observer {
         this.linesCleared = linesCleared;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setLinesToClear(int linesToClear) {
+        this.linesToClear = linesToClear;
+    }
+
     /**
      * Constructor
      */
+    // EFFECTS:  constructor for GameBackground object
     public GameBackground(int highScore) {
         this.highScore = highScore;
-        linesCleared = 0;
+        level = 1;
+        linesToClear = STARTING_LINES_TO_CLEAR;
         score = 0;
+        linesCleared = 0;
         backgroundColour = Color.black;
-
-        linesClearedScoreMap = new HashMap<>();
-        linesClearedScoreMap.put(EVENT_ONE_LINE_CLEARED, 1);
-        linesClearedScoreMap.put(EVENT_TWO_LINES_CLEARED, 2);
-        linesClearedScoreMap.put(EVENT_THREE_LINES_CLEARED, 3);
-        linesClearedScoreMap.put(EVENT_FOUR_LINES_CLEARED, 4);
     }
 
     /**
@@ -134,15 +146,26 @@ public class GameBackground implements Observer {
         return fillZeroes(LINE_ZEROES, linesCleared);
     }
 
+    // EFFECTS: returns a string with LEVEL_ZEROES number of digits, with zeroes to left of level
+    public String getLevelString() {
+        return fillZeroes(LEVEL_ZEROES, level);
+    }
+
+    // EFFECTS: returns a string with LINES_TO_CLEAR_ZEROES number of digits, with zeroes to left of linesToCleaer
+    public String getLinesToClearString() {
+        return fillZeroes(LINES_TO_CLEAR_ZEROES, linesToClear);
+    }
+
     // MODIFIES: file saved under resources/savefiles/HIGH_SCORE_FILENAME
     // EFFECTS:  if score > highScore, saves new high score to HIGH_SCORE_FILENAME, prints new high score
     public void recordHighScore() {
-        highScore = max(score, highScore);
-        try {
-            saveHighScore(HIGH_SCORE_FILENAME, highScore);
-            System.out.println("Your new high score is " + score + "!");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (score > highScore) {
+            try {
+                saveHighScore(HIGH_SCORE_FILENAME, score);
+                System.out.println("Your new high score is " + score + "!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -154,11 +177,12 @@ public class GameBackground implements Observer {
     // MODIFIES: this
     // EFFECTS:  adds line score based on number of lines cleared
     public void addLineScore(String event) {
-        int linesToClear = linesClearedScoreMap.get(event);
+        int numFullLines = Integer.parseInt(event.substring(event.length() - 1));
 
-        for (int i = 0; i < linesToClear; i++) {
-            score += LINE_SCORE * (i + 1);
+        for (int i = 0; i < numFullLines; i++) {
+            score += LINE_SCORE * (i + 1) * level;
             linesCleared++;
+            linesToClear--;
         }
 
         score -= TETROMINO_SCORE;
@@ -175,10 +199,14 @@ public class GameBackground implements Observer {
     public void update(Observable o, Object event) {
         switch ((String) event) {
             case EVENT_TETROMINO_SCORE_ADD:
-                score += TETROMINO_SCORE;
+                score += TETROMINO_SCORE * level;
                 break;
             case EVENT_GAME_OVER:
                 recordHighScore();
+                break;
+            case EVENT_LEVEL_UP:
+                level++;
+                linesToClear = level * STARTING_LINES_TO_CLEAR;
                 break;
             default:
                 addLineScore((String) event);
@@ -228,7 +256,7 @@ public class GameBackground implements Observer {
         int halfBlock = BLOCK_SIZE / 2;
         int quarterBlock = BLOCK_SIZE / 4;
         int nextXPos = BLOCK_SIZE * 3 - quarterBlock;
-        int nextYPos = BLOCK_SIZE * 14 - quarterBlock;
+        int nextYPos = BLOCK_SIZE * 16 - quarterBlock;
         int nextWidth = BLOCK_SIZE * 4 + halfBlock;
         int nextHeight = BLOCK_SIZE * 2 + halfBlock;
         g.drawRect(nextXPos, nextYPos, nextWidth, nextHeight);
@@ -247,11 +275,15 @@ public class GameBackground implements Observer {
     private void drawScore(Graphics g) {
         g.setColor(TEXT_COLOUR);
         g.setFont(new Font(FONT_TYPE, FONT_STYLE, FONT_SIZE));
-        g.drawString("LINES", BLOCK_SIZE, LINES_Y_POS);
+        g.drawString("LEVEL:", BLOCK_SIZE, LEVEL_Y_POS);
+        g.drawString(getLevelString() + "", LEVEL_X_POS, LEVEL_Y_POS);
+        g.drawString("CLEAR:", BLOCK_SIZE, LINES_TO_CLEAR_Y_POS);
+        g.drawString(getLinesToClearString() + "", LINES_TO_CLEAR_X_POS, LINES_TO_CLEAR_Y_POS);
+        g.drawString("LINES:", BLOCK_SIZE, LINES_Y_POS);
         g.drawString(getLinesClearedString(), LINES_X_POS, LINES_Y_POS);
-        g.drawString("TOP", BLOCK_SIZE, HIGH_SCORE_Y_POS);
+        g.drawString("TOP:", BLOCK_SIZE, HIGH_SCORE_Y_POS);
         g.drawString(getHighScoreString(), HIGH_SCORE_X_POS, HIGH_SCORE_Y_POS);
-        g.drawString("SCORE", BLOCK_SIZE, SCORE_Y_POS);
+        g.drawString("SCORE:", BLOCK_SIZE, SCORE_Y_POS);
         g.drawString(getScoreString(), SCORE_X_POS, SCORE_Y_POS);
     }
 

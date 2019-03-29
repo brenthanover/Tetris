@@ -63,20 +63,20 @@ public class BoardTests {
     @Test
     public void testIsStraightTetrominoAboveBlockOutOfBounds() {
         straightTetromino.rotateCW();
-        board.setBoardGridBlock(19, 5, 'i');
+        board.setBoardGridBlock(BLOCKS_HIGH - 1, 5, 'i');
         assertFalse(board.isTetrominoAboveBlock(straightTetromino));
-        straightTetromino.setTetrominoY(14 * BLOCK_SIZE);
+        straightTetromino.setTetrominoY(16 * BLOCK_SIZE);
         assertFalse(board.isTetrominoAboveBlock(straightTetromino));
         straightTetromino.fall();
         assertTrue(board.isTetrominoAboveBlock(straightTetromino));
-        straightTetromino.setTetrominoY(18 * BLOCK_SIZE);
+        straightTetromino.setTetrominoY((BLOCKS_HIGH - 2) * BLOCK_SIZE);
         assertFalse(board.isTetrominoAboveBlock(straightTetromino));
     }
 
     @Test
     public void testIsDirectlyTouchingBottom() {
         assertFalse(board.isTetrominoTouchingBottom(straightTetromino));
-        for (int i = 0; i < 19; i++) {
+        for (int i = 0; i < BLOCKS_HIGH - 1; i++) {
             straightTetromino.fall();
         }
         assertTrue(board.isTetrominoTouchingBottom(straightTetromino));
@@ -117,8 +117,8 @@ public class BoardTests {
         assertFalse(board.isGameOver(squareTetromino));
         assertTrue(board.isGameOver(sTetromino));
 
-        board.setBoardGridBlock(18,9,'i');
-        board.setBoardGridBlock(19,9,'m');
+        board.setBoardGridBlock(BLOCKS_HIGH - 2,9,'i');
+        board.setBoardGridBlock(BLOCKS_HIGH - 1,9,'m');
     }
 
     @Test
@@ -169,7 +169,7 @@ public class BoardTests {
         assertEquals(0, straightTetromino.getTetrominoY());
         assertTrue(board.equals(testBoard));
         for (int i = 3; i < 7; i++) {
-            testBoard.setBoardGridBlock(19, i, 'i');
+            testBoard.setBoardGridBlock(BLOCKS_HIGH - 1, i, 'i');
         }
         board.dropTetrominoToBottom(straightTetromino);
         board.freezeTetrominoToBoard(straightTetromino);
@@ -180,10 +180,10 @@ public class BoardTests {
     public void testDropToBlock() {
         assertEquals(0, straightTetromino.getTetrominoY());
         assertTrue(board.equals(testBoard));
-        board.setBoardGridBlock(19, 5, 'o');
-        testBoard.setBoardGridBlock(19,5,'o');
+        board.setBoardGridBlock(BLOCKS_HIGH - 1, 5, 'o');
+        testBoard.setBoardGridBlock(BLOCKS_HIGH - 1,5,'o');
         for (int i = 3; i < 7; i++) {
-            testBoard.setBoardGridBlock(18, i, 'i');
+            testBoard.setBoardGridBlock(BLOCKS_HIGH - 2, i, 'i');
         }
         board.dropTetrominoToBottom(straightTetromino);
         board.freezeTetrominoToBoard(straightTetromino);

@@ -3,6 +3,7 @@ package ca.ubc.cs.cpsc210.tests;
 import ca.ubc.cs.cpsc210.model.Board;
 import ca.ubc.cs.cpsc210.model.Tetromino;
 import ca.ubc.cs.cpsc210.model.Tetris;
+import ca.ubc.cs.cpsc210.ui.Game;
 import ca.ubc.cs.cpsc210.ui.GameBackground;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,7 @@ import java.awt.*;
 
 import static ca.ubc.cs.cpsc210.model.Tetromino.J_COLOUR;
 import static ca.ubc.cs.cpsc210.model.Tetromino.jTetrominoMatrix;
-import static ca.ubc.cs.cpsc210.parsers.TetrisParser.*;
+import static ca.ubc.cs.cpsc210.parsers.GameParser.*;
 import static ca.ubc.cs.cpsc210.persistence.Jsonifier.*;
 import static org.junit.jupiter.api.Assertions.*;
 

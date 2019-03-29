@@ -8,9 +8,8 @@ import ca.ubc.cs.cpsc210.ui.buttons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static ca.ubc.cs.cpsc210.model.Tetris.*;
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
-import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
+import static ca.ubc.cs.cpsc210.ui.Game.*;
 import static ca.ubc.cs.cpsc210.ui.GameBackground.TETROMINO_SCORE;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,11 +57,6 @@ public class TetrisTests {
         assertEquals(new PauseButton(testTetris), testTetris.getButtonList()[3]);
         assertEquals(new SaveButton(testTetris), testTetris.getButtonList()[4]);
         assertEquals(new LoadButton(testTetris), testTetris.getButtonList()[5]);
-
-        assertEquals(EVENT_ONE_LINE_CLEARED, testTetris.getScoreClearedLinesMap().get(1));
-        assertEquals(EVENT_TWO_LINES_CLEARED, testTetris.getScoreClearedLinesMap().get(2));
-        assertEquals(EVENT_THREE_LINES_CLEARED, testTetris.getScoreClearedLinesMap().get(3));
-        assertEquals(EVENT_FOUR_LINES_CLEARED, testTetris.getScoreClearedLinesMap().get(4));
     }
 
     @Test
@@ -245,6 +239,29 @@ public class TetrisTests {
         testTetris.clearRows(4);
         assertEquals(testTetris.getBoard(), board);
         assertEquals(990, testTetris.getGameBackground().getScore());
+    }
+
+    @Test
+    public void testLevelUp() {
+        testTetris.initializeTetris();
+        testTetris.getBoard().setBoardGridBlock(0,0,'i');
+        assertNotNull(testTetris.getCurrentTetromino());
+        assertNotNull(testTetris.getNextTetromino());
+        assertTrue(testTetris.isGameStart());
+        assertEquals(1, testTetris.getLevel());
+        assertEquals(STARTING_LINES_TO_CLEAR, testTetris.getLinesToClear());
+        assertEquals(INITIAL_FALL_SPEED, testTetris.getFallSpeed());
+        assertNotEquals(board, testTetris.getBoard());
+
+        testTetris.levelUp();
+
+        assertNull(testTetris.getCurrentTetromino());
+        assertNull(testTetris.getNextTetromino());
+        assertFalse(testTetris.isGameStart());
+        assertEquals(2, testTetris.getLevel());
+        assertEquals(STARTING_LINES_TO_CLEAR * 2, testTetris.getLinesToClear());
+        assertEquals(INITIAL_FALL_SPEED - FALL_SPEED_CHANGE_PER_LEVEL, testTetris.getFallSpeed());
+        assertEquals(board, testTetris.getBoard());
     }
 
     @Test

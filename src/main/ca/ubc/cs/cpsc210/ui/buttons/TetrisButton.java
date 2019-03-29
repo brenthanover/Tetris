@@ -19,7 +19,7 @@ public abstract class TetrisButton {
      * MusicButton constants
      */
     public static final int MUSIC_BUTTON_X_POS = BLOCK_SIZE;
-    public static final int MUSIC_BUTTON_Y_POS = BLOCK_SIZE * 7;
+    public static final int MUSIC_BUTTON_Y_POS = BLOCK_SIZE * 9;
     public static final int MUSIC_BUTTON_WIDTH = BLOCK_SIZE * 3;
     public static final int MUSIC_BUTTON_HEIGHT = BLOCK_SIZE * 2;
     public static final String MUSIC_BUTTON_NAME_INITIAL = "MUSIC ON";
@@ -28,18 +28,18 @@ public abstract class TetrisButton {
     /**
      * SoundEffectsButton constants
      */
-    public static final int SOUND_EFECTS_BUTTON_X_POS = BLOCK_SIZE * 6;
-    public static final int SOUND_EFECTS_BUTTON_Y_POS = BLOCK_SIZE * 7;
-    public static final int SOUND_EFECTS_BUTTON_WIDTH = BLOCK_SIZE * 3;
-    public static final int SOUND_EFECTS_BUTTON_HEIGHT = BLOCK_SIZE * 2;
-    public static final String SOUND_EFECTS_BUTTON_NAME_INITIAL = "SFX ON";
-    public static final String SOUND_EFECTS_BUTTON_NAME_CLICKED = "SFX OFF";
+    public static final int SOUND_EFFECTS_BUTTON_X_POS = BLOCK_SIZE * 6;
+    public static final int SOUND_EFFECTS_BUTTON_Y_POS = BLOCK_SIZE * 9;
+    public static final int SOUND_EFFECTS_BUTTON_WIDTH = BLOCK_SIZE * 3;
+    public static final int SOUND_EFFECTS_BUTTON_HEIGHT = BLOCK_SIZE * 2;
+    public static final String SOUND_EFFECTS_BUTTON_NAME_INITIAL = "SFX ON";
+    public static final String SOUND_EFFECTS_BUTTON_NAME_CLICKED = "SFX OFF";
 
     /**
      * SaveButton constants
      */
     public static final int SAVE_BUTTON_X_POS = BLOCK_SIZE;
-    public static final int SAVE_BUTTON_Y_POS = BLOCK_SIZE * 10;
+    public static final int SAVE_BUTTON_Y_POS = BLOCK_SIZE * 12;
     public static final int SAVE_BUTTON_WIDTH = BLOCK_SIZE * 3;
     public static final int SAVE_BUTTON_HEIGHT = BLOCK_SIZE * 2;
     public static final String SAVE_BUTTON_NAME = "SAVE";
@@ -48,7 +48,7 @@ public abstract class TetrisButton {
      * LoadButton constants
      */
     public static final int LOAD_BUTTON_X_POS = BLOCK_SIZE * 6;
-    public static final int LOAD_BUTTON_Y_POS = BLOCK_SIZE * 10;
+    public static final int LOAD_BUTTON_Y_POS = BLOCK_SIZE * 12;
     public static final int LOAD_BUTTON_WIDTH = BLOCK_SIZE * 3;
     public static final int LOAD_BUTTON_HEIGHT = BLOCK_SIZE * 2;
     public static final String LOAD_BUTTON_NAME = "LOAD";
@@ -57,7 +57,7 @@ public abstract class TetrisButton {
      * MysteryButton constants
      */
     public static final int MYSTERY_BUTTON_X_POS = BLOCK_SIZE * 6;
-    public static final int MYSTERY_BUTTON_Y_POS = BLOCK_SIZE * 17;
+    public static final int MYSTERY_BUTTON_Y_POS = BLOCK_SIZE * 19;
     public static final int MYSTERY_BUTTON_WIDTH = BLOCK_SIZE * 3;
     public static final int MYSTERY_BUTTON_HEIGHT = BLOCK_SIZE * 2;
     public static final String MYSTERY_BUTTON_NAME_SHREK = "SHREK";
@@ -68,7 +68,7 @@ public abstract class TetrisButton {
      * PauseButton constants
      */
     public static final int PAUSE_BUTTON_X_POS = BLOCK_SIZE;
-    public static final int PAUSE_BUTTON_Y_POS = BLOCK_SIZE * 17;
+    public static final int PAUSE_BUTTON_Y_POS = BLOCK_SIZE * 19;
     public static final int PAUSE_BUTTON_WIDTH = BLOCK_SIZE * 3;
     public static final int PAUSE_BUTTON_HEIGHT = BLOCK_SIZE * 2;
     public static final String PAUSE_BUTTON_NAME_INITIAL = "PAUSE";

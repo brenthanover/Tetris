@@ -4,6 +4,7 @@ import ca.ubc.cs.cpsc210.audio.SoundEffects;
 import ca.ubc.cs.cpsc210.audio.Music;
 import ca.ubc.cs.cpsc210.ui.Game;
 import ca.ubc.cs.cpsc210.ui.GameBackground;
+import ca.ubc.cs.cpsc210.ui.MessagePrinter;
 import ca.ubc.cs.cpsc210.ui.buttons.*;
 
 import java.awt.*;
@@ -13,17 +14,19 @@ import java.util.*;
 import static ca.ubc.cs.cpsc210.model.Tetromino.*;
 import static ca.ubc.cs.cpsc210.ui.Game.*;
 
-public class Tetris extends Observable implements KeyListener, MouseListener {
+public class Tetris extends Observable implements KeyListener, MouseListener, Observer {
 
     /**
      * Observer Strings
      */
     public static final String EVENT_TETROMINO_SCORE_ADD = "ADD SCORE";
-    public static final String EVENT_ONE_LINE_CLEARED = "ONE LINE CLEARED";
-    public static final String EVENT_TWO_LINES_CLEARED = "TWO LINES CLEARE";
-    public static final String EVENT_THREE_LINES_CLEARED = "THREE LINES CLEARED";
-    public static final String EVENT_FOUR_LINES_CLEARED = "FOUR LINES CLEARED";
+    public static final String EVENT_ONE_LINE_CLEARED = "LINE CLEARED 1";
+    public static final String EVENT_TWO_LINES_CLEARED = "LINE CLEARED 2";
+    public static final String EVENT_THREE_LINES_CLEARED = "LINE CLEARED 3";
+    public static final String EVENT_FOUR_LINES_CLEARED = "LINE CLEARED 4";
+    public static final String EVENT_LINES_CLEARED = "LINE CLEARED ";
     public static final String EVENT_GAME_OVER = "GAME OVER";
+    public static final String EVENT_LEVEL_UP = "LEVEL UP";
 
     /**
      * Declarations
@@ -33,7 +36,6 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
     private Tetromino currentTetromino;
     private Tetromino nextTetromino;
     private TetrisButton[] buttonList;
-    private Map<Integer, String> scoreLinesClearedMap;
     private Music tetrisMusic;
     private static SoundEffects soundEffects;
 
@@ -47,7 +49,37 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
     private boolean playSfx = true;
     private boolean gameOver = false;
     private boolean highScoreSaved = false;
+    private boolean gameSaved = false;
     private int highScore;
+    private int level;
+    private int linesToClear;
+    private int fallSpeed;
+
+    /**
+     * Constructor
+     */
+    // EFFECTS: constructs Tetris object
+    public Tetris(int highScore) {
+        this.highScore = highScore;
+        board = new Board();
+        gameBackground = new GameBackground(highScore);
+        soundEffects = new SoundEffects(this);
+        tetrisMusic = new Music();
+        buttonList = new TetrisButton[6];
+        buttonList[0] = new MusicButton(this);
+        buttonList[1] = new SoundEffectsButton(this);
+        buttonList[2] = new MysteryButton(this);
+        buttonList[3] = new PauseButton(this);
+        buttonList[4] = new SaveButton(this);
+        buttonList[5] = new LoadButton(this);
+
+        level = 1;
+        linesToClear = STARTING_LINES_TO_CLEAR;
+        fallSpeed = INITIAL_FALL_SPEED;
+
+        addObserver(gameBackground);
+        addObserver(new MessagePrinter());
+    }
 
     /**
      * Getters
@@ -104,10 +136,6 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         return buttonList;
     }
 
-    public Map<Integer, String> getScoreClearedLinesMap() {
-        return scoreLinesClearedMap;
-    }
-
     public TetrisButton getMusicButton() {
         return buttonList[0];
     }
@@ -122,6 +150,22 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
 
     public TetrisButton getPauseButton() {
         return buttonList[3];
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getLinesToClear() {
+        return linesToClear;
+    }
+
+    public int getFallSpeed() {
+        return fallSpeed;
+    }
+
+    public boolean isGameLoaded() {
+        return gameSaved;
     }
 
     /**
@@ -141,10 +185,6 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
 
     public void setGameOver(boolean b) {
         gameOver = b;
-    }
-
-    public void setGameStart(boolean b) {
-        gameStart = b;
     }
 
     public void setGameBoard(char[][] newBoard) {
@@ -178,38 +218,26 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         this.gameBackground.setBackgroundColour(gameBackground.getBackgroundColour());
     }
 
-    /**
-     * Constructor
-     */
-    // EFFECTS: constructs Tetris object
-    public Tetris(int highScore) {
-        this.highScore = highScore;
-        board = new Board();
-        gameBackground = new GameBackground(highScore);
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
-        soundEffects = new SoundEffects(this);
-        tetrisMusic = new Music();
+    public void setLinesToClear(int linesToClear) {
+        this.linesToClear = linesToClear;
+    }
 
-        buttonList = new TetrisButton[6];
-        buttonList[0] = new MusicButton(this);
-        buttonList[1] = new SoundEffectsButton(this);
-        buttonList[2] = new MysteryButton(this);
-        buttonList[3] = new PauseButton(this);
-        buttonList[4] = new SaveButton(this);
-        buttonList[5] = new LoadButton(this);
+    public void setFallSpeed(int fallSpeed) {
+        this.fallSpeed = fallSpeed;
+    }
 
-        scoreLinesClearedMap = new HashMap<>();
-        scoreLinesClearedMap.put(1, EVENT_ONE_LINE_CLEARED);
-        scoreLinesClearedMap.put(2, EVENT_TWO_LINES_CLEARED);
-        scoreLinesClearedMap.put(3, EVENT_THREE_LINES_CLEARED);
-        scoreLinesClearedMap.put(4, EVENT_FOUR_LINES_CLEARED);
-
-        addObserver(gameBackground);
+    public void setGameLoaded(boolean b) {
+        gameSaved = b;
     }
 
     // REQUIRES: game is over, high score is not saved
     // MODIFIES: highscore save file
     // EFFECTS:  on game over, notify GameBackground observer to update high score if necessary
+    //           tells observers that the game is over
     public void gameOverScoreRecord() {
         if (gameOver && !highScoreSaved) {
             highScoreSaved = true;
@@ -226,6 +254,7 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
     //           sets new random tetromino to nextTetromino
     //           adds score
     //           checks to see if game is over, makes game over if true
+    //           tells the observers to add the tetromino score
     public void cycleTetromino() {
         board.freezeTetrominoToBoard(currentTetromino);
         currentTetromino = nextTetromino;
@@ -265,9 +294,12 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
     // REQUIRES: board with number of full rows in board == numFullRows
     // MODIFIES: this
     // EFFECTS:  clears number of full rows equal to input numFullRows
+    //           tells the observers that rows have been cleared
     public void clearRows(int numFullRows) {
         setChanged();
-        notifyObservers(scoreLinesClearedMap.get(numFullRows));
+        notifyObservers(EVENT_LINES_CLEARED + numFullRows);
+
+        clearRowSoundEffects(board.countFullRows());
 
         for (int i = 0; i < numFullRows; i++) {
             board.clearRow();
@@ -326,6 +358,19 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         }
     }
 
+    // MODIFIES: this, board
+    // EFFECTS:  resets the board to blank, nullifies all tetrominos, sets the game back to the start screen
+    public void levelUp() {
+        board.resetBoard();
+        currentTetromino = null;
+        nextTetromino = null;
+        gameStart = false;
+        level++;
+        linesToClear = level * STARTING_LINES_TO_CLEAR;
+        fallSpeed -= FALL_SPEED_CHANGE_PER_LEVEL;
+        soundEffects.playLevelUp();
+    }
+
     // EFFECTS: draws all aspects of the Tetris game
     public void draw(Graphics g) {
         // draw background
@@ -364,8 +409,8 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         if (!gameStart) {
             g.setFont(new Font("Arial", 1, BLOCK_SIZE));
             g.setColor(Color.white);
-            g.drawString("PRESS SPACE", 45, BLOCK_SIZE * 10 - 3);
-            g.drawString("TO START", 75, BLOCK_SIZE * 11 - 3);
+            g.drawString("PRESS SPACE", 45, BLOCK_SIZE * 11 - 3);
+            g.drawString("TO START", 75, BLOCK_SIZE * 12 - 3);
         }
     }
 
@@ -375,8 +420,8 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         if (gameOver) {
             g.setColor(Color.white);
             g.setFont(new Font("Arial", 1, 80));
-            g.drawString("GAME", BLOCK_SIZE, BLOCK_SIZE * 9);
-            g.drawString("OVER", BLOCK_SIZE, BLOCK_SIZE * 9 + BLOCK_SIZE * 3);
+            g.drawString("GAME", BLOCK_SIZE, BLOCK_SIZE * 10);
+            g.drawString("OVER", BLOCK_SIZE, BLOCK_SIZE * 13);
         }
     }
 
@@ -458,7 +503,7 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         int mouseX = e.getX();
         int mouseY = e.getY();
 
-        if (mouseCode == MouseEvent.BUTTON1) {
+        if (mouseCode == MouseEvent.BUTTON1 && !gameOver) {
 
             for (int i = 0; i < buttonList.length; i++) {
                 if (buttonList[i].isMouseTouching(mouseX, mouseY)
@@ -481,7 +526,7 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
         int mouseX = e.getX();
         int mouseY = e.getY();
 
-        if (mouseCode == MouseEvent.BUTTON1) {
+        if (mouseCode == MouseEvent.BUTTON1 && !gameOver) {
 
             for (int i = 0; i < buttonList.length; i++) {
                 if (buttonList[i].isMouseTouching(mouseX, mouseY)
@@ -525,5 +570,20 @@ public class Tetris extends Observable implements KeyListener, MouseListener {
     public int hashCode() {
         return Objects.hash(board, getCurrentTetromino(), getNextTetromino(),
                 getHighScore());
+    }
+
+    // REQUIRES: Game or Tetris object to call notifyObservers()
+    // MODIFIES: this
+    // EFFECTS:  subtracts full lines from linesToClear when EVENT_LINES_CLEARED is called
+    //           if levelup: increment level
+    //                       reset linesToClear and add STARTING_LINES_TO_CLEAR
+    //                       speed up the game by decrementing fallSpeed
+    @Override
+    public void update(Observable o, Object event) {
+        for (int i = 1; i <= 4; i++) {
+            if (event.equals(EVENT_LINES_CLEARED + i)) {
+                linesToClear -= i;
+            }
+        }
     }
 }

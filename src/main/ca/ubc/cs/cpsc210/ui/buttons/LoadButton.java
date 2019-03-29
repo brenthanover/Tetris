@@ -2,6 +2,7 @@ package ca.ubc.cs.cpsc210.ui.buttons;
 
 import ca.ubc.cs.cpsc210.exceptions.MissingFileException;
 import ca.ubc.cs.cpsc210.model.Tetris;
+import ca.ubc.cs.cpsc210.ui.Game;
 
 import java.io.IOException;
 
@@ -33,8 +34,8 @@ public class LoadButton extends TetrisButton {
     // EFFECTS:  loads game from save file and pauses the game
     public void buttonAction() {
         try {
-            loadGame(SAVE_FILE_NAME, tetris);
             tetris.getTetrisMusic().stop();
+            loadGame(SAVE_FILE_NAME, tetris);
         } catch (MissingFileException | IOException e) {
             e.printStackTrace();
         }

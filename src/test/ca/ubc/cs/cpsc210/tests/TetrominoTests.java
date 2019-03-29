@@ -46,13 +46,13 @@ public class TetrominoTests {
         assertEquals(I_COLOUR, iTetromino.getTetrominoColour());
         assertEquals('i', iTetromino.getLabel());
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
+        assertEquals(16 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
     }
 
     @Test
     public void testInitializeTetromino() {
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
+        assertEquals(16 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
         iTetromino.initializeTetromino();
         assertEquals((BLOCKS_WIDE - iTetromino.getShape()[0].length) / 2 * BLOCK_SIZE, iTetromino.getTetrominoX());
         assertEquals(0, iTetromino.getTetrominoY());
@@ -61,13 +61,13 @@ public class TetrominoTests {
     @Test
     public void testPreviewTetromino() {
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
+        assertEquals(16 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
         iTetromino.initializeTetromino();
         assertEquals((BLOCKS_WIDE - iTetromino.getShape()[0].length) / 2 * BLOCK_SIZE, iTetromino.getTetrominoX());
         assertEquals(0, iTetromino.getTetrominoY());
         iTetromino.previewTetromino();
         assertEquals(BOARD_WIDTH / 2 - iTetromino.getShape()[0].length * BLOCK_SIZE / 2, iTetromino.getTetrominoX());
-        assertEquals(14 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
+        assertEquals(16 * BLOCK_SIZE + BLOCK_SIZE / 2, iTetromino.getTetrominoY());
     }
 
     @Test
@@ -306,43 +306,43 @@ public class TetrominoTests {
     @Test
     public void testRotateITetrominoCWBottomRepositioning() {
         iTetromino.initializeTetromino();
-        iTetromino.setTetrominoY(19 * BLOCK_SIZE);
+        iTetromino.setTetrominoY((BLOCKS_HIGH - 1) * BLOCK_SIZE);
         assertEquals(iTetrominoMatrix, iTetromino.getShape());
         assertEquals(3 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(19 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 1) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCW();
         assertEquals(5 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(16 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 4) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCW();
         assertEquals(3 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(18 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 2) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCW();
         assertEquals(5 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(16 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 4) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCW();
         assertEquals(3 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(18 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 2) * BLOCK_SIZE, iTetromino.getTetrominoY());
     }
 
     @Test
     public void testRotateITetrominoCCWBottomRepositioning() {
         iTetromino.initializeTetromino();
-        iTetromino.setTetrominoY(19 * BLOCK_SIZE);
+        iTetromino.setTetrominoY((BLOCKS_HIGH - 1) * BLOCK_SIZE);
         assertEquals(iTetrominoMatrix, iTetromino.getShape());
         assertEquals(3 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(19 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 1) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCCw();
         assertEquals(5 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(16 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 4) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCCw();
         assertEquals(3 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(18 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 2) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCCw();
         assertEquals(5 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(16 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 4) * BLOCK_SIZE, iTetromino.getTetrominoY());
         iTetromino.rotateCCw();
         assertEquals(3 * BLOCK_SIZE, iTetromino.getTetrominoX());
-        assertEquals(18 * BLOCK_SIZE, iTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 2) * BLOCK_SIZE, iTetromino.getTetrominoY());
     }
 
     @Test
@@ -568,10 +568,10 @@ public class TetrominoTests {
 
     @Test
     public void testKeepTetrominoInBoundsBottom() {
-        jTetromino.setTetrominoY(BLOCK_SIZE * 20);
-        assertEquals(20 * BLOCK_SIZE, jTetromino.getTetrominoY());
+        jTetromino.setTetrominoY(BLOCK_SIZE * BLOCKS_HIGH);
+        assertEquals(BLOCKS_HIGH * BLOCK_SIZE, jTetromino.getTetrominoY());
         jTetromino.keepTetrominoInBounds();
-        assertEquals(18 * BLOCK_SIZE, jTetromino.getTetrominoY());
+        assertEquals((BLOCKS_HIGH - 2) * BLOCK_SIZE, jTetromino.getTetrominoY());
     }
 
     @Test

@@ -22,22 +22,30 @@ public class Jsonifier {
     public static final String KEY_TETROMINO_SHAPE_ROWS = "shapeRows";
     public static final String KEY_TETROMINO_SHAPE_COLS = "shapeCols";
     public static final String KEY_TETROMINO_SHAPE = "shape";
+
     public static final String KEY_BOARD = "board";
+
     public static final String KEY_GAME_BACKGROUND_SCORE = "score";
     public static final String KEY_GAME_BACKGROUND_HIGH_SCORE = "highScore";
     public static final String KEY_GAME_BACKGROUND_LINES_CLEARED = "linesCleared";
     public static final String KEY_GAME_BACKGROUND_BACKGROUND_COLOUR = "backgroundColour";
+
     public static final String KEY_TETRIS_CURRENT_TETROMINO = "currentTetromino";
     public static final String KEY_TETRIS_NEXT_TETROMINO = "nextTetromino";
     public static final String KEY_TETRIS_BOARD = "board";
     public static final String KEY_TETRIS_GAME_BACKGROUND = "gameBackground";
     public static final String KEY_TETRIS_HIGH_SCORE = "highScore";
     public static final String KEY_TETRIS_MYSTERY_BUTTON_NAME = "mysteryButtonName";
+    public static final String KEY_TETRIS_IS_PLAY_MUSIC = "isPlayMusic";
+
+    public static final String KEY_GAME_LEVEL = "level";
+    public static final String KEY_GAME_FALL_SPEED = "fallSpeed";
+    public static final String KEY_GAME_LINES_TO_CLEAR = "linesToClear";
 
     /**
      * Methods
      */
-    // EFFECTS: returns JSON object representing a Tetromino object
+    // EFFECTS: returns JSONObject representing a Tetromino object
     public static JSONObject tetrominoToJson(Tetromino t) {
         JSONObject tetrominoJson = new JSONObject();
 
@@ -62,7 +70,7 @@ public class Jsonifier {
         return tetrominoJson;
     }
 
-    // EFFECTS: returns JSON object representing a Board object
+    // EFFECTS: returns JSONObject representing a Board object
     public static JSONObject boardToJson(Board b) {
         JSONObject boardJson = new JSONObject();
         JSONArray boardJsonArrayRow = new JSONArray();
@@ -78,6 +86,7 @@ public class Jsonifier {
         return boardJson;
     }
 
+    // EFFECTS: returns JSONObject representing a GameBackground object
     public static JSONObject gameBackgroundToJson(GameBackground gb) {
         JSONObject gbJson = new JSONObject();
 
@@ -89,7 +98,7 @@ public class Jsonifier {
         return gbJson;
     }
 
-    // EFFECTS: returns JSON object representing a Tetris object
+    // EFFECTS: returns JSONObject representing a Tetris object
     public static JSONObject tetrisToJson(Tetris t) {
         JSONObject tetrisJson = new JSONObject();
 
@@ -99,6 +108,10 @@ public class Jsonifier {
         tetrisJson.put(KEY_TETRIS_GAME_BACKGROUND, gameBackgroundToJson(t.getGameBackground()));
         tetrisJson.put(KEY_TETRIS_HIGH_SCORE, t.getHighScore());
         tetrisJson.put(KEY_TETRIS_MYSTERY_BUTTON_NAME, t.getMysteryButton().getButtonName());
+        tetrisJson.put(KEY_GAME_FALL_SPEED, t.getFallSpeed());
+        tetrisJson.put(KEY_GAME_LEVEL, t.getLevel());
+        tetrisJson.put(KEY_GAME_LINES_TO_CLEAR, t.getLinesToClear());
+        tetrisJson.put(KEY_TETRIS_IS_PLAY_MUSIC, t.isPlayMusic());
 
         return tetrisJson;
     }

@@ -8,7 +8,6 @@ import static ca.ubc.cs.cpsc210.ui.Game.*;
 
 public class Board implements Iterable<Character> {
 
-
     // Board is represented by matrix by blocks wide by blocks high
     // once a tetromino falls and becomes static it gets added to the board
     // e - empty
@@ -26,7 +25,7 @@ public class Board implements Iterable<Character> {
     private Map<Character, Color> colourHashMap = new HashMap<>();
 
     /**
-     *  Declarations
+     * Declarations
      */
     private char[][] boardGrid;
 
@@ -319,6 +318,16 @@ public class Board implements Iterable<Character> {
         return false;
     }
 
+    // MODIFIES: this
+    // EFFECTS:  resets all blocks on board to empty
+    public void resetBoard() {
+        for (int i = 0; i < BLOCKS_HIGH; i++) {
+            for (int j = 0; j < BLOCKS_WIDE; j++) {
+                boardGrid[i][j] = 'e';
+            }
+        }
+    }
+
     // EFFECTS: draw method not included in tests
     public void draw(Graphics g) {
         int blockXPos = 0;
@@ -369,6 +378,7 @@ public class Board implements Iterable<Character> {
         return Arrays.hashCode(boardGrid);
     }
 
+    // EFFECTS:  returns an iterator of type BoardIterator
     @Override
     public Iterator<Character> iterator() {
         return new BoardIterator();
@@ -378,16 +388,19 @@ public class Board implements Iterable<Character> {
         private int colIndex;
         private int rowIndex;
 
+        // EFFECTS:  constructor for BoardIterator
         private BoardIterator() {
             colIndex = 0;
             rowIndex = 0;
         }
 
+        // EFFECTS:  return false if colIndex and rowIndex both no longer refer to elements in matrix, else true
         @Override
         public boolean hasNext() {
             return (colIndex * rowIndex < BLOCKS_WIDE * BLOCKS_HIGH - BLOCKS_WIDE - 1);
         }
 
+        // EFFECTS:  returns each column in row, then moves to next row, until no more rows and columns
         @Override
         public Character next() {
             if (!hasNext()) {

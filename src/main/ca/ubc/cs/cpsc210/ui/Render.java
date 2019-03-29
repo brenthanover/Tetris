@@ -15,6 +15,7 @@ public class Render extends JPanel {
     /**
      * Constructor
      */
+    // EFFECTS:  constructor for Render object
     public Render(Game game) {
         this.game = game;
     }

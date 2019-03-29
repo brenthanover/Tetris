@@ -17,7 +17,7 @@ import static ca.ubc.cs.cpsc210.persistence.SaveHighScore.HIGH_SCORE_FILENAME;
 import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_HIGH;
 import static ca.ubc.cs.cpsc210.ui.Game.BLOCKS_WIDE;
 
-public class TetrisParser {
+public class GameParser {
     /**
      *  Methods
      */
@@ -97,6 +97,12 @@ public class TetrisParser {
             e.printStackTrace();
         }
 
+        return getTetrisParameters(tetrisJson, parsedTetris);
+    }
+
+    // MODIFIES: parsedTetris
+    // EFFECTS:  gets tetris parameters from JSONObject, saves to parsedTetris
+    private static Tetris getTetrisParameters(JSONObject tetrisJson, Tetris parsedTetris) {
         Tetromino currentTetromino = parseTetromino(tetrisJson.getJSONObject(KEY_TETRIS_CURRENT_TETROMINO));
         Tetromino nextTetromino = parseTetromino(tetrisJson.getJSONObject(KEY_TETRIS_NEXT_TETROMINO));
         GameBackground gameBackground = parseGameBackground(tetrisJson.getJSONObject(KEY_TETRIS_GAME_BACKGROUND));
@@ -107,6 +113,10 @@ public class TetrisParser {
         parsedTetris.setGameBackground(gameBackground);
         parsedTetris.setHighScore(tetrisJson.getInt(KEY_TETRIS_HIGH_SCORE));
         parsedTetris.getMysteryButton().setButtonName(tetrisJson.getString(KEY_TETRIS_MYSTERY_BUTTON_NAME));
+        parsedTetris.setLevel(tetrisJson.getInt(KEY_GAME_LEVEL));
+        parsedTetris.setLinesToClear(tetrisJson.getInt(KEY_GAME_LINES_TO_CLEAR));
+        parsedTetris.setFallSpeed(tetrisJson.getInt(KEY_GAME_FALL_SPEED));
+        parsedTetris.setPlayMusic(tetrisJson.getBoolean(KEY_TETRIS_IS_PLAY_MUSIC));
 
         return parsedTetris;
     }

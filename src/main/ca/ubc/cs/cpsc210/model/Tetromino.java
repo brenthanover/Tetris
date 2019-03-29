@@ -148,7 +148,7 @@ public class Tetromino {
     // EFFECTS:  places tetromino in centre of preview window on right side of the game screen
     public void previewTetromino() {
         tetrominoX = BOARD_WIDTH / 2 - shape[0].length * BLOCK_SIZE / 2;
-        tetrominoY = 15 * BLOCK_SIZE - BLOCK_SIZE / 2 * shape.length;
+        tetrominoY = 17 * BLOCK_SIZE - BLOCK_SIZE / 2 * shape.length;
     }
 
     // MODIFIES: this

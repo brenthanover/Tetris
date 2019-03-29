@@ -15,8 +15,8 @@ public class SoundEffectsButton extends TetrisButton {
      */
     // EFFECTS: constructs a SoundEffectsButton object
     public SoundEffectsButton(Tetris tetris) {
-        super(SOUND_EFECTS_BUTTON_X_POS, SOUND_EFECTS_BUTTON_Y_POS,
-                SOUND_EFECTS_BUTTON_WIDTH, SOUND_EFECTS_BUTTON_HEIGHT, SOUND_EFECTS_BUTTON_NAME_INITIAL);
+        super(SOUND_EFFECTS_BUTTON_X_POS, SOUND_EFFECTS_BUTTON_Y_POS,
+                SOUND_EFFECTS_BUTTON_WIDTH, SOUND_EFFECTS_BUTTON_HEIGHT, SOUND_EFFECTS_BUTTON_NAME_INITIAL);
         this.tetris = tetris;
     }
 
@@ -28,10 +28,10 @@ public class SoundEffectsButton extends TetrisButton {
     //          switches between SFX ON and SFX OFF
     public void buttonAction() {
         if (tetris.isPlaySfx()) {
-            buttonName = SOUND_EFECTS_BUTTON_NAME_CLICKED;
+            buttonName = SOUND_EFFECTS_BUTTON_NAME_CLICKED;
             tetris.setPlaySfx(false);
         } else {
-            buttonName = SOUND_EFECTS_BUTTON_NAME_INITIAL;
+            buttonName = SOUND_EFFECTS_BUTTON_NAME_INITIAL;
             tetris.setPlaySfx(true);
         }
     }
